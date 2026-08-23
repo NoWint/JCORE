@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns:xlink="http://www.w3.org/1999/xlink">
+  <front>
+    <article-meta>
+      <title-group><article-title>Missing Asset</article-title></title-group>
+      <permissions>
+        <license><license-p>CC BY 4.0</license-p></license>
+      </permissions>
+    </article-meta>
+  </front>
+  <body>
+    <fig id="f1">
+      <graphic xlink:href="missing.png"/>
+      <caption><p>Missing figure.</p></caption>
+    </fig>
+  </body>
+</article>
