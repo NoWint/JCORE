@@ -1,0 +1,16 @@
+kind: author
+id: demo-author-008
+name:
+  en: Kenji Sato
+  zh: 佐藤健司
+affiliations:
+  - id: demo-university-systems
+    name:
+      en: Demo University of Systems
+      zh: 系统演示大学
+    city: Tokyo
+    country: Japan
+researchInterests:
+  - en: high performance computing
+    zh: 高性能计算
+demo: true

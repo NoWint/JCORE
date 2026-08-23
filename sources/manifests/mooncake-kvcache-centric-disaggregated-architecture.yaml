@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: mooncake-kvcache-centric-disaggregated-architecture
+officialIdentifier: arXiv:2407.00079
+officialUrl: https://arxiv.org/abs/2407.00079
+sourcePackagePath: sources/latex/2407.00079
+rootDocument: main.tex
+expectedChecksum: eb743092f4d61f40086e3d06eff6508232246e6714bdf2890d8a77a673e2a636
+retrievalDate: 2026-08-23
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2407.00079
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

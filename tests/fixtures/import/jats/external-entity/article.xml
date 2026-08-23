@@ -1,0 +1,9 @@
+<!DOCTYPE article SYSTEM "https://example.invalid/evil.dtd">
+<article>
+  <front>
+    <article-meta>
+      <title-group><article-title>External Entity</article-title></title-group>
+    </article-meta>
+  </front>
+  <body/>
+</article>

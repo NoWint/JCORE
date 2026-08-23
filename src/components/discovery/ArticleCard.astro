@@ -1,0 +1,28 @@
+---
+import OwnershipBadge from '../site/OwnershipBadge.astro';
+import type { ArticleCardViewModel } from '../../lib/content/view-models';
+
+const { article } = Astro.props as { article: ArticleCardViewModel };
+---
+<article
+  class="article-card"
+  data-kind={article.isExternal ? 'external' : 'jcore'}
+  data-article-type={article.articleType}
+>
+  <div class="article-card-top">
+    <OwnershipBadge kind={article.isExternal ? 'external' : 'jcore'} demo={article.demo} />
+    <span class="article-card-type">{article.articleType}</span>
+  </div>
+  <h2 class="article-card-title">
+    <a href={article.url}>{article.title}</a>
+  </h2>
+  <p class="article-card-authors">{article.authors.join(', ')}</p>
+  <p class="article-card-meta">{article.publishedAt}</p>
+  {
+    article.keywords.length > 0 && (
+      <ul class="keyword-list" aria-label="Keywords">
+        {article.keywords.slice(0, 5).map((keyword) => <li>{keyword}</li>)}
+      </ul>
+    )
+  }
+</article>

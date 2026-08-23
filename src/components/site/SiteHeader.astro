@@ -1,0 +1,39 @@
+---
+import { getSiteConfig } from '../../lib/site-config';
+import { makeRoute } from '../../lib/routes';
+import type { Locale } from '../../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const { locale, path = '' } = Astro.props as { locale: Locale; path?: string };
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const route = (target: string) => makeRoute(locale, target, config.base);
+const languagePath = Astro.url.pathname.replace(config.base, '').replace(/^\/+/, '');
+
+const navigation = [
+  { label: 'Home', href: route('') },
+  { label: 'Articles', href: route('articles') },
+  { label: 'Issues', href: route('issues') },
+  { label: 'Authors', href: route('authors') },
+  { label: 'Submit', href: route('submit') },
+  { label: 'About', href: route('about') },
+  { label: 'Policies', href: route('policies') }
+];
+---
+<header class="site-header">
+  <div class="site-header-inner">
+    <p class="journal-name">
+      JCORE
+      <small>Journal of Computing and Open Research for Exploration</small>
+    </p>
+    <nav class="site-nav" aria-label="Main">
+      {
+        navigation.map((item) => (
+          <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <LanguageSwitcher current={locale} path={languagePath} />
+  </div>
+</header>

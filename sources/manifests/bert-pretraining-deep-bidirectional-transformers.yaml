@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: bert-pretraining-deep-bidirectional-transformers
+officialIdentifier: arXiv:1810.04805
+officialUrl: https://arxiv.org/abs/1810.04805
+sourcePackagePath: sources/latex/1810.04805
+rootDocument: main.tex
+expectedChecksum: 3b272da93640a021bf6f207a731e67ebe38c5963c691534311a5d6a2f2847158
+retrievalDate: 2026-08-23
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/1810.04805
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

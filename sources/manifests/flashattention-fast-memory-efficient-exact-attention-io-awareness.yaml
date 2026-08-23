@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: flashattention-fast-memory-efficient-exact-attention-io-awareness
+officialIdentifier: arXiv:2205.14135
+officialUrl: https://arxiv.org/abs/2205.14135
+sourcePackagePath: sources/latex/2205.14135
+rootDocument: streaming_attention_neurips_2022.tex
+expectedChecksum: 2c66572466c11c0c4287afb2fc6eb35ebfe20fa99092cd18fc86eecd2f49a87f
+retrievalDate: 2026-08-23
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2205.14135
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Demonstration benchmark scores</title>
+  <desc id="desc">Bar chart showing fictional benchmark scores across three task groups.</desc>
+  <rect width="640" height="360" fill="#ffffff" />
+  <text x="24" y="34" font-family="Georgia, serif" font-size="18" fill="#111111">Benchmark Scores</text>
+  <g transform="translate(64 54)">
+    <line x1="0" y1="250" x2="520" y2="250" stroke="#111111" />
+    <line x1="0" y1="0" x2="0" y2="250" stroke="#111111" />
+    <rect x="80" y="42" width="80" height="208" fill="#8a6a3b" />
+    <rect x="220" y="66" width="80" height="184" fill="#4a6b5a" />
+    <rect x="360" y="25" width="80" height="225" fill="#6b5b8a" />
+    <text x="120" y="274" font-family="Arial, sans-serif" font-size="13" fill="#111111" text-anchor="middle">Reasoning</text>
+    <text x="260" y="274" font-family="Arial, sans-serif" font-size="13" fill="#111111" text-anchor="middle">Code</text>
+    <text x="400" y="274" font-family="Arial, sans-serif" font-size="13" fill="#111111" text-anchor="middle">Knowledge</text>
+    <text x="120" y="34" font-family="Arial, sans-serif" font-size="12" fill="#111111" text-anchor="middle">82.4</text>
+    <text x="260" y="58" font-family="Arial, sans-serif" font-size="12" fill="#111111" text-anchor="middle">76.9</text>
+    <text x="400" y="17" font-family="Arial, sans-serif" font-size="12" fill="#111111" text-anchor="middle">88.1</text>
+  </g>
+  <text x="24" y="336" font-family="Arial, sans-serif" font-size="12" fill="#555555">Demonstration figure for JCORE.</text>
+</svg>

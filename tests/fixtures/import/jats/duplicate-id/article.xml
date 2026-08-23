@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article>
+  <front>
+    <article-meta>
+      <title-group><article-title>Duplicate ID</article-title></title-group>
+      <permissions>
+        <license><license-p>CC BY 4.0</license-p></license>
+      </permissions>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="dup"><title>One</title><p>Text.</p></sec>
+    <sec id="dup"><title>Two</title><p>Text.</p></sec>
+  </body>
+</article>
