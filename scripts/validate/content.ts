@@ -1,5 +1,6 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
 import type { ZodType } from 'zod';
@@ -32,11 +33,28 @@ function loadMarkdown<T>(directory: string, schema: ZodType<T>): {
   const records: T[] = [];
   const diagnostics: Diagnostic[] = [];
 
-  for (const file of filesUnder(directory).filter((file) => file.endsWith('.md'))) {
+  for (const file of filesUnder(directory).filter((file) => file.endsWith('/index.md'))) {
     const parsed = matter(readFileSync(file, 'utf8'));
     const result = schema.safeParse(parsed.data);
     if (result.success) {
-      records.push({ ...result.data, body: parsed.content.trim() } as T);
+      const bodyPath = join(file, '..', 'body.md');
+      const body = statSync(bodyPath, { throwIfNoEntry: false })?.isFile()
+        ? readFileSync(bodyPath, 'utf8').trim()
+        : '';
+      if (!body) {
+        diagnostics.push(
+          makeDiagnostic(
+            'missing-body',
+            'error',
+            'content',
+            file,
+            'Article metadata has no non-empty body.md sibling',
+            'Create or populate the body.md file next to index.md',
+            'body'
+          )
+        );
+      }
+      records.push({ ...result.data, body } as T);
     } else {
       diagnostics.push(
         makeDiagnostic(
@@ -126,4 +144,8 @@ function main(): void {
   }
 }
 
-main();
+const entryPath = process.argv[1] ? realpathSync(process.argv[1]) : '';
+const selfPath = realpathSync(fileURLToPath(import.meta.url));
+if (entryPath === selfPath) {
+  main();
+}

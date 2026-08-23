@@ -1,0 +1,18 @@
+kind: author
+id: demo-author-010
+name:
+  en: Omar Haddad
+  zh: 奥马尔·哈达德
+affiliations:
+  - id: demo-research-center
+    name:
+      en: Demo Research Center for Open Science
+      zh: 开放科学演示研究中心
+    city: Amman
+    country: Jordan
+researchInterests:
+  - en: reproducibility
+    zh: 可复现性
+  - en: evaluation
+    zh: 评测
+demo: true

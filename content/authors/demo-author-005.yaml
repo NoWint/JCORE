@@ -1,0 +1,18 @@
+kind: author
+id: demo-author-005
+name:
+  en: Elif Demir
+  zh: 埃利夫·德米尔
+affiliations:
+  - id: demo-research-center
+    name:
+      en: Demo Research Center for Open Science
+      zh: 开放科学演示研究中心
+    city: Istanbul
+    country: Turkiye
+researchInterests:
+  - en: open science
+    zh: 开放科学
+  - en: scholarly publishing
+    zh: 学术出版
+demo: true

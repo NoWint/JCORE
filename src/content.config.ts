@@ -9,12 +9,12 @@ import {
 } from './lib/content/contracts';
 
 const articles = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './content/articles' }),
+  loader: glob({ pattern: '**/index.md', base: './content/articles' }),
   schema: articleMetadataSchema
 });
 
 const externalArticles = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './content/external-articles' }),
+  loader: glob({ pattern: '**/index.md', base: './content/external-articles' }),
   schema: externalArticleMetadataSchema
 });
 

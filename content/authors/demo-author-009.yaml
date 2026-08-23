@@ -1,0 +1,16 @@
+kind: author
+id: demo-author-009
+name:
+  en: Priya Rao
+  zh: 普里亚·拉奥
+affiliations:
+  - id: demo-institute-computing
+    name:
+      en: Demo Institute of Computing
+      zh: 演示计算研究所
+    city: Shanghai
+    country: China
+researchInterests:
+  - en: human-computer interaction
+    zh: 人机交互
+demo: true

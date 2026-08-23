@@ -1,0 +1,13 @@
+kind: issue
+id: volume-1-issue-1
+volume: 1
+issue: 1
+year: 2026
+title:
+  en: Volume 1, Issue 1
+  zh: 第一卷第一期
+editorial:
+  en: Demonstration issue for the JCORE publishing MVP.
+  zh: JCORE 出版演示版的第一期。
+published: 2026-08-20
+demo: true
