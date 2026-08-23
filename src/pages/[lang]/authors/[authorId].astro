@@ -1,0 +1,38 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import ArticleCard from '../../../components/discovery/ArticleCard.astro';
+import { getArticlesForAuthor, getAuthors } from '../../../lib/content/queries';
+import { toArticleCard } from '../../../lib/content/view-models';
+import { getSiteConfig } from '../../../lib/site-config';
+import { isLocale, localize, LOCALES, type Locale } from '../../../lib/i18n';
+import { makeRoute } from '../../../lib/routes';
+
+export function getStaticPaths() {
+  const authors = getAuthors();
+  return LOCALES.flatMap((lang) => authors.map((author) => ({ params: { lang, authorId: author.id } })));
+}
+
+const rawLocale = Astro.params.lang ?? 'en';
+const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const author = getAuthors().find((candidate) => candidate.id === Astro.params.authorId);
+if (!author) {
+  throw new Error(`Missing author ${Astro.params.authorId}`);
+}
+const articles = getArticlesForAuthor(author.id).map((article) => toArticleCard(article, locale, config.base));
+---
+<PageLayout
+  locale={locale}
+  title={`${localize(author.name, locale)} · JCORE`}
+  description="JCORE author profile"
+  canonical={new URL(makeRoute(locale, `authors/${author.id}`, config.base), config.site.origin)}
+>
+  <h1 class="page-title">{localize(author.name, locale)}</h1>
+  {author.demo && <div class="notice">Demonstration author profile.</div>}
+  {author.affiliations.map((affiliation) => <p class="page-lede">{localize(affiliation.name, locale)}</p>)}
+  {author.bio && <p>{localize(author.bio, locale)}</p>}
+  <h2 class="section-heading">Published Articles</h2>
+  <div class="article-grid">
+    {articles.map((article) => <ArticleCard article={article} />)}
+  </div>
+</PageLayout>

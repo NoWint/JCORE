@@ -1,0 +1,42 @@
+<form class="article-filters" data-filter-form>
+  <label>
+    <span>Ownership</span>
+    <select data-filter="kind">
+      <option value="all">All</option>
+      <option value="jcore">JCORE</option>
+      <option value="external">External</option>
+    </select>
+  </label>
+  <label>
+    <span>Article type</span>
+    <select data-filter="type">
+      <option value="all">All</option>
+      <option value="research-article">Research Article</option>
+      <option value="review-article">Review Article</option>
+      <option value="research-note">Research Note</option>
+      <option value="replication-study">Replication Study</option>
+      <option value="external-article">External Article</option>
+    </select>
+  </label>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-filter-form]');
+  const kindSelect = form?.querySelector<HTMLSelectElement>('[data-filter="kind"]');
+  const typeSelect = form?.querySelector<HTMLSelectElement>('[data-filter="type"]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-kind]'));
+
+  function applyFilters() {
+    const kind = kindSelect?.value ?? 'all';
+    const type = typeSelect?.value ?? 'all';
+    for (const card of cards) {
+      const kindMatch = kind === 'all' || card.dataset.kind === kind;
+      const typeMatch = type === 'all' || card.dataset.articleType === type;
+      card.hidden = !kindMatch || !typeMatch;
+    }
+  }
+
+  kindSelect?.addEventListener('change', applyFilters);
+  typeSelect?.addEventListener('change', applyFilters);
+  applyFilters();
+</script>

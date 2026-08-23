@@ -1,0 +1,35 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import { getAuthors } from '../../../lib/content/queries';
+import { getSiteConfig } from '../../../lib/site-config';
+import { isLocale, localize, LOCALES, type Locale } from '../../../lib/i18n';
+import { makeRoute } from '../../../lib/routes';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const rawLocale = Astro.params.lang ?? 'en';
+const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const authors = getAuthors();
+const title = locale === 'zh' ? '作者' : 'Authors';
+---
+<PageLayout
+  locale={locale}
+  title={`${title} · JCORE`}
+  description="JCORE author index"
+  canonical={new URL(makeRoute(locale, 'authors', config.base), config.site.origin)}
+>
+  <h1 class="page-title">{title}</h1>
+  <ul class="author-list">
+    {authors.map((author) => (
+      <li>
+        <a href={makeRoute(locale, `authors/${author.id}`, config.base)}>
+          {localize(author.name, locale)}
+        </a>
+        {author.demo && <span class="demo-mark">Demonstration</span>}
+      </li>
+    ))}
+  </ul>
+</PageLayout>

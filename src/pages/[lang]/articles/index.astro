@@ -1,0 +1,38 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import ArticleCard from '../../../components/discovery/ArticleCard.astro';
+import ArticleFilters from '../../../components/discovery/ArticleFilters.astro';
+import { getExternalArticles, getPublishedArticles } from '../../../lib/content/queries';
+import { toArticleCard } from '../../../lib/content/view-models';
+import { getSiteConfig } from '../../../lib/site-config';
+import { isLocale, LOCALES, type Locale } from '../../../lib/i18n';
+import { makeRoute } from '../../../lib/routes';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const rawLocale = Astro.params.lang ?? 'en';
+const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const cards = [
+  ...getPublishedArticles().map((article) => toArticleCard(article, locale, config.base)),
+  ...getExternalArticles().map((article) => toArticleCard(article, locale, config.base))
+].sort((a, b) => a.publishedAt.localeCompare(b.publishedAt));
+const title = locale === 'zh' ? '文章' : 'Articles';
+---
+<PageLayout
+  locale={locale}
+  title={`${title} · JCORE`}
+  description="JCORE and external open-access articles"
+  canonical={new URL(makeRoute(locale, 'articles', config.base), config.site.origin)}
+>
+  <h1 class="page-title">{title}</h1>
+  <p class="page-lede">
+    JCORE publications and clearly labeled external open-access articles in one data-driven index.
+  </p>
+  <ArticleFilters />
+  <div class="article-grid">
+    {cards.map((article) => <ArticleCard article={article} />)}
+  </div>
+</PageLayout>

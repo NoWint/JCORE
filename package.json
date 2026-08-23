@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "preview": "astro preview",
     "build:search": "npm run build && pagefind --site dist",
     "check": "npm run typecheck && npm run lint && npm run test:unit && npm run build",
     "typecheck": "astro check",
@@ -14,7 +15,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:unit": "vitest run tests/unit tests/contract",
-    "test:e2e": "playwright test",
+    "test:e2e": "bash scripts/run-e2e.sh",
     "validate": "npm run typecheck && npm run lint && npm run test:unit && tsx scripts/validate/content.ts && npm run build"
   },
   "dependencies": {

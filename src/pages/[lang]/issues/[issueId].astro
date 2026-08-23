@@ -1,0 +1,47 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import ArticleCard from '../../../components/discovery/ArticleCard.astro';
+import { getArticlesForIssue, getIssues } from '../../../lib/content/queries';
+import { toArticleCard } from '../../../lib/content/view-models';
+import { getSiteConfig } from '../../../lib/site-config';
+import { isLocale, localize, LOCALES, type Locale } from '../../../lib/i18n';
+import { makeRoute } from '../../../lib/routes';
+
+export function getStaticPaths() {
+  const issues = getIssues();
+  return LOCALES.flatMap((lang) => issues.map((issue) => ({ params: { lang, issueId: issue.id } })));
+}
+
+const rawLocale = Astro.params.lang ?? 'en';
+const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const issue = getIssues().find((candidate) => candidate.id === Astro.params.issueId);
+if (!issue) {
+  throw new Error(`Missing issue ${Astro.params.issueId}`);
+}
+const articles = getArticlesForIssue(issue.id).map((article) => toArticleCard(article, locale, config.base));
+const grouped = new Map<string, typeof articles>();
+for (const article of articles) {
+  const group = grouped.get(article.articleType) ?? [];
+  group.push(article);
+  grouped.set(article.articleType, group);
+}
+---
+<PageLayout
+  locale={locale}
+  title={`${localize(issue.title, locale)} · JCORE`}
+  description={`Volume ${issue.volume}, Issue ${issue.issue}`}
+  canonical={new URL(makeRoute(locale, `issues/${issue.id}`, config.base), config.site.origin)}
+>
+  <h1 class="page-title">{localize(issue.title, locale)}</h1>
+  <p class="page-lede">Volume {issue.volume} · Issue {issue.issue} · {issue.year}</p>
+  {issue.editorial && <div class="notice">{localize(issue.editorial, locale)}</div>}
+  {[...grouped.entries()].map(([type, group]) => (
+    <section class="home-section">
+      <h2 class="section-heading">{type}</h2>
+      <div class="article-grid">
+        {group.map((article) => <ArticleCard article={article} />)}
+      </div>
+    </section>
+  ))}
+</PageLayout>
