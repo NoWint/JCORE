@@ -6,7 +6,6 @@ import { renderArticleBody, extractHeadings } from '../../../lib/article/render'
 import { getRelatedArticles } from '../../../lib/article/related';
 import { getSiteConfig } from '../../../lib/site-config';
 import { isLocale, LOCALES, type Locale } from '../../../lib/i18n';
-import { makeRoute } from '../../../lib/routes';
 
 export function getStaticPaths() {
   const articles = getPublishedArticles();
@@ -24,9 +23,9 @@ const html = await renderArticleBody(record.body, config.base);
 const headings = extractHeadings(record.body);
 const related = getRelatedArticles(record).map((article) => toArticleCard(article, locale, config.base));
 const citationUrls = {
-  plain: makeRoute(locale, `citations/${record.id}.txt`, config.base),
-  bib: makeRoute(locale, `citations/${record.id}.bib`, config.base),
-  ris: makeRoute(locale, `citations/${record.id}.ris`, config.base)
+  plain: `${config.base}/citations/${record.id}.txt`,
+  bib: `${config.base}/citations/${record.id}.bib`,
+  ris: `${config.base}/citations/${record.id}.ris`
 };
 ---
 <ArticleLayout
