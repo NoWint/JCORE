@@ -6,7 +6,7 @@ function trimSlashes(value: string): string {
 
 export function makeRoute(locale: Locale, path = '', base = ''): string {
   const basePath = trimSlashes(base);
-  const routePath = trimSlashes(path).replace(new RegExp(`^${locale}/`, 'i'), '');
+  const routePath = trimSlashes(path).replace(/^(en|zh)\//i, '');
   const prefix = basePath ? `/${basePath}` : '';
   return routePath ? `${prefix}/${locale}/${routePath}/` : `${prefix}/${locale}/`;
 }

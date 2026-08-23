@@ -1,0 +1,40 @@
+---
+import { getSiteConfig } from '../../lib/site-config';
+import { makeRoute } from '../../lib/routes';
+
+const { locale } = Astro.props as { locale: 'en' | 'zh' };
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const label = locale === 'zh' ? '搜索' : 'Search';
+const placeholder = locale === 'zh' ? '搜索标题、作者、摘要或关键词' : 'Search titles, authors, abstracts, or keywords';
+const browseHref = makeRoute(locale, 'articles', config.base);
+---
+<form class="search-form" data-search-form data-locale={locale}>
+  <label for={`search-${locale}`}>{label}</label>
+  <input
+    id={`search-${locale}`}
+    type="search"
+    name="q"
+    placeholder={placeholder}
+    data-search-input
+  />
+  <button type="submit">{label}</button>
+</form>
+<div class="search-results" data-search-results aria-live="polite"></div>
+<noscript>
+  <a href={browseHref}>Browse the articles index</a>
+</noscript>
+<script is:inline type="module">
+  const searchPath = window.location.pathname.replace(/\/(en|zh)\/search\/?$/, '/pagefind/pagefind.js');
+  const pagefindModule = await import(searchPath);
+  window.__pagefind = pagefindModule;
+</script>
+
+<script>
+  import { initSearch } from '../../scripts/search';
+
+  const form = document.querySelector<HTMLFormElement>('[data-search-form]');
+  const results = document.querySelector<HTMLElement>('[data-search-results]');
+  if (form && results) {
+    void initSearch(form.dataset.locale ?? 'en', form, results);
+  }
+</script>

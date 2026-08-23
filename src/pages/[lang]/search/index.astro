@@ -1,0 +1,29 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import SearchBox from '../../../components/search/SearchBox.astro';
+import { getSiteConfig } from '../../../lib/site-config';
+import { isLocale, LOCALES, type Locale } from '../../../lib/i18n';
+import { makeRoute } from '../../../lib/routes';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const rawLocale = Astro.params.lang ?? 'en';
+const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const title = locale === 'zh' ? '搜索' : 'Search';
+---
+<PageLayout
+  locale={locale}
+  title={`${title} · JCORE`}
+  description="Search JCORE articles and external open-access research"
+  canonical={new URL(makeRoute(locale, 'search', config.base), config.site.origin)}
+>
+  <h1 class="page-title">{title}</h1>
+  <p class="page-lede">Static full-text search over JCORE and external open-access articles.</p>
+  <SearchBox locale={locale} />
+  <p class="search-fallback">
+    <a href={makeRoute(locale, 'articles', config.base)}>Browse the articles index</a>
+  </p>
+</PageLayout>
