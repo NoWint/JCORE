@@ -1,0 +1,39 @@
+---
+import ArticleLayout from '../../../layouts/ArticleLayout.astro';
+import { getArticleById, getPublishedArticles } from '../../../lib/content/queries';
+import { toArticleCard } from '../../../lib/content/view-models';
+import { renderArticleBody, extractHeadings } from '../../../lib/article/render';
+import { getRelatedArticles } from '../../../lib/article/related';
+import { getSiteConfig } from '../../../lib/site-config';
+import { isLocale, LOCALES, type Locale } from '../../../lib/i18n';
+import { makeRoute } from '../../../lib/routes';
+
+export function getStaticPaths() {
+  const articles = getPublishedArticles();
+  return LOCALES.flatMap((lang) => articles.map((article) => ({ params: { lang, articleId: article.id } })));
+}
+
+const rawLocale = Astro.params.lang ?? 'en';
+const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const record = getArticleById(Astro.params.articleId ?? '');
+if (!record) {
+  throw new Error(`Missing article ${Astro.params.articleId}`);
+}
+const html = await renderArticleBody(record.body, config.base);
+const headings = extractHeadings(record.body);
+const related = getRelatedArticles(record).map((article) => toArticleCard(article, locale, config.base));
+const citationUrls = {
+  plain: makeRoute(locale, `citations/${record.id}.txt`, config.base),
+  bib: makeRoute(locale, `citations/${record.id}.bib`, config.base),
+  ris: makeRoute(locale, `citations/${record.id}.ris`, config.base)
+};
+---
+<ArticleLayout
+  locale={locale}
+  record={record}
+  html={html}
+  headings={headings}
+  related={related}
+  citationUrls={citationUrls}
+/>

@@ -2,6 +2,7 @@ import type { ArticleRecord, ExternalArticleRecord, IssueRecord } from './types'
 import type { Locale } from '../i18n';
 import { formatDate, localize } from '../i18n';
 import { makeRoute } from '../routes';
+import { getAuthorById } from './queries';
 
 export interface ArticleCardViewModel {
   id: string;
@@ -30,7 +31,7 @@ export function toArticleCard(
     : (article as ArticleRecord).authors
         .slice()
         .sort((a, b) => a.order - b.order)
-        .map((ref) => ref.authorId);
+        .map((ref) => localize(getAuthorById(ref.authorId)?.name ?? { en: ref.authorId }, locale));
 
   return {
     id: isExternal ? (article as ExternalArticleRecord).slug : (article as ArticleRecord).id,

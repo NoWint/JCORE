@@ -437,6 +437,85 @@ embed {
   color: var(--accent);
 }
 
+.article-page {
+  max-width: var(--article-width);
+  overflow-x: hidden;
+}
+
+.article-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.article-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.12;
+  margin: var(--space-4) 0 var(--space-6);
+  letter-spacing: 0;
+}
+
+.abstract-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: var(--space-6);
+  margin: var(--space-8) 0;
+}
+
+.abstract-block h2,
+.article-toc h2,
+.citation-panel h2,
+.rights-panel h2,
+.related-section h2 {
+  font-size: 1.05rem;
+  margin: 0 0 var(--space-4);
+  letter-spacing: 0;
+}
+
+.article-toc {
+  margin: var(--space-8) 0;
+  padding: var(--space-4) var(--space-6);
+  border-left: 3px solid var(--border);
+}
+
+.article-toc ol {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.article-toc li {
+  margin-bottom: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
+.citation-panel,
+.rights-panel {
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+}
+
+.citation-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.citation-links a {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  text-decoration: none;
+  background: var(--surface);
+}
+
+.related-section {
+  margin-top: var(--space-12);
+}
+
 @media (max-width: 700px) {
   .site-header-inner {
     align-items: flex-start;

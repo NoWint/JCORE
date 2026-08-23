@@ -2,6 +2,8 @@
   font-size: 1.05rem;
   line-height: 1.75;
   max-width: var(--measure);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .article-prose h1,
@@ -45,6 +47,8 @@
   border-collapse: collapse;
   margin: var(--space-6) 0;
   width: 100%;
+  display: block;
+  overflow-x: auto;
 }
 
 .article-prose th,
@@ -60,6 +64,20 @@
   margin: var(--space-6) 0;
   padding-left: var(--space-4);
   color: var(--text-secondary);
+}
+
+.article-prose img,
+.article-prose embed,
+.article-prose video,
+.article-prose canvas {
+  max-width: 100% !important;
+  height: auto;
+}
+
+.article-prose pre,
+.article-prose code {
+  overflow-x: auto;
+  white-space: pre-wrap;
 }
 
 .article-prose .katex-display {
