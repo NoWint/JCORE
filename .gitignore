@@ -4,7 +4,7 @@ dist/
 .cache/
 .DS_Store
 .superpowers/
+.worktrees/
 coverage/
 playwright-report/
 test-results/
-
