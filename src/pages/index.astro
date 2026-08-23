@@ -1,0 +1,27 @@
+---
+import { getSiteConfig } from '../lib/site-config';
+
+const { base } = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JCORE</title>
+    <meta
+      name="description"
+      content="Journal of Computing and Open Research for Exploration"
+    />
+  </head>
+  <body>
+    <main>
+      <h1>JCORE</h1>
+      <p>Journal of Computing and Open Research for Exploration</p>
+      <nav aria-label="Language">
+        <a href={`${base}/en/`}>English</a>
+        <a href={`${base}/zh/`} lang="zh">中文</a>
+      </nav>
+    </main>
+  </body>
+</html>

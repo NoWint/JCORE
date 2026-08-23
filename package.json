@@ -1,0 +1,39 @@
+{
+  "name": "jcore",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Journal of Computing and Open Research for Exploration",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:search": "npm run build && pagefind --site dist",
+    "check": "npm run typecheck && npm run lint && npm run test:unit && npm run build",
+    "typecheck": "astro check",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit tests/contract",
+    "test:e2e": "playwright test",
+    "validate": "npm run typecheck && npm run lint && npm run test:unit && npm run build"
+  },
+  "dependencies": {
+    "astro": "^7.2.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.2.0",
+    "eslint": "^10.9.0",
+    "eslint-plugin-astro": "^3.1.0",
+    "globals": "^17.11.0",
+    "pagefind": "^1.5.2",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.67.0",
+    "vitest": "^4.1.11"
+  }
+}
