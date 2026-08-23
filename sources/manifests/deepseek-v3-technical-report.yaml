@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: deepseek-v3-technical-report
+officialIdentifier: arXiv:2412.19437
+officialUrl: https://arxiv.org/abs/2412.19437
+sourcePackagePath: sources/latex/2412.19437
+rootDocument: main.tex
+expectedChecksum: 7b9051eb58724bbbf2480d734593eaac2e0e165f14d45e23255c29b0e0bebcc8
+retrievalDate: 2026-08-23
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: DeepSeek-AI
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2412.19437
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

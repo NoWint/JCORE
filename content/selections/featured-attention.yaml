@@ -1,0 +1,10 @@
+kind: selection
+id: featured-attention
+title:
+  en: Featured Transformer Research
+  zh: 精选 Transformer 研究
+externalArticleSlug: attention-is-all-you-need
+editorialNote:
+  en: A foundational paper for modern attention-based architectures.
+  zh: 现代注意力架构的基础论文。
+order: 0

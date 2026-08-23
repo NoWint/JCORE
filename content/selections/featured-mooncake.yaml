@@ -1,0 +1,10 @@
+kind: selection
+id: featured-mooncake
+title:
+  en: Featured Systems Research
+  zh: 精选系统研究
+externalArticleSlug: mooncake-kvcache-centric-disaggregated-architecture
+editorialNote:
+  en: An influential architecture for large-scale LLM serving.
+  zh: 大规模语言模型服务的代表性架构。
+order: 2

@@ -1,0 +1,10 @@
+kind: selection
+id: featured-deepseek-v3
+title:
+  en: Featured Laboratory Report
+  zh: 精选实验室报告
+externalArticleSlug: deepseek-v3-technical-report
+editorialNote:
+  en: A detailed report on a frontier open-weight mixture-of-experts model.
+  zh: 前沿开源混合专家模型的详细报告。
+order: 1
