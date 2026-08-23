@@ -7,7 +7,7 @@ export type ImportArticleKind = 'jcore' | 'external';
 export interface ImportSource {
   packagePath: string;
   checksum: string;
-  bytes: Uint8Array;
+  files: Array<{ path: string; data: Uint8Array }>;
 }
 
 export interface NormalizedImport {

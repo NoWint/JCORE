@@ -28,7 +28,7 @@ function fakeSource(): ImportSource {
   return {
     packagePath: 'sources/latex/1706.03762',
     checksum: 'a'.repeat(64),
-    bytes: new TextEncoder().encode('fixture source')
+    files: [{ path: 'main.tex', data: new TextEncoder().encode('fixture source') }]
   };
 }
 

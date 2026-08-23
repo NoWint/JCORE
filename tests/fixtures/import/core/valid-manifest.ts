@@ -7,6 +7,7 @@ export const validManifest: ImportManifest = {
   officialIdentifier: '1706.03762',
   officialUrl: 'https://arxiv.org/abs/1706.03762',
   sourcePackagePath: 'sources/latex/1706.03762',
+  rootDocument: 'main.tex',
   expectedChecksum: 'a'.repeat(64),
   retrievalDate: '2026-08-23',
   rights: {
