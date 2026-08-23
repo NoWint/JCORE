@@ -1,39 +1,168 @@
 ---
-import { getSiteConfig } from '../../lib/site-config';
-import { makeRoute } from '../../lib/routes';
-import type { Locale } from '../../lib/i18n';
-import LanguageSwitcher from './LanguageSwitcher.astro';
+import { getSiteConfig } from "../../lib/site-config";
+import { getIssues } from "../../lib/content/queries";
+import { makeRoute } from "../../lib/routes";
+import type { Locale } from "../../lib/i18n";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
 
-const { locale, path = '' } = Astro.props as { locale: Locale; path?: string };
-const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const { locale, path = "" } = Astro.props as { locale: Locale; path?: string };
+const config = getSiteConfig(
+  import.meta.env as Record<string, string | undefined>,
+);
 const route = (target: string) => makeRoute(locale, target, config.base);
-const languagePath = Astro.url.pathname.replace(config.base, '').replace(/^\/+/, '');
+const languagePath = Astro.url.pathname
+  .replace(config.base, "")
+  .replace(/^\/+/, "");
 
 const navigation = [
-  { label: 'Home', href: route('') },
-  { label: 'Articles', href: route('articles') },
-  { label: 'Issues', href: route('issues') },
-  { label: 'Authors', href: route('authors') },
-  { label: 'Submit', href: route('submit') },
-  { label: 'About', href: route('about') },
-  { label: 'Policies', href: route('policies') }
+  { label: "Articles", href: route("articles") },
+  { label: "Issues", href: route("issues") },
+  { label: "Authors", href: route("authors") },
+  { label: "Submit", href: route("submit") },
+  { label: "About", href: route("about") },
+  { label: "Policies", href: route("policies") },
 ];
+
+const currentIssue = getIssues()[0];
+const issueHref = currentIssue
+  ? route(`issues/${currentIssue.id}`)
+  : route("articles");
 ---
+
 <header class="site-header">
-  <div class="site-header-inner">
-    <p class="journal-name">
-      JCORE
-      <small>Journal of Computing and Open Research for Exploration</small>
-    </p>
-    <nav class="site-nav" aria-label="Main">
+  <div class="masthead">
+    <button class="masthead-toggle" type="button" aria-label="Open navigation">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <line x1="4" y1="7" x2="20" y2="7"></line>
+        <line x1="4" y1="12" x2="20" y2="12"></line>
+        <line x1="4" y1="17" x2="20" y2="17"></line>
+      </svg>
+    </button>
+
+    <a class="masthead-brand" href={route("")}>
+      <span class="journal-name">
+        JCORE
+        <small>Journal of Computing and Open Research for Exploration</small>
+      </span>
+    </a>
+
+    <div class="masthead-actions">
+      <a class="icon-button" href={route("search")} aria-label="Search">
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </a>
+      <LanguageSwitcher current={locale} path={languagePath} />
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Toggle color theme"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 3a9 9 0 0 1 9 9"></path>
+        </svg>
+      </button>
+      <a class="masthead-btn" href={route("articles")}>Explore</a>
+    </div>
+  </div>
+
+  <div class="station-bar">
+    <div class="station-inner">
+      <nav class="site-nav" aria-label="Main">
+        {
+          navigation.map((item) => (
+            <a
+              href={item.href}
+              aria-current={path === item.href ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+      <a class="station-cta" href={issueHref}>Get the latest papers</a>
+    </div>
+  </div>
+
+  <div class="nav-drawer" data-nav-drawer hidden>
+    <nav class="nav-drawer-links" aria-label="Drawer">
       {
         navigation.map((item) => (
-          <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+          <a
+            href={item.href}
+            aria-current={path === item.href ? "page" : undefined}
+          >
             {item.label}
           </a>
         ))
       }
     </nav>
-    <LanguageSwitcher current={locale} path={languagePath} />
   </div>
 </header>
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const key = "jcore-theme";
+    const stored = localStorage.getItem(key);
+    if (stored === "light" || stored === "dark") {
+      root.dataset.theme = stored;
+    }
+  })();
+</script>
+
+<script>
+  const drawerOpen =
+    document.querySelector<HTMLButtonElement>(".masthead-toggle");
+  const drawer = document.querySelector<HTMLElement>("[data-nav-drawer]");
+  if (drawerOpen && drawer) {
+    drawerOpen.addEventListener("click", () => {
+      drawer.hidden = !drawer.hidden;
+    });
+    drawer.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        drawer.hidden = true;
+      });
+    });
+  }
+
+  const toggle = document.querySelector<HTMLButtonElement>(
+    "[data-theme-toggle]",
+  );
+  if (toggle) {
+    toggle.addEventListener("click", () => {
+      const root = document.documentElement;
+      const current = root.dataset.theme === "dark" ? "dark" : "light";
+      const next = current === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      localStorage.setItem("jcore-theme", next);
+    });
+  }
+</script>

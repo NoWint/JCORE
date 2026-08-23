@@ -1,92 +1,140 @@
 ---
-import PageLayout from '../../layouts/PageLayout.astro';
-import ArticleCard from '../../components/discovery/ArticleCard.astro';
+import PageLayout from "../../layouts/PageLayout.astro";
 import {
-  getArticlesForIssue,
   getFeaturedExternalArticles,
-  getIssues,
-  getPublishedArticles
-} from '../../lib/content/queries';
-import { toArticleCard } from '../../lib/content/view-models';
-import { getSiteConfig } from '../../lib/site-config';
-import { isLocale, localize, LOCALES, type Locale } from '../../lib/i18n';
-import { makeRoute } from '../../lib/routes';
+  getExternalArticles,
+  getPublishedArticles,
+} from "../../lib/content/queries";
+import { articleTypeLabel, toArticleCard } from "../../lib/content/view-models";
+import { getSiteConfig } from "../../lib/site-config";
+import { formatDate, isLocale, LOCALES, type Locale } from "../../lib/i18n";
+import { makeRoute } from "../../lib/routes";
 
 export function getStaticPaths() {
   return LOCALES.map((lang) => ({ params: { lang } }));
 }
 
-const rawLocale = Astro.params.lang ?? 'en';
-const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
-const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
-const issues = getIssues();
-const currentIssue = issues[0];
-const issueArticles = currentIssue ? getArticlesForIssue(currentIssue.id) : [];
-const latestArticles = [...getPublishedArticles()]
-  .sort((a, b) => b.dates.published.getTime() - a.dates.published.getTime())
-  .slice(0, 2)
-  .map((article) => toArticleCard(article, locale, config.base));
-const featured = getFeaturedExternalArticles().map((article) => toArticleCard(article, locale, config.base));
-const categories = [
-  { label: 'Artificial Intelligence', href: makeRoute(locale, 'articles?category=ai', config.base) },
-  { label: 'Machine Learning', href: makeRoute(locale, 'articles?category=ml', config.base) },
-  { label: 'Computer Systems', href: makeRoute(locale, 'articles?category=systems', config.base) },
-  { label: 'Algorithms', href: makeRoute(locale, 'articles?category=algorithms', config.base) },
-  { label: 'Programming Languages', href: makeRoute(locale, 'articles?category=pl', config.base) },
-  { label: 'Human-Computer Interaction', href: makeRoute(locale, 'articles?category=hci', config.base) },
-  { label: 'Computer Vision', href: makeRoute(locale, 'articles?category=vision', config.base) },
-  { label: 'NLP', href: makeRoute(locale, 'articles?category=nlp', config.base) },
-  { label: 'AI Safety', href: makeRoute(locale, 'articles?category=safety', config.base) },
-  { label: 'Computational Neuroscience', href: makeRoute(locale, 'articles?category=neuro', config.base) }
-];
+const rawLocale = Astro.params.lang ?? "en";
+const locale: Locale = isLocale(rawLocale) ? rawLocale : "en";
+const config = getSiteConfig(
+  import.meta.env as Record<string, string | undefined>,
+);
+
+const published = getPublishedArticles().sort(
+  (a, b) => b.dates.published.getTime() - a.dates.published.getTime(),
+);
+const external = getExternalArticles().sort(
+  (a, b) =>
+    b.originalPublicationDate.getTime() - a.originalPublicationDate.getTime(),
+);
+
+const lead = published[0];
+const leadCard = lead ? toArticleCard(lead, locale, config.base) : undefined;
+
+const releaseRows = [
+  ...published.slice(1).map((article) => ({
+    date: article.dates.published,
+    card: toArticleCard(article, locale, config.base),
+  })),
+  ...external.map((article) => ({
+    date: article.originalPublicationDate,
+    card: toArticleCard(article, locale, config.base),
+  })),
+]
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .map((row) => row.card);
+
+const latestRail = [
+  ...published.map((article) => ({
+    date: article.dates.published,
+    card: toArticleCard(article, locale, config.base),
+  })),
+  ...getFeaturedExternalArticles().map((article) => ({
+    date: article.originalPublicationDate,
+    card: toArticleCard(article, locale, config.base),
+  })),
+]
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 6)
+  .map((row) => row.card);
+
+const quote =
+  locale === "zh"
+    ? "开放研究只有可验证，才有意义。"
+    : "Open research is only meaningful when it is verifiable.";
+const quoteMeta = locale === "zh" ? "编辑 · JCORE" : "Editorial · JCORE";
 ---
+
 <PageLayout
   locale={locale}
   title="JCORE"
   description="Journal of Computing and Open Research for Exploration"
-  canonical={new URL(makeRoute(locale, '', config.base), config.site.origin)}
+  canonical={new URL(makeRoute(locale, "", config.base), config.site.origin)}
 >
-  <section class="journal-intro">
-    <p class="journal-kicker">Journal of Computing and Open Research for Exploration</p>
-    <h1 class="journal-title">JCORE</h1>
-    <p class="journal-tagline">
-      An open research journal for young scholars and emerging contributors in computing and artificial intelligence.
-    </p>
+  {
+    leadCard && (
+      <section class="home-lead">
+        <a class="lead-article" href={leadCard.url}>
+          <span class="article-card-type">
+            {articleTypeLabel(leadCard.articleType)}
+          </span>
+          <h1 class="lead-title">{leadCard.title}</h1>
+          <p class="article-card-authors">{leadCard.authors.join(", ")}</p>
+          <p class="article-card-meta">
+            <span>{formatDate(lead.dates.published, locale)}</span>
+          </p>
+        </a>
+      </section>
+    )
+  }
+
+  <section class="home-quote">
+    <blockquote>{quote}</blockquote>
+    <p class="quote-meta">{quoteMeta}</p>
   </section>
 
-  <section class="home-section">
-    <h2 class="section-heading">Current Issue</h2>
-    {
-      currentIssue && (
-        <div class="issue-banner">
-          <a href={makeRoute(locale, `issues/${currentIssue.id}`, config.base)}>
-            <strong>{localize(currentIssue.title, locale)}</strong>
-            <span>{currentIssue.year}</span>
-          </a>
-          <span class="issue-count">{issueArticles.length} JCORE articles</span>
-        </div>
-      )
-    }
-  </section>
+  <div class="home-grid">
+    <section class="home-section">
+      <h2 class="section-heading">First Release</h2>
+      <div class="release-list">
+        {
+          releaseRows.map((article) => (
+            <article class="article-row">
+              <div class="article-row-top">
+                <span class="article-card-type">
+                  {articleTypeLabel(article.articleType)}
+                </span>
+                <span class="article-card-date">{article.publishedAt}</span>
+              </div>
+              <h2 class="article-card-title">
+                <a href={article.url}>{article.title}</a>
+              </h2>
+              <p class="article-card-authors">{article.authors.join(", ")}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
 
-  <section class="home-section">
-    <h2 class="section-heading">Latest Articles</h2>
-    <div class="article-grid">
-      {latestArticles.map((article) => <ArticleCard article={article} />)}
-    </div>
-  </section>
-
-  <section class="home-section">
-    <h2 class="section-heading">Featured Research</h2>
-    <div class="article-grid">
-      {featured.map((article) => <ArticleCard article={article} />)}
-    </div>
-  </section>
-
-  <section class="home-section">
-    <h2 class="section-heading">Research Categories</h2>
-    <ul class="category-list">
-      {categories.map((category) => <li><a href={category.href}>{category.label}</a></li>)}
-    </ul>
-  </section>
+    <section class="home-section latest-rail">
+      <h2 class="section-heading">Latest Papers</h2>
+      <div class="rail-list">
+        {
+          latestRail.map((article) => (
+            <div class="rail-item">
+              <h3 class="rail-item-title">
+                <a href={article.url}>{article.title}</a>
+              </h3>
+              <div class="rail-item-meta">
+                <span class="article-card-type">
+                  {articleTypeLabel(article.articleType)}
+                </span>
+                <span>{article.publishedAt}</span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
 </PageLayout>

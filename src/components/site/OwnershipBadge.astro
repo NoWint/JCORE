@@ -1,8 +1,19 @@
 ---
-const { kind, demo = false } = Astro.props as { kind: 'jcore' | 'external'; demo?: boolean };
-const label = kind === 'external' ? 'External Open-Access Article' : 'JCORE Article';
-const classes = ['ownership-badge', kind === 'external' ? 'is-external' : '', demo ? 'is-demo' : '']
+const { kind, demo = false } = Astro.props as {
+  kind: "jcore" | "external";
+  demo?: boolean;
+};
+const label = kind === "external" ? "External Article" : "JCORE Article";
+const classes = [
+  "ownership-badge",
+  kind === "external" ? "is-external" : "",
+  demo ? "is-demo" : "",
+]
   .filter(Boolean)
-  .join(' ');
+  .join(" ");
 ---
-<span class={classes}>{label}{demo ? ' · Demonstration' : ''}</span>
+
+<span class={classes}>
+  {label}
+  {demo ? " · Demonstration" : ""}
+</span>

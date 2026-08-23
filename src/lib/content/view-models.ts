@@ -1,8 +1,12 @@
-import type { ArticleRecord, ExternalArticleRecord, IssueRecord } from './types';
-import type { Locale } from '../i18n';
-import { formatDate, localize } from '../i18n';
-import { makeRoute } from '../routes';
-import { getAuthorById } from './queries';
+import type {
+  ArticleRecord,
+  ExternalArticleRecord,
+  IssueRecord,
+} from "./types";
+import type { Locale } from "../i18n";
+import { formatDate, localize } from "../i18n";
+import { makeRoute } from "../routes";
+import { getAuthorById } from "./queries";
 
 export interface ArticleCardViewModel {
   id: string;
@@ -17,38 +21,70 @@ export interface ArticleCardViewModel {
   demo: boolean;
 }
 
+export function articleTypeLabel(articleType: string): string {
+  switch (articleType) {
+    case "research-article":
+      return "Research Article";
+    case "review-article":
+      return "Review Article";
+    case "research-note":
+      return "Research Note";
+    case "replication-study":
+      return "Replication Study";
+    case "external":
+    case "external-article":
+      return "External Article";
+    default:
+      return "Article";
+  }
+}
+
 export function toArticleCard(
   article: ArticleRecord | ExternalArticleRecord,
   locale: Locale,
-  base = ''
+  base = "",
 ): ArticleCardViewModel {
-  const isExternal = article.kind === 'external';
+  const isExternal = article.kind === "external";
   const path = isExternal
     ? `articles/external/${(article as ExternalArticleRecord).slug}`
     : `articles/${(article as ArticleRecord).id}`;
   const authors = isExternal
-    ? (article as ExternalArticleRecord).contributors.map((contributor) => contributor.name)
+    ? (article as ExternalArticleRecord).contributors.map(
+        (contributor) => contributor.name,
+      )
     : (article as ArticleRecord).authors
         .slice()
         .sort((a, b) => a.order - b.order)
-        .map((ref) => localize(getAuthorById(ref.authorId)?.name ?? { en: ref.authorId }, locale));
+        .map((ref) =>
+          localize(
+            getAuthorById(ref.authorId)?.name ?? { en: ref.authorId },
+            locale,
+          ),
+        );
 
   return {
-    id: isExternal ? (article as ExternalArticleRecord).slug : (article as ArticleRecord).id,
+    id: isExternal
+      ? (article as ExternalArticleRecord).slug
+      : (article as ArticleRecord).id,
     url: makeRoute(locale, path, base),
     title: localize(article.title, locale),
     authors,
-    articleType: article.kind === 'external' ? 'external-article' : (article as ArticleRecord).articleType,
+    articleType:
+      article.kind === "external"
+        ? "external-article"
+        : (article as ArticleRecord).articleType,
     publishedAt: formatDate(
       isExternal
         ? (article as ExternalArticleRecord).originalPublicationDate
         : (article as ArticleRecord).dates.published,
-      locale
+      locale,
     ),
     keywords: article.keywords.map((keyword) => localize(keyword, locale)),
-    ownershipLabel: isExternal ? 'External Open-Access Article' : 'JCORE Article',
+    ownershipLabel: isExternal
+      ? "External Open-Access Article"
+      : "JCORE Article",
     isExternal,
-    demo: 'demo' in article ? Boolean(article.demo) : false
+    demo: "demo" in article ? Boolean(article.demo) : false,
   };
 }
 
@@ -60,12 +96,16 @@ export interface IssueCardViewModel {
   demo: boolean;
 }
 
-export function toIssueCard(issue: IssueRecord, locale: Locale, base = ''): IssueCardViewModel {
+export function toIssueCard(
+  issue: IssueRecord,
+  locale: Locale,
+  base = "",
+): IssueCardViewModel {
   return {
     id: issue.id,
     url: makeRoute(locale, `issues/${issue.id}`, base),
     title: localize(issue.title, locale),
     year: issue.year,
-    demo: issue.demo
+    demo: issue.demo,
   };
 }

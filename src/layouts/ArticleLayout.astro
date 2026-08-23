@@ -1,12 +1,15 @@
 ---
-import SiteLayout from './SiteLayout.astro';
-import OwnershipBadge from '../components/site/OwnershipBadge.astro';
-import ArticleCard from '../components/discovery/ArticleCard.astro';
-import { getAuthorById } from '../lib/content/queries';
-import type { ArticleRecord, ExternalArticleRecord } from '../lib/content/types';
-import type { ArticleCardViewModel } from '../lib/content/view-models';
-import { localize, formatDate, type Locale } from '../lib/i18n';
-import type { Heading } from '../lib/article/render';
+import SiteLayout from "./SiteLayout.astro";
+import OwnershipBadge from "../components/site/OwnershipBadge.astro";
+import { getAuthorById } from "../lib/content/queries";
+import type {
+  ArticleRecord,
+  ExternalArticleRecord,
+} from "../lib/content/types";
+import type { ArticleCardViewModel } from "../lib/content/view-models";
+import { articleTypeLabel } from "../lib/content/view-models";
+import { localize, formatDate, type Locale } from "../lib/i18n";
+import type { Heading } from "../lib/article/render";
 
 const {
   locale,
@@ -14,7 +17,7 @@ const {
   html,
   headings = [],
   related = [],
-  citationUrls
+  citationUrls,
 } = Astro.props as {
   locale: Locale;
   record: ArticleRecord | ExternalArticleRecord;
@@ -24,7 +27,7 @@ const {
   citationUrls: { plain: string; bib: string; ris: string };
 };
 
-const isExternal = record.kind === 'external';
+const isExternal = record.kind === "external";
 const title = localize(record.title, locale);
 const abstract = localize(record.abstract, locale);
 const authorNames = isExternal
@@ -32,76 +35,135 @@ const authorNames = isExternal
   : record.authors
       .slice()
       .sort((a, b) => a.order - b.order)
-      .map((ref) => localize(getAuthorById(ref.authorId)?.name ?? { en: ref.authorId }, locale));
+      .map((ref) =>
+        localize(
+          getAuthorById(ref.authorId)?.name ?? { en: ref.authorId },
+          locale,
+        ),
+      );
 const published = isExternal
   ? formatDate(record.originalPublicationDate, locale)
   : formatDate(record.dates.published, locale);
+const received = !isExternal
+  ? formatDate(record.dates.received, locale)
+  : undefined;
+const accepted = !isExternal
+  ? formatDate(record.dates.accepted, locale)
+  : undefined;
+const metaParts = isExternal
+  ? [record.originalVenue, "External Article"]
+  : [
+      `Volume ${record.volume}, Issue ${record.issue}`,
+      articleTypeLabel(record.articleType),
+    ];
 ---
+
 <SiteLayout locale={locale} title={`${title} · JCORE`} description={abstract}>
   <article class="article-page">
     <header class="article-header">
-      <OwnershipBadge kind={record.kind} demo={'demo' in record ? record.demo : false} />
+      <div class="article-kicker">
+        <OwnershipBadge
+          kind={record.kind}
+          demo={"demo" in record ? record.demo : false}
+        />
+      </div>
       <h1 class="article-title">{title}</h1>
-      <p class="article-authors">{authorNames.join(', ')}</p>
+      <p class="article-authors">{authorNames.join(", ")}</p>
       <p class="article-meta">
-        <span>{isExternal ? record.originalVenue : `Volume ${record.volume}, Issue ${record.issue}`}</span>
+        {metaParts.map((part) => <span>{part}</span>)}
         <span>{published}</span>
-        {!isExternal && <span>{record.articleType}</span>}
       </p>
     </header>
 
     <section class="abstract-block">
-      <h2>Abstract</h2>
+      <span class="abstract-label">Abstract</span>
       <p>{abstract}</p>
     </section>
 
-    {
-      headings.length > 0 && (
-        <nav class="article-toc" aria-label="Table of contents">
-          <h2>Contents</h2>
-          <ol>
-            {headings.map((heading) => <li><a href={`#${heading.id}`}>{heading.text}</a></li>)}
-          </ol>
-        </nav>
-      )
-    }
+    <div class="article-layout">
+      <aside class="article-sidebar">
+        {
+          headings.length > 0 && (
+            <nav class="article-toc" aria-label="Table of contents">
+              <h2 class="sidebar-heading">Contents</h2>
+              <ol>
+                {headings.map((heading, index) => (
+                  <li>
+                    <a href={`#${heading.id}`}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>{" "}
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+        {
+          (received || accepted) && (
+            <div class="sidebar-note">
+              {received && <p>Received {received}</p>}
+              {accepted && <p>Accepted {accepted}</p>}
+              <p>Published {published}</p>
+            </div>
+          )
+        }
+      </aside>
 
-    <div class="article-prose" set:html={html} />
-
-    <section class="citation-panel">
-      <h2>Cite this article</h2>
-      <div class="citation-links">
-        <a href={citationUrls.plain}>Plain Text</a>
-        <a href={citationUrls.bib}>BibTeX</a>
-        <a href={citationUrls.ris}>RIS</a>
+      <div class="article-body">
+        <div class="article-prose" set:html={html} />
       </div>
-    </section>
 
-    {
-      isExternal && (
-        <section class="rights-panel">
-          <h2>Source and rights</h2>
-          <p>This is an external open-access article and is not published by JCORE.</p>
-          <p>
-            Original publication: <a href={record.officialUrl}>{record.originalVenue}</a>
-          </p>
-          <p>
-            License: <a href={record.rights.license.url}>{record.rights.license.id}</a>
-          </p>
-          <p>{record.rights.statement}</p>
-        </section>
-      )
-    }
-
-    {
-      related.length > 0 && (
-        <section class="related-section">
-          <h2>Related Articles</h2>
-          <div class="article-grid">
-            {related.map((article) => <ArticleCard article={article} />)}
+      <aside class="article-rail">
+        <section class="citation-panel">
+          <h2 class="sidebar-heading">Cite This Paper</h2>
+          <div class="citation-links">
+            <a href={citationUrls.plain}>Plain Text</a>
+            <a href={citationUrls.bib}>BibTeX</a>
+            <a href={citationUrls.ris}>RIS</a>
           </div>
         </section>
-      )
-    }
+
+        {
+          isExternal && (
+            <section class="rights-panel">
+              <h2 class="sidebar-heading">Source &amp; Rights</h2>
+              <p>External open-access article · Not published by JCORE.</p>
+              <p>
+                Original:{" "}
+                <a href={record.officialUrl}>{record.originalVenue}</a>
+              </p>
+              <p>
+                License:{" "}
+                <a href={record.rights.license.url}>
+                  {record.rights.license.id}
+                </a>
+              </p>
+              <p>{record.rights.statement}</p>
+            </section>
+          )
+        }
+
+        {
+          related.length > 0 && (
+            <section class="related-panel">
+              <h2 class="sidebar-heading">Related</h2>
+              <div class="rail-list">
+                {related.map((article) => (
+                  <div class="rail-item">
+                    <h3 class="rail-item-title">
+                      <a href={article.url}>{article.title}</a>
+                    </h3>
+                    <div class="rail-item-meta">
+                      <span>{article.publishedAt}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )
+        }
+      </aside>
+    </div>
   </article>
 </SiteLayout>
