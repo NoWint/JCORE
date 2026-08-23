@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
 
+test('root redirects to the English journal by default', async ({ page }) => {
+  await page.goto('/JCORE/');
+  await expect(page).toHaveURL(/\/JCORE\/en\/$/);
+  await expect(page.locator('.journal-title')).toHaveText('JCORE');
+});
+
 test('bilingual institutional pages render', async ({ page }) => {
   await page.goto('/JCORE/en/about/');
   await expect(page).toHaveTitle(/About/);

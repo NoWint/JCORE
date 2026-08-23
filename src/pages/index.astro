@@ -2,26 +2,24 @@
 import { getSiteConfig } from '../lib/site-config';
 
 const { base } = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const englishUrl = `${base}/en/`;
+const chineseUrl = `${base}/zh/`;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0; url=${englishUrl}`} />
+    <link rel="canonical" href={englishUrl} />
     <title>JCORE</title>
-    <meta
-      name="description"
-      content="Journal of Computing and Open Research for Exploration"
-    />
   </head>
   <body>
     <main>
       <h1>JCORE</h1>
       <p>Journal of Computing and Open Research for Exploration</p>
-      <nav aria-label="Language">
-        <a href={`${base}/en/`}>English</a>
-        <a href={`${base}/zh/`} lang="zh">中文</a>
-      </nav>
+      <p><a href={englishUrl}>Continue to JCORE in English</a></p>
+      <p><a href={chineseUrl} lang="zh">中文</a></p>
     </main>
   </body>
 </html>
