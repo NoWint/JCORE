@@ -10,6 +10,25 @@ export interface ImportSource {
   files: Array<{ path: string; data: Uint8Array }>;
 }
 
+export interface DoiResolution {
+  identifier: string;
+  metadata: {
+    title: string;
+    authors: string[];
+    abstract: string;
+    venue?: string;
+    published?: string;
+  };
+  source: ImportSource;
+  sourceFormat: 'latex' | 'jats';
+  rootDocument?: string;
+  checksum: string;
+  retrievalDate: string;
+  rights: ImportManifest['rights'];
+  status: 'full-text' | 'metadata-only';
+  diagnostics: Diagnostic[];
+}
+
 export interface NormalizedImport {
   metadata: Record<string, unknown>;
   body: string;
