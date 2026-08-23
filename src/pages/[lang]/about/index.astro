@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import { getSiteConfig } from '../../../lib/site-config';
+import { isLocale, localize, LOCALES, type Locale } from '../../../lib/i18n';
+import { makeRoute } from '../../../lib/routes';
+import { findPage } from '../../../lib/content/pages';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const rawLocale = Astro.params.lang ?? 'en';
+const locale: Locale = isLocale(rawLocale) ? rawLocale : 'en';
+const pages = await getCollection('pages');
+const page = findPage(pages, 'about', locale);
+if (!page) {
+  throw new Error(`Missing about page for ${locale}`);
+}
+const html = page.rendered?.html ?? '';
+if (!html) {
+  throw new Error(`About page for ${locale} has no rendered content`);
+}
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+const title = localize(page.data.title ?? {}, locale);
+const canonical = new URL(makeRoute(locale, 'about', config.base), config.site.origin);
+---
+<PageLayout locale={locale} title={`${title} · JCORE`} description={localize(page.data.description ?? page.data.title ?? {}, locale)} canonical={canonical}>
+  <article class="prose">
+    <h1 class="page-title">{title}</h1>
+    <div set:html={html} />
+  </article>
+</PageLayout>

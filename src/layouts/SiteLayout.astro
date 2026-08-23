@@ -1,0 +1,49 @@
+---
+import '@fontsource/source-serif-4/400.css';
+import '@fontsource/source-serif-4/500.css';
+import '@fontsource/source-serif-4/600.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '../styles/global.css';
+import '../styles/typography.css';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import type { Locale } from '../lib/i18n';
+
+const {
+  locale,
+  title,
+  description,
+  canonical,
+  alternates = []
+} = Astro.props as {
+  locale: Locale;
+  title: string;
+  description?: string;
+  canonical?: URL;
+  alternates?: Array<{ lang: string; href: URL }>;
+};
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description ?? 'JCORE'} />
+    {canonical && <link rel="canonical" href={canonical.href} />}
+    {alternates.map((alternate) => (
+      <link rel="alternate" hreflang={alternate.lang} href={alternate.href.href} />
+    ))}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description ?? 'JCORE'} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <SiteHeader locale={locale} path={Astro.url.pathname} />
+    <main class="page-main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

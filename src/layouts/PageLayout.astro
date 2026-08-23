@@ -1,0 +1,21 @@
+---
+import SiteLayout from './SiteLayout.astro';
+import type { Locale } from '../lib/i18n';
+
+const {
+  locale,
+  title,
+  description,
+  canonical,
+  alternates = []
+} = Astro.props as {
+  locale: Locale;
+  title: string;
+  description?: string;
+  canonical?: URL;
+  alternates?: Array<{ lang: string; href: URL }>;
+};
+---
+<SiteLayout locale={locale} title={title} description={description} canonical={canonical} alternates={alternates}>
+  <slot />
+</SiteLayout>

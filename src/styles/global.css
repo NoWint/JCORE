@@ -1,0 +1,238 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-serif);
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+img,
+svg,
+embed {
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.site-header-inner {
+  width: min(var(--content-width), calc(100% - 2rem));
+  margin: 0 auto;
+  padding: var(--space-4) 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.journal-name {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.journal-name small {
+  display: block;
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: none;
+  margin-top: var(--space-1);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+}
+
+.site-nav a {
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
+.site-nav a[aria-current='page'] {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+
+.language-switcher {
+  display: flex;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+}
+
+.language-switcher a {
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+
+.language-switcher a[aria-current='true'] {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.page-main {
+  width: min(var(--content-width), calc(100% - 2rem));
+  margin: 0 auto;
+  padding: var(--space-16) 0 var(--space-12);
+}
+
+.page-main.is-article {
+  max-width: var(--article-width);
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+}
+
+.site-footer-inner {
+  width: min(var(--content-width), calc(100% - 2rem));
+  margin: 0 auto;
+  padding: var(--space-8) 0;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.ownership-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--surface);
+}
+
+.ownership-badge.is-external {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.ownership-badge.is-demo {
+  color: #5b4a2f;
+  border-color: #b39a6c;
+}
+
+.page-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.08;
+  margin: 0 0 var(--space-4);
+  letter-spacing: 0;
+}
+
+.page-lede {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  max-width: var(--measure);
+  margin: 0 0 var(--space-12);
+}
+
+.prose {
+  max-width: var(--measure);
+  font-size: 1.02rem;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  margin-top: var(--space-12);
+  letter-spacing: 0;
+}
+
+.prose h3 {
+  font-size: 1.2rem;
+  margin-top: var(--space-8);
+  letter-spacing: 0;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4rem;
+}
+
+.prose li {
+  margin-bottom: var(--space-2);
+}
+
+.prose code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.9em;
+}
+
+.notice {
+  border-left: 3px solid var(--accent);
+  padding: var(--space-4) var(--space-6);
+  background: #f4efe5;
+  margin: var(--space-8) 0;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 700px) {
+  .site-header-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .page-main {
+    padding-top: var(--space-8);
+  }
+}

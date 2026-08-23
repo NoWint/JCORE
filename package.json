@@ -18,6 +18,8 @@
     "validate": "npm run typecheck && npm run lint && npm run test:unit && tsx scripts/validate/content.ts && npm run build"
   },
   "dependencies": {
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/source-serif-4": "^5.3.0",
     "astro": "^7.2.4",
     "zod": "^4.4.3"
   },

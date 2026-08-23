@@ -1,0 +1,17 @@
+---
+import { getSiteConfig } from '../../lib/site-config';
+import { makeRoute } from '../../lib/routes';
+import type { Locale } from '../../lib/i18n';
+
+const { current, path = '' } = Astro.props as { current: Locale; path?: string };
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
+---
+<nav class="language-switcher" aria-label="Language">
+  <a href={makeRoute('en', path, config.base)} lang="en" aria-current={current === 'en' ? 'true' : undefined}>
+    English
+  </a>
+  <span aria-hidden="true">/</span>
+  <a href={makeRoute('zh', path, config.base)} lang="zh" aria-current={current === 'zh' ? 'true' : undefined}>
+    中文
+  </a>
+</nav>

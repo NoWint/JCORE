@@ -5,7 +5,8 @@ import {
   authorSchema,
   externalArticleMetadataSchema,
   issueMetadataSchema,
-  selectionSchema
+  selectionSchema,
+  pageSchema
 } from './lib/content/contracts';
 
 const articles = defineCollection({
@@ -33,10 +34,16 @@ const selections = defineCollection({
   schema: selectionSchema
 });
 
+const pages = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './content/pages' }),
+  schema: pageSchema
+});
+
 export const collections = {
   articles,
   externalArticles,
   authors,
   issues,
-  selections
+  selections,
+  pages
 };

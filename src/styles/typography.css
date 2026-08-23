@@ -1,0 +1,84 @@
+.article-prose {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  max-width: var(--measure);
+}
+
+.article-prose h1,
+.article-prose h2,
+.article-prose h3,
+.article-prose h4 {
+  font-family: var(--font-serif);
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.article-prose h1 {
+  font-size: 2rem;
+}
+
+.article-prose h2 {
+  font-size: 1.5rem;
+  margin-top: var(--space-12);
+}
+
+.article-prose h3 {
+  font-size: 1.2rem;
+  margin-top: var(--space-8);
+}
+
+.article-prose p {
+  margin: var(--space-4) 0;
+}
+
+.article-prose figure {
+  margin: var(--space-8) 0;
+}
+
+.article-prose figcaption {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-2);
+}
+
+.article-prose table {
+  border-collapse: collapse;
+  margin: var(--space-6) 0;
+  width: 100%;
+}
+
+.article-prose th,
+.article-prose td {
+  border: 1px solid var(--border);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.article-prose blockquote {
+  border-left: 3px solid var(--border);
+  margin: var(--space-6) 0;
+  padding-left: var(--space-4);
+  color: var(--text-secondary);
+}
+
+.article-prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--space-2) 0;
+}
+
+.article-meta {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: var(--space-6) 0;
+}
+
+.article-authors {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+}

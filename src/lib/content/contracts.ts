@@ -20,6 +20,14 @@ export const localizedTextSchema = z
   })
   .strict();
 
+const pageLocalizedTextSchema = z
+  .object({
+    en: z.string().min(1).optional(),
+    zh: z.string().min(1).optional()
+  })
+  .strict()
+  .refine((value) => Boolean(value.en || value.zh), 'Provide at least one language');
+
 const orcidSchema = z
   .string()
   .regex(/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/, 'ORCID must use 0000-0000-0000-0000 format');
@@ -226,12 +234,22 @@ export const selectionSchema = z
   })
   .strict();
 
+export const pageSchema = z
+  .object({
+    kind: z.literal('page'),
+    title: pageLocalizedTextSchema,
+    description: pageLocalizedTextSchema.optional(),
+    demo: z.boolean().optional()
+  })
+  .strict();
+
 export type LocalizedText = z.infer<typeof localizedTextSchema>;
 export type ArticleMetadata = z.infer<typeof articleMetadataSchema>;
 export type ExternalArticleMetadata = z.infer<typeof externalArticleMetadataSchema>;
 export type Author = z.infer<typeof authorSchema>;
 export type IssueMetadata = z.infer<typeof issueMetadataSchema>;
 export type Selection = z.infer<typeof selectionSchema>;
+export type Page = z.infer<typeof pageSchema>;
 export type PublicationEvent = z.infer<typeof publicationEventSchema>;
 export type Rights = z.infer<typeof rightsSchema>;
 export type Provenance = z.infer<typeof provenanceSchema>;
