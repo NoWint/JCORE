@@ -67,6 +67,9 @@ test("desktop keeps the masthead centered and opens a fixed side panel", async (
     "column",
   );
   await expect(drawer).toHaveCSS("position", "fixed");
+  await expect
+    .poll(async () => (await drawer.boundingBox())?.x ?? -1)
+    .toBe(0);
   expect(
     await drawer.evaluate((element) => element.getBoundingClientRect().width),
   ).toBeLessThanOrEqual(390);
@@ -76,7 +79,7 @@ test("desktop keeps the masthead centered and opens a fixed side panel", async (
 
   await page
     .locator(".nav-drawer-backdrop")
-    .click({ position: { x: 10, y: 10 } });
+    .click({ position: { x: 500, y: 10 } });
   await expect(drawer).toBeHidden();
 });
 
