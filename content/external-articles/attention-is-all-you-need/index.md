@@ -10,6 +10,14 @@ keywords:
   - en: attention
   - en: sequence transduction
 bodyLanguage: en
+renderMode: structured
+sourceFormat: latex
+sourceFiles: []
+conversion:
+  status: converted
+  importer: manual
+  outputChecksum: "0000000000000000000000000000000000000000000000000000000000000000"
+  reportPath: import-report.json
 contributors:
   - name: Ashish Vaswani
     affiliation: Google Brain

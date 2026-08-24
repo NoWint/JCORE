@@ -3,7 +3,8 @@ const { kind, demo = false } = Astro.props as {
   kind: "jcore" | "external";
   demo?: boolean;
 };
-const label = kind === "external" ? "External Article" : "JCORE Article";
+const label =
+  kind === "external" ? "External Open-Access Article" : "JCORE Article";
 const classes = [
   "ownership-badge",
   kind === "external" ? "is-external" : "",

@@ -9,27 +9,42 @@ import type {
 import type { ArticleCardViewModel } from "../lib/content/view-models";
 import { articleTypeLabel } from "../lib/content/view-models";
 import { localize, formatDate, type Locale } from "../lib/i18n";
-import type { Heading } from "../lib/article/render";
+import type { ArticleRenderReport, Heading } from "../lib/article/render";
+import { getSiteConfig } from "../lib/site-config";
 
 const {
   locale,
   record,
-  html,
+  html = "",
   headings = [],
+  renderReport,
   related = [],
   citationUrls,
 } = Astro.props as {
   locale: Locale;
   record: ArticleRecord | ExternalArticleRecord;
-  html: string;
+  html?: string;
   headings?: Heading[];
+  renderReport?: ArticleRenderReport;
   related?: ArticleCardViewModel[];
   citationUrls: { plain: string; bib: string; ris: string };
 };
 
+const config = getSiteConfig(import.meta.env as Record<string, string | undefined>);
 const isExternal = record.kind === "external";
+const isFallback = record.renderMode === "source-fallback";
+const renderedHtml = renderReport?.html ?? html;
+const indexedHeadings = renderReport?.headings ?? headings;
+const renderDiagnostics = record.conversionDiagnostics ?? renderReport?.diagnostics ?? [];
 const title = localize(record.title, locale);
 const abstract = localize(record.abstract, locale);
+const sourceUrl = (path: string) =>
+  path.startsWith("/") && !path.startsWith(`${config.base}/`) ? `${config.base}${path}` : path;
+const sourceFiles = record.sourceFiles.map((file) => ({
+  ...file,
+  href: sourceUrl(file.path),
+}));
+const pdfSource = sourceFiles.find((file) => file.kind === "pdf");
 const authorNames = isExternal
   ? record.contributors.map((contributor) => contributor.name)
   : record.authors
@@ -83,11 +98,11 @@ const metaParts = isExternal
     <div class="article-layout">
       <aside class="article-sidebar">
         {
-          headings.length > 0 && (
+          indexedHeadings.length > 0 && (
             <nav class="article-toc" aria-label="Table of contents">
               <h2 class="sidebar-heading">Contents</h2>
               <ol>
-                {headings.map((heading, index) => (
+                {indexedHeadings.map((heading, index) => (
                   <li>
                     <a href={`#${heading.id}`}>
                       <span>{String(index + 1).padStart(2, "0")}</span>{" "}
@@ -111,7 +126,78 @@ const metaParts = isExternal
       </aside>
 
       <div class="article-body">
-        <div class="article-prose" set:html={html} />
+        {
+          isFallback ? (
+            <section class="conversion-notice" aria-labelledby="conversion-notice-title">
+              <p class="conversion-kicker">Source preserved</p>
+              <h2 id="conversion-notice-title">Structured full text is unavailable</h2>
+              <p>
+                The structured conversion did not pass the publication preflight. This page keeps the
+                article metadata and abstract visible without presenting an empty body as the full paper.
+              </p>
+              <dl class="conversion-details">
+                <div>
+                  <dt>Importer</dt>
+                  <dd>{record.conversion.importer}</dd>
+                </div>
+                <div>
+                  <dt>Status</dt>
+                  <dd>{record.conversion.status}</dd>
+                </div>
+                <div>
+                  <dt>Report</dt>
+                  <dd>{record.conversion.reportPath}</dd>
+                </div>
+              </dl>
+              {
+                renderDiagnostics.length > 0 && (
+                  <ul class="conversion-diagnostics">
+                    {renderDiagnostics.map((diagnostic) => (
+                      <li>
+                        <strong>{diagnostic.severity}</strong>: {diagnostic.message}
+                      </li>
+                    ))}
+                  </ul>
+                )
+              }
+              {
+                sourceFiles.length > 0 && (
+                  <div class="source-files">
+                    <h3>Original files</h3>
+                    <ul>
+                      {sourceFiles.map((file) => (
+                        <li>
+                          <a href={file.href} download target={file.kind === "pdf" ? "_blank" : undefined} rel="noreferrer">
+                            {file.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              }
+              {
+                pdfSource && (
+                  <embed
+                    class="source-pdf-preview"
+                    src={pdfSource.href}
+                    type="application/pdf"
+                    title="Original PDF preview"
+                  />
+                )
+              }
+              {
+                isExternal && (
+                  <p class="conversion-official-link">
+                    <a href={record.officialUrl}>Open the official source</a>
+                  </p>
+                )
+              }
+            </section>
+          ) : (
+            renderedHtml.trim() && <div class="article-prose" set:html={renderedHtml} />
+          )
+        }
       </div>
 
       <aside class="article-rail">
@@ -128,7 +214,7 @@ const metaParts = isExternal
           isExternal && (
             <section class="rights-panel">
               <h2 class="sidebar-heading">Source &amp; Rights</h2>
-              <p>External open-access article · Not published by JCORE.</p>
+              <p>External open-access article · not published by JCORE.</p>
               <p>
                 Original:{" "}
                 <a href={record.officialUrl}>{record.originalVenue}</a>

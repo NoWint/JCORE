@@ -10,6 +10,14 @@ keywords:
   - en: GPU
   - en: memory efficiency
 bodyLanguage: en
+renderMode: structured
+sourceFormat: latex
+sourceFiles: []
+conversion:
+  status: converted
+  importer: manual
+  outputChecksum: "0000000000000000000000000000000000000000000000000000000000000000"
+  reportPath: import-report.json
 contributors:
   - name: Tri Dao
     affiliation: Stanford University

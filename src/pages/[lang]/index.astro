@@ -3,11 +3,18 @@ import PageLayout from "../../layouts/PageLayout.astro";
 import {
   getFeaturedExternalArticles,
   getExternalArticles,
+  getIssues,
   getPublishedArticles,
 } from "../../lib/content/queries";
 import { articleTypeLabel, toArticleCard } from "../../lib/content/view-models";
 import { getSiteConfig } from "../../lib/site-config";
-import { formatDate, isLocale, LOCALES, type Locale } from "../../lib/i18n";
+import {
+  formatDate,
+  isLocale,
+  localize,
+  LOCALES,
+  type Locale,
+} from "../../lib/i18n";
 import { makeRoute } from "../../lib/routes";
 
 export function getStaticPaths() {
@@ -30,6 +37,10 @@ const external = getExternalArticles().sort(
 
 const lead = published[0];
 const leadCard = lead ? toArticleCard(lead, locale, config.base) : undefined;
+const currentIssue = getIssues()[0];
+const issueHref = currentIssue
+  ? makeRoute(locale, `issues/${currentIssue.id}`, config.base)
+  : makeRoute(locale, "articles", config.base);
 
 const releaseRows = [
   ...published.slice(1).map((article) => ({
@@ -74,7 +85,7 @@ const quoteMeta = locale === "zh" ? "编辑 · JCORE" : "Editorial · JCORE";
   {
     leadCard && (
       <section class="home-lead">
-        <a class="lead-article" href={leadCard.url}>
+        <a class="lead-article article-card" href={leadCard.url}>
           <span class="article-card-type">
             {articleTypeLabel(leadCard.articleType)}
           </span>
@@ -85,6 +96,18 @@ const quoteMeta = locale === "zh" ? "编辑 · JCORE" : "Editorial · JCORE";
           </p>
         </a>
       </section>
+    )
+  }
+
+  {
+    currentIssue && (
+      <a class="issue-banner" href={issueHref}>
+        <strong>{localize(currentIssue.title, locale)}</strong>
+        <span class="issue-count">
+          Volume {currentIssue.volume}, Issue {currentIssue.issue} ·{" "}
+          {currentIssue.year}
+        </span>
+      </a>
     )
   }
 

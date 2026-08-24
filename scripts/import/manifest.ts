@@ -3,7 +3,7 @@ import { slugSchema, urlStringSchema } from '../../src/lib/content/contracts';
 
 export const importManifestSchema = z
   .object({
-    sourceType: z.enum(['latex', 'jats', 'doi']),
+    sourceType: z.enum(['pdf', 'latex', 'jats', 'markdown', 'doi']),
     articleKind: z.enum(['jcore', 'external']),
     targetSlug: slugSchema,
     officialIdentifier: z.string().min(1),

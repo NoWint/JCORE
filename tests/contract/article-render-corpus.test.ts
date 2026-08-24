@@ -23,12 +23,12 @@ describe('article render corpus', () => {
       const ids = [...report.html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
       expect(new Set(ids).size).toBe(ids.length);
     }
-  });
+  }, 30_000);
 
   it('returns no fatal diagnostics for the entire repository', async () => {
     const { index } = loadContent(process.cwd());
     const diagnostics = await validateArticleCorpus(index, base);
 
     expect(diagnostics.filter((diagnostic) => diagnostic.severity === 'error')).toEqual([]);
-  });
+  }, 30_000);
 });

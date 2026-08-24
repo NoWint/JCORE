@@ -44,6 +44,37 @@ describe('content contracts', () => {
     expect(externalArticleMetadataSchema.safeParse(withoutBody(makeExternalArticle())).success).toBe(true);
   });
 
+  it('accepts an explicit structured representation', () => {
+    const result = articleMetadataSchema.safeParse({
+      ...withoutBody(makeValidIndex().articles[0]),
+      renderMode: 'structured',
+      sourceFormat: 'manual',
+      conversion: {
+        status: 'converted',
+        importer: 'manual',
+        outputChecksum: 'a'.repeat(64),
+        reportPath: 'import-report.json'
+      }
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts a source fallback with an original source file', () => {
+    const result = externalArticleMetadataSchema.safeParse({
+      ...withoutBody(makeExternalArticle()),
+      renderMode: 'source-fallback',
+      sourceFormat: 'pdf',
+      sourceFiles: [{ path: '/sources/example/paper.pdf', label: 'Original PDF', kind: 'pdf' }],
+      conversion: {
+        status: 'fallback',
+        importer: 'jcore@0.1.0',
+        outputChecksum: 'b'.repeat(64),
+        reportPath: 'import-report.json'
+      }
+    });
+    expect(result.success).toBe(true);
+  });
+
   it('rejects an external article that claims JCORE publication', () => {
     const article = { ...withoutBody(makeExternalArticle()), notPublishedByJCORE: false };
     expect(externalArticleMetadataSchema.safeParse(article).success).toBe(false);

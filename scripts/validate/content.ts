@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { parse as parseYaml } from 'yaml';
@@ -42,7 +42,44 @@ function loadMarkdown<T>(directory: string, schema: ZodType<T>): {
       const body = statSync(bodyPath, { throwIfNoEntry: false })?.isFile()
         ? readFileSync(bodyPath, 'utf8').trim()
         : '';
-      if (!body) {
+      const renderMode = (result.data as { renderMode?: string }).renderMode ?? 'structured';
+      const conversion = (result.data as { conversion?: { reportPath?: string } }).conversion;
+      const reportPath = conversion?.reportPath ? resolve(join(file, '..'), conversion.reportPath) : '';
+      let conversionDiagnostics = undefined;
+      if (reportPath && statSync(reportPath, { throwIfNoEntry: false })?.isFile()) {
+        try {
+          const report = JSON.parse(readFileSync(reportPath, 'utf8')) as {
+            normalized?: { diagnostics?: Diagnostic[] };
+            diagnostics?: Diagnostic[];
+          };
+          conversionDiagnostics = report.normalized?.diagnostics ?? report.diagnostics ?? [];
+        } catch {
+          diagnostics.push(
+            makeDiagnostic(
+              'conversion-report-invalid',
+              'error',
+              'content',
+              reportPath,
+              'Import report is not valid JSON',
+              'Regenerate import-report.json from the import CLI',
+              'report'
+            )
+          );
+        }
+      } else if (renderMode === 'source-fallback') {
+        diagnostics.push(
+          makeDiagnostic(
+            'missing-conversion-report',
+            'error',
+            'content',
+            file,
+            'Source-fallback article has no persisted import report',
+            'Keep import-report.json beside index.md and preserve its diagnostics',
+            'conversion.reportPath'
+          )
+        );
+      }
+      if (!body && renderMode !== 'source-fallback') {
         diagnostics.push(
           makeDiagnostic(
             'missing-body',
@@ -55,7 +92,7 @@ function loadMarkdown<T>(directory: string, schema: ZodType<T>): {
           )
         );
       }
-      records.push({ ...result.data, body } as T);
+      records.push({ ...result.data, body, conversionDiagnostics } as T);
     } else {
       diagnostics.push(
         makeDiagnostic(

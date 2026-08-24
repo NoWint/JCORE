@@ -10,6 +10,14 @@ keywords:
   - en: technical report
   - en: pre-training
 bodyLanguage: en
+renderMode: structured
+sourceFormat: latex
+sourceFiles: []
+conversion:
+  status: converted
+  importer: manual
+  outputChecksum: "0000000000000000000000000000000000000000000000000000000000000000"
+  reportPath: import-report.json
 contributors:
   - name: Qwen Team
     affiliation: Alibaba Group

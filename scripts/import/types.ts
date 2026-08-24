@@ -1,8 +1,21 @@
 import type { Diagnostic } from '../validate/diagnostics';
 import type { ImportManifest } from './manifest';
 
-export type ImportSourceType = 'latex' | 'jats' | 'doi';
+export type ImportSourceType = 'pdf' | 'latex' | 'jats' | 'markdown' | 'doi';
 export type ImportArticleKind = 'jcore' | 'external';
+
+export interface SourceFileReference {
+  path: string;
+  label: string;
+  kind: 'source' | 'pdf' | 'supplementary';
+}
+
+export interface ConversionInfo {
+  status: 'converted' | 'fallback';
+  importer: string;
+  outputChecksum: string;
+  reportPath: string;
+}
 
 export interface ImportSource {
   packagePath: string;
@@ -34,6 +47,10 @@ export interface NormalizedImport {
   body: string;
   assets: Array<{ path: string; data: Uint8Array }>;
   diagnostics: Diagnostic[];
+  renderMode?: 'structured' | 'source-fallback';
+  sourceFormat?: 'pdf' | 'latex' | 'jats' | 'markdown' | 'doi';
+  sourceFiles?: SourceFileReference[];
+  conversion?: ConversionInfo;
 }
 
 export interface NormalizationContext {
@@ -56,6 +73,7 @@ export interface ImportArtifacts {
   targetDir: string;
   files: Array<{ path: string; content: string }>;
   assets: Array<{ path: string; data: Uint8Array }>;
+  sourceFiles?: string[];
 }
 
 export type ImportReport =

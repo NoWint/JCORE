@@ -122,9 +122,20 @@
 }
 
 .article-prose .katex-display {
+  display: block;
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   padding: var(--space-2) 0;
+}
+
+.article-prose .katex-display > .katex {
+  display: block;
+  max-width: 100%;
+}
+
+.article-prose .katex {
+  max-width: 100%;
 }
 
 .article-prose a {

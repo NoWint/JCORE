@@ -15,6 +15,14 @@ keywords:
   - en: reproduction study
     zh: 复现研究
 bodyLanguage: en
+renderMode: structured
+sourceFormat: manual
+sourceFiles: []
+conversion:
+  status: converted
+  importer: manual
+  outputChecksum: "0000000000000000000000000000000000000000000000000000000000000000"
+  reportPath: import-report.json
 authors:
   - authorId: demo-author-001
     order: 1

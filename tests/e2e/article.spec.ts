@@ -18,6 +18,17 @@ test('external article page labels source and rights', async ({ page }) => {
   await expect(page.locator('.article-prose')).toContainText('Transformer');
 });
 
+test('article toc points to rendered heading ids without visible math errors', async ({ page }) => {
+  await page.goto('/JCORE/en/articles/external/flashattention-fast-memory-efficient-exact-attention-io-awareness/');
+  const tocHref = await page.locator('.article-toc a').first().getAttribute('href');
+  expect(tocHref).toBeTruthy();
+  if (!tocHref) {
+    throw new Error('Expected a table-of-contents anchor');
+  }
+  await expect(page.locator(tocHref)).toBeVisible();
+  await expect(page.locator('.article-prose .katex-error')).toHaveCount(0);
+});
+
 test('citation endpoints return downloadable text', async ({ page, request }) => {
   await page.goto('/JCORE/en/articles/JCORE-2026-0001/');
   const response = await request.get('/JCORE/citations/JCORE-2026-0001.bib');

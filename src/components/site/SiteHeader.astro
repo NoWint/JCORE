@@ -31,7 +31,13 @@ const issueHref = currentIssue
 
 <header class="site-header">
   <div class="masthead">
-    <button class="masthead-toggle" type="button" aria-label="Open navigation">
+    <button
+      class="masthead-toggle"
+      type="button"
+      aria-label="Open navigation"
+      aria-expanded="false"
+      aria-controls="jcore-site-nav"
+    >
       <svg
         width="20"
         height="20"
@@ -49,7 +55,7 @@ const issueHref = currentIssue
 
     <a class="masthead-brand" href={route("")}>
       <span class="journal-name">
-        JCORE
+        <span class="journal-title">JCORE</span>
         <small>Journal of Computing and Open Research for Exploration</small>
       </span>
     </a>
@@ -75,6 +81,7 @@ const issueHref = currentIssue
         type="button"
         data-theme-toggle
         aria-label="Toggle color theme"
+        aria-pressed="false"
       >
         <svg
           width="16"
@@ -111,7 +118,7 @@ const issueHref = currentIssue
     </div>
   </div>
 
-  <div class="nav-drawer" data-nav-drawer hidden>
+  <div class="nav-drawer" id="jcore-site-nav" data-nav-drawer hidden>
     <nav class="nav-drawer-links" aria-label="Drawer">
       {
         navigation.map((item) => (
@@ -128,41 +135,58 @@ const issueHref = currentIssue
 </header>
 
 <script is:inline>
-  (() => {
-    const root = document.documentElement;
-    const key = "jcore-theme";
-    const stored = localStorage.getItem(key);
-    if (stored === "light" || stored === "dark") {
-      root.dataset.theme = stored;
+  const root = document.documentElement;
+  const header = document.querySelector(".site-header");
+  const drawerToggle = document.querySelector(".masthead-toggle");
+  const drawer = document.getElementById("jcore-site-nav");
+  const themeToggle = document.querySelector("[data-theme-toggle]");
+
+  const setDrawerState = (open, restoreFocus = false) => {
+    if (!drawerToggle || !drawer) return;
+    drawer.hidden = !open;
+    drawerToggle.setAttribute("aria-expanded", String(open));
+    drawerToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    if (restoreFocus) drawerToggle.focus();
+  };
+
+  const syncThemeState = () => {
+    if (!themeToggle) return;
+    const dark = root.dataset.theme === "dark";
+    themeToggle.setAttribute("aria-pressed", String(dark));
+    themeToggle.setAttribute("aria-label", dark ? "Use light theme" : "Use dark theme");
+  };
+
+  setDrawerState(false);
+  syncThemeState();
+
+  drawerToggle?.addEventListener("click", () => {
+    setDrawerState(Boolean(drawer?.hidden));
+  });
+
+  drawer?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setDrawerState(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && drawer && !drawer.hidden) {
+      setDrawerState(false, true);
     }
-  })();
-</script>
+  });
 
-<script>
-  const drawerOpen =
-    document.querySelector<HTMLButtonElement>(".masthead-toggle");
-  const drawer = document.querySelector<HTMLElement>("[data-nav-drawer]");
-  if (drawerOpen && drawer) {
-    drawerOpen.addEventListener("click", () => {
-      drawer.hidden = !drawer.hidden;
-    });
-    drawer.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        drawer.hidden = true;
-      });
-    });
-  }
+  document.addEventListener("pointerdown", (event) => {
+    if (drawer && !drawer.hidden && header && !header.contains(event.target)) {
+      setDrawerState(false, true);
+    }
+  });
 
-  const toggle = document.querySelector<HTMLButtonElement>(
-    "[data-theme-toggle]",
-  );
-  if (toggle) {
-    toggle.addEventListener("click", () => {
-      const root = document.documentElement;
-      const current = root.dataset.theme === "dark" ? "dark" : "light";
-      const next = current === "dark" ? "light" : "dark";
-      root.dataset.theme = next;
+  themeToggle?.addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try {
       localStorage.setItem("jcore-theme", next);
-    });
-  }
+    } catch {
+      // Storage can be unavailable in privacy-restricted browsers.
+    }
+    syncThemeState();
+  });
 </script>

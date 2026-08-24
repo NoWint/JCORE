@@ -10,6 +10,14 @@ keywords:
   - en: pre-training
   - en: transformer
 bodyLanguage: en
+renderMode: structured
+sourceFormat: latex
+sourceFiles: []
+conversion:
+  status: converted
+  importer: manual
+  outputChecksum: "0000000000000000000000000000000000000000000000000000000000000000"
+  reportPath: import-report.json
 contributors:
   - name: Jacob Devlin
     affiliation: Google AI Language

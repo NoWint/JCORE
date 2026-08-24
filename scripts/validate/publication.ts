@@ -114,7 +114,34 @@ export function validatePublication(index: CollectionIndex): Diagnostic[] {
       );
     }
 
-    if (article.body.trim().length === 0) {
+    if (article.renderMode === 'source-fallback') {
+      if (article.sourceFiles.length === 0) {
+        diagnostics.push(
+          makeDiagnostic(
+            'fallback-source-missing',
+            'error',
+            'article',
+            sourcePath,
+            'Source-fallback article has no original source files',
+            'Add at least one preserved PDF or source package file',
+            'sourceFiles'
+          )
+        );
+      }
+      if (article.conversion.status !== 'fallback') {
+        diagnostics.push(
+          makeDiagnostic(
+            'fallback-conversion-status',
+            'error',
+            'article',
+            sourcePath,
+            'Source-fallback article does not carry a fallback conversion status',
+            'Set conversion.status to fallback and preserve import-report.json',
+            'conversion.status'
+          )
+        );
+      }
+    } else if (article.body.trim().length === 0) {
       diagnostics.push(
         makeDiagnostic(
           'empty-body',
@@ -126,13 +153,52 @@ export function validatePublication(index: CollectionIndex): Diagnostic[] {
           'body'
         )
       );
+    } else if (article.conversion.status !== 'converted') {
+      diagnostics.push(
+        makeDiagnostic(
+          'structured-conversion-status',
+          'error',
+          'article',
+          sourcePath,
+          'Structured article does not carry a converted status',
+          'Set conversion.status to converted for a rendered body',
+          'conversion.status'
+        )
+      );
     }
   }
 
   for (const article of index.externalArticles) {
     const sourcePath = `content/external-articles/${article.slug}`;
 
-    if (article.body.trim().length === 0) {
+    if (article.renderMode === 'source-fallback') {
+      if (article.sourceFiles.length === 0) {
+        diagnostics.push(
+          makeDiagnostic(
+            'fallback-source-missing',
+            'error',
+            'external',
+            sourcePath,
+            'Source-fallback article has no original source files',
+            'Add at least one preserved PDF or source package file',
+            'sourceFiles'
+          )
+        );
+      }
+      if (article.conversion.status !== 'fallback') {
+        diagnostics.push(
+          makeDiagnostic(
+            'fallback-conversion-status',
+            'error',
+            'external',
+            sourcePath,
+            'Source-fallback article does not carry a fallback conversion status',
+            'Set conversion.status to fallback and preserve import-report.json',
+            'conversion.status'
+          )
+        );
+      }
+    } else if (article.body.trim().length === 0) {
       diagnostics.push(
         makeDiagnostic(
           'empty-body',
@@ -142,6 +208,18 @@ export function validatePublication(index: CollectionIndex): Diagnostic[] {
           'External article body is empty',
           'Provide normalized full text or remove the record',
           'body'
+        )
+      );
+    } else if (article.conversion.status !== 'converted') {
+      diagnostics.push(
+        makeDiagnostic(
+          'structured-conversion-status',
+          'error',
+          'external',
+          sourcePath,
+          'Structured article does not carry a converted status',
+          'Set conversion.status to converted for a rendered body',
+          'conversion.status'
         )
       );
     }

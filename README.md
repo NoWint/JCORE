@@ -13,6 +13,7 @@ npm run check
 npm run validate
 npm run test:e2e
 npm run build:search
+npm run jcore -- --help
 ```
 
 `npm run check` runs type checking, linting, unit and contract tests, the Astro build, Pagefind indexing, and built-site link validation.
@@ -25,6 +26,24 @@ npm run build:search
 - `sources/manifests/` records import provenance for external full text.
 
 External articles are never presented as JCORE publications. Every discovery and reading surface labels their original source, license, and ownership status.
+
+## Import Pipeline
+
+Use the unified CLI for future paper intake:
+
+```bash
+npm run jcore -- inspect path/to/source --json
+npm run jcore -- import path/to/source --manifest path/to/manifest.yaml
+npm run jcore -- report .jcore/staging/article-slug
+npm run jcore -- validate .jcore/staging/article-slug
+npm run jcore -- promote .jcore/staging/article-slug --content-root content/external-articles --public-root public/sources
+```
+
+Supported input types are PDF, LaTeX, JATS XML, Markdown, and recorded DOI
+resolutions. Structured conversion is preferred. If conversion is unsafe or
+unavailable, the CLI preserves the original source and emits an explicit
+source-fallback record with diagnostics instead of publishing a misleading
+empty article body.
 
 ## Deployment
 

@@ -13,6 +13,30 @@ export const urlStringSchema = z.string().refine((value) => {
   }
 }, 'Must be a valid absolute URL');
 
+export const renderModeSchema = z.enum(['structured', 'source-fallback']).default('structured');
+export const sourceFormatSchema = z.enum(['pdf', 'latex', 'jats', 'markdown', 'doi', 'manual']).default('manual');
+export const sourceFileSchema = z
+  .object({
+    path: z.string().min(1),
+    label: z.string().min(1),
+    kind: z.enum(['source', 'pdf', 'supplementary'])
+  })
+  .strict();
+export const conversionInfoSchema = z
+  .object({
+    status: z.enum(['converted', 'fallback']),
+    importer: z.string().min(1),
+    outputChecksum: z.string().regex(/^[a-f0-9]{64}$/, 'Checksum must be a SHA-256 hex digest'),
+    reportPath: z.string().min(1)
+  })
+  .strict()
+  .default({
+    status: 'converted',
+    importer: 'manual',
+    outputChecksum: '0'.repeat(64),
+    reportPath: 'import-report.json'
+  });
+
 export const localizedTextSchema = z
   .object({
     en: z.string().min(1),
@@ -85,7 +109,7 @@ export const rightsSchema = z
 
 export const provenanceSchema = z
   .object({
-    sourceFormat: z.enum(['latex', 'jats', 'markdown', 'manual']),
+    sourceFormat: z.enum(['pdf', 'latex', 'jats', 'markdown', 'doi', 'manual']),
     retrievalDate: z.coerce.date(),
     checksum: z.string().regex(/^[a-f0-9]{64}$/, 'Checksum must be a SHA-256 hex digest'),
     sourcePackagePath: z.string().min(1),
@@ -115,6 +139,10 @@ export const articleMetadataSchema = z
     abstract: localizedTextSchema,
     keywords: z.array(localizedTextSchema).min(1),
     bodyLanguage: z.enum(['en', 'zh']),
+    renderMode: renderModeSchema,
+    sourceFormat: sourceFormatSchema,
+    sourceFiles: z.array(sourceFileSchema).default([]),
+    conversion: conversionInfoSchema,
     authors: orderedAuthors,
     articleType: z.enum(['research-article', 'review-article', 'research-note', 'replication-study']),
     status: z.literal('published'),
@@ -160,6 +188,10 @@ export const externalArticleMetadataSchema = z
     abstract: localizedTextSchema,
     keywords: z.array(localizedTextSchema).min(1),
     bodyLanguage: z.enum(['en', 'zh']),
+    renderMode: renderModeSchema,
+    sourceFormat: sourceFormatSchema,
+    sourceFiles: z.array(sourceFileSchema).default([]),
+    conversion: conversionInfoSchema,
     contributors: z
       .array(
         z
@@ -253,3 +285,7 @@ export type Page = z.infer<typeof pageSchema>;
 export type PublicationEvent = z.infer<typeof publicationEventSchema>;
 export type Rights = z.infer<typeof rightsSchema>;
 export type Provenance = z.infer<typeof provenanceSchema>;
+export type RenderMode = z.infer<typeof renderModeSchema>;
+export type SourceFormat = z.infer<typeof sourceFormatSchema>;
+export type SourceFile = z.infer<typeof sourceFileSchema>;
+export type ConversionInfo = z.infer<typeof conversionInfoSchema>;

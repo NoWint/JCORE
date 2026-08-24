@@ -4,6 +4,7 @@ import '@fontsource/source-serif-4/500.css';
 import '@fontsource/source-serif-4/600.css';
 import '@fontsource/ibm-plex-sans/400.css';
 import '@fontsource/ibm-plex-sans/500.css';
+import 'katex/dist/katex.min.css';
 import '../styles/global.css';
 import '../styles/typography.css';
 import SiteHeader from '../components/site/SiteHeader.astro';
@@ -38,6 +39,28 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description ?? 'JCORE'} />
     <meta property="og:type" content="website" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const key = "jcore-theme";
+        let stored = null;
+        try {
+          stored = localStorage.getItem(key);
+        } catch {
+          // Ignore storage access failures and use system preference.
+        }
+        const systemDark =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme =
+          stored === "light" || stored === "dark"
+            ? stored
+            : systemDark
+              ? "dark"
+              : "light";
+        root.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
     <SiteHeader locale={locale} path={Astro.url.pathname} />

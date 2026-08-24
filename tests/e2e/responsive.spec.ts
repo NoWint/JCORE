@@ -11,6 +11,7 @@ const routes = [
 
 for (const viewport of [
   { width: 390, height: 844 },
+  { width: 768, height: 900 },
   { width: 1440, height: 900 }
 ]) {
   test(`no horizontal overflow at ${viewport.width}px`, async ({ page }) => {

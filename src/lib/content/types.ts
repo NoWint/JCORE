@@ -5,13 +5,16 @@ import type {
   IssueMetadata,
   Selection
 } from './contracts';
+import type { Diagnostic } from '../../../scripts/validate/diagnostics';
 
 export type ArticleRecord = ArticleMetadata & {
   body: string;
+  conversionDiagnostics?: Diagnostic[];
 };
 
 export type ExternalArticleRecord = ExternalArticleMetadata & {
   body: string;
+  conversionDiagnostics?: Diagnostic[];
 };
 
 export type AuthorRecord = Author;

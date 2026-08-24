@@ -1,6 +1,6 @@
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative } from 'node:path';
+import { basename, join, relative, resolve, sep } from 'node:path';
 import * as tar from 'tar';
 import { checksumData } from './checksum';
 import { resolveArxiv } from './clients/arxiv';
@@ -14,10 +14,13 @@ async function filesFromDirectory(directory: string): Promise<ImportSource['file
   for (const entry of entries) {
     const fullPath = join(directory, String(entry));
     if ((await stat(fullPath)).isFile()) {
-      files.push({ path: String(entry), data: new Uint8Array(await readFile(fullPath)) });
+      files.push({
+        path: String(entry).split(sep).join('/'),
+        data: new Uint8Array(await readFile(fullPath))
+      });
     }
   }
-  return files;
+  return files.sort((left, right) => left.path.localeCompare(right.path));
 }
 
 async function filesFromTar(data: Uint8Array): Promise<ImportSource['files']> {
@@ -36,19 +39,48 @@ async function filesFromTar(data: Uint8Array): Promise<ImportSource['files']> {
         files.push({ path: relative(extractDir, fullPath), data: new Uint8Array(await readFile(fullPath)) });
       }
     }
-    return files;
+    return files.sort((left, right) => left.path.localeCompare(right.path));
   } finally {
     await rm(root, { recursive: true, force: true });
   }
 }
 
-async function loadSource(manifest: ImportManifest): Promise<ImportSource | undefined> {
-  if (manifest.sourcePackagePath) {
+function checksumFiles(files: ImportSource['files']): string {
+  return checksumData(files.map((file) => `${file.path}\0${checksumData(file.data)}`).join('\n'));
+}
+
+export async function loadSourceFromPath(inputPath: string): Promise<ImportSource> {
+  const resolvedPath = resolve(inputPath);
+  const inputStat = await stat(resolvedPath);
+  if (inputStat.isDirectory()) {
+    const files = await filesFromDirectory(resolvedPath);
     return {
-      packagePath: manifest.sourcePackagePath,
-      checksum: checksumData(JSON.stringify(await filesFromDirectory(manifest.sourcePackagePath))),
-      files: await filesFromDirectory(manifest.sourcePackagePath)
+      packagePath: resolvedPath,
+      checksum: checksumFiles(files),
+      files
     };
+  }
+
+  const data = new Uint8Array(await readFile(resolvedPath));
+  if (/\.(?:tar|tar\.gz|tgz)$/i.test(resolvedPath)) {
+    const files = await filesFromTar(data);
+    return {
+      packagePath: resolvedPath,
+      checksum: checksumFiles(files),
+      files
+    };
+  }
+  const files = [{ path: basename(resolvedPath), data }];
+  return {
+    packagePath: resolvedPath,
+    checksum: checksumFiles(files),
+    files
+  };
+}
+
+export async function loadSource(manifest: ImportManifest): Promise<ImportSource | undefined> {
+  if (manifest.sourcePackagePath) {
+    return loadSourceFromPath(manifest.sourcePackagePath);
   }
 
   if (manifest.officialIdentifier.startsWith('arXiv:') || /^\d{4}\.\d{4,5}$/.test(manifest.officialIdentifier)) {

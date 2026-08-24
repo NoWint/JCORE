@@ -10,6 +10,14 @@ keywords:
   - en: large language models
   - en: technical report
 bodyLanguage: en
+renderMode: structured
+sourceFormat: latex
+sourceFiles: []
+conversion:
+  status: converted
+  importer: manual
+  outputChecksum: "0000000000000000000000000000000000000000000000000000000000000000"
+  reportPath: import-report.json
 contributors:
   - name: DeepSeek-AI
     affiliation: DeepSeek

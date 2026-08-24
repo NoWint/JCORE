@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:unit": "vitest run tests/unit tests/contract",
     "test:e2e": "bash scripts/run-e2e.sh",
+    "jcore": "tsx scripts/jcore.ts",
     "validate": "npm run typecheck && npm run lint && npm run test:unit && tsx scripts/validate/content.ts && npm run build"
   },
   "dependencies": {

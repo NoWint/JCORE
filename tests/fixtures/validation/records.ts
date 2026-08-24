@@ -8,6 +8,15 @@ export function makeExternalArticle(overrides: Partial<ExternalArticleRecord> = 
     abstract: { en: 'A Transformer architecture based solely on attention mechanisms.' },
     keywords: [{ en: 'attention' }, { en: 'transformer' }],
     bodyLanguage: 'en',
+    renderMode: 'structured',
+    sourceFormat: 'manual',
+    sourceFiles: [],
+    conversion: {
+      status: 'converted',
+      importer: 'manual',
+      outputChecksum: '0'.repeat(64),
+      reportPath: 'import-report.json'
+    },
     contributors: [{ name: 'Ashish Vaswani', affiliation: 'Google Brain' }],
     originalVenue: 'NeurIPS 2017',
     originalPublicationDate: new Date('2017-12-04'),
@@ -46,6 +55,15 @@ export function makeValidIndex(): CollectionIndex {
         abstract: { en: 'A demonstration article.', zh: '一篇演示论文。' },
         keywords: [{ en: 'demonstration' }],
         bodyLanguage: 'en',
+        renderMode: 'structured',
+        sourceFormat: 'manual',
+        sourceFiles: [],
+        conversion: {
+          status: 'converted',
+          importer: 'manual',
+          outputChecksum: '0'.repeat(64),
+          reportPath: 'import-report.json'
+        },
         authors: [{ authorId: 'demo-author-001', order: 1 }],
         articleType: 'replication-study',
         status: 'published',
