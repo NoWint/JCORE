@@ -27,18 +27,36 @@ test("mobile drawer closes after navigation", async ({ page }) => {
   await expect(page.locator(".nav-drawer")).toBeHidden();
 });
 
-test("desktop keeps the drawer control hidden and mobile opens a fixed side panel", async ({
+test("desktop keeps the masthead centered and opens a fixed side panel", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/JCORE/en/articles/");
-  await expect(page.locator(".masthead-toggle")).toBeHidden();
-  await expect(page.locator(".nav-drawer")).toBeHidden();
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.reload();
+  const masthead = page.locator(".masthead");
   const toggle = page.locator(".masthead-toggle");
+  const brand = page.locator(".masthead-brand");
+  const actions = page.locator(".masthead-actions");
+
   await expect(toggle).toBeVisible();
+  await expect(page.locator(".nav-drawer")).toBeHidden();
+  const centers = await Promise.all(
+    [masthead, brand].map(async (locator) => {
+      const box = await locator.boundingBox();
+      return box ? box.x + box.width / 2 : null;
+    }),
+  );
+  expect(centers[0]).not.toBeNull();
+  expect(centers[1]).not.toBeNull();
+  expect(Math.abs((centers[0] ?? 0) - (centers[1] ?? 0))).toBeLessThanOrEqual(
+    1,
+  );
+
+  const actionBox = await actions.boundingBox();
+  const mastheadBox = await masthead.boundingBox();
+  expect(actionBox).not.toBeNull();
+  expect(mastheadBox).not.toBeNull();
+  expect(actionBox?.x ?? 0).toBeGreaterThan((mastheadBox?.x ?? 0) + 700);
+
   await toggle.click();
 
   const drawer = page.locator(".nav-drawer");
@@ -54,7 +72,7 @@ test("desktop keeps the drawer control hidden and mobile opens a fixed side pane
   ).toBeLessThanOrEqual(390);
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth),
-  ).toBeLessThanOrEqual(390);
+  ).toBeLessThanOrEqual(1440);
 
   await page
     .locator(".nav-drawer-backdrop")

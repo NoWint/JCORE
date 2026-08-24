@@ -72,9 +72,12 @@ embed {
 .masthead-toggle {
   justify-self: start;
   background: transparent;
-  border: 0;
-  padding: 0.35rem;
-  display: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--ink);
@@ -1133,10 +1136,6 @@ body.nav-drawer-open {
 
   .masthead-btn {
     display: none;
-  }
-
-  .masthead-toggle {
-    display: inline-flex;
   }
 
   .station-bar {
