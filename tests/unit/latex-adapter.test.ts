@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { LatexAdapter } from '../../scripts/import/adapters/latex';
@@ -9,10 +9,19 @@ import { validManifest } from '../fixtures/import/core/valid-manifest';
 
 function sourceFromFixture(name: string): ImportSource {
   const directory = join(process.cwd(), 'tests/fixtures/import/latex', name);
-  const files = readdirSync(directory).map((file) => ({
-    path: file,
-    data: new Uint8Array(readFileSync(join(directory, file)))
-  }));
+  const files: ImportSource['files'] = [];
+  const visit = (current: string, relative = '') => {
+    for (const entry of readdirSync(current)) {
+      const fullPath = join(current, entry);
+      const path = relative ? `${relative}/${entry}` : entry;
+      if (statSync(fullPath).isDirectory()) {
+        visit(fullPath, path);
+      } else {
+        files.push({ path, data: new Uint8Array(readFileSync(fullPath)) });
+      }
+    }
+  };
+  visit(directory);
   return {
     packagePath: directory,
     checksum: 'a'.repeat(64),
@@ -113,5 +122,17 @@ describe('LaTeX adapter', () => {
     const adapter = new LatexAdapter(fakeConverter());
     const diagnostics = await adapter.inspect(validManifest, sourceFromFixture('unresolved-ref'));
     expect(codes(diagnostics)).toContain('unresolved-citation');
+  });
+
+  it('accepts compiled bibliography output when the source package has a bbl file', async () => {
+    const adapter = new LatexAdapter(fakeConverter());
+    const diagnostics = await adapter.inspect(validManifest, sourceFromFixture('bbl-only'));
+    expect(diagnostics).toEqual([]);
+  });
+
+  it('accepts an available conditional figure asset', async () => {
+    const adapter = new LatexAdapter(fakeConverter());
+    const diagnostics = await adapter.inspect(validManifest, sourceFromFixture('conditional-asset'));
+    expect(diagnostics).toEqual([]);
   });
 });

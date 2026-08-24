@@ -33,6 +33,7 @@ function loadMarkdown<T>(directory: string, schema: ZodType<T>): {
 } {
   const records: T[] = [];
   const diagnostics: Diagnostic[] = [];
+  const bodyLocales = ['en', 'zh'] as const;
 
   for (const file of filesUnder(directory).filter((file) => file.endsWith('/index.md'))) {
     const parsed = matter(readFileSync(file, 'utf8'));
@@ -42,6 +43,17 @@ function loadMarkdown<T>(directory: string, schema: ZodType<T>): {
       const body = statSync(bodyPath, { throwIfNoEntry: false })?.isFile()
         ? readFileSync(bodyPath, 'utf8').trim()
         : '';
+      const bodyByLocale = Object.fromEntries(
+        bodyLocales
+          .map((locale) => {
+            const localizedPath = join(file, '..', `body.${locale}.md`);
+            if (!statSync(localizedPath, { throwIfNoEntry: false })?.isFile()) {
+              return [locale, undefined];
+            }
+            return [locale, readFileSync(localizedPath, 'utf8').trim()];
+          })
+          .filter((entry): entry is [string, string] => Boolean(entry[1])),
+      );
       const renderMode = (result.data as { renderMode?: string }).renderMode ?? 'structured';
       const conversion = (result.data as { conversion?: { reportPath?: string } }).conversion;
       const reportPath = conversion?.reportPath ? resolve(join(file, '..'), conversion.reportPath) : '';
@@ -92,7 +104,7 @@ function loadMarkdown<T>(directory: string, schema: ZodType<T>): {
           )
         );
       }
-      records.push({ ...result.data, body, conversionDiagnostics } as T);
+      records.push({ ...result.data, body, bodyByLocale, conversionDiagnostics } as T);
     } else {
       diagnostics.push(
         makeDiagnostic(

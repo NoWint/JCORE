@@ -9,6 +9,16 @@ test('JCORE article page renders scholarly structure and citations', async ({ pa
   await expect(page.locator('.article-prose')).toContainText('ChatMail Relay');
 });
 
+test('ChatMail article preserves the source language for each locale', async ({ page }) => {
+  await page.goto('/JCORE/en/articles/JCORE-2026-0001/');
+  await expect(page.locator('.article-prose')).toContainText('What is this?');
+  await expect(page.locator('.article-prose')).toContainText('Getting Started');
+
+  await page.goto('/JCORE/zh/articles/JCORE-2026-0001/');
+  await expect(page.locator('.article-prose')).toContainText('这是什么？');
+  await expect(page.locator('.article-prose')).toContainText('快速开始');
+});
+
 test('external article page labels source and rights', async ({ page }) => {
   await page.goto('/JCORE/en/articles/external/attention-is-all-you-need/');
   await expect(page.locator('.article-header .ownership-badge')).toContainText('External Open-Access Article');

@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: efficient-word-representations
+officialIdentifier: arXiv:1301.3781
+officialUrl: https://arxiv.org/abs/1301.3781
+sourcePackagePath: sources/latex/1301.3781
+rootDocument: efficient-v22.tex
+expectedChecksum: 822e9df881c16278cef104dbbae09ae1ade1b5c8cb6a309d8ba59fd373c5b82e
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/1301.3781
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

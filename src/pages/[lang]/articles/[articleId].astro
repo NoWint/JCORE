@@ -19,9 +19,10 @@ const record = getArticleById(Astro.params.articleId ?? '');
 if (!record) {
   throw new Error(`Missing article ${Astro.params.articleId}`);
 }
+const articleBody = record.bodyByLocale?.[locale] ?? record.body;
 const renderReport =
   record.renderMode === 'structured'
-    ? await renderArticle(record.body, { base: config.base })
+    ? await renderArticle(articleBody, { base: config.base })
     : undefined;
 const related = getRelatedArticles(record).map((article) => toArticleCard(article, locale, config.base));
 const citationUrls = {

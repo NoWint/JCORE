@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: denoising-diffusion-probabilistic-models
+officialIdentifier: arXiv:2006.11239
+officialUrl: https://arxiv.org/abs/2006.11239
+sourcePackagePath: sources/latex/2006.11239
+rootDocument: main.tex
+expectedChecksum: 28c31cf0dc7eaabae2ecfecd524a291e6ed87456a4b592c19f94a5fcb11ed15f
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2006.11239
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

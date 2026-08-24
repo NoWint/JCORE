@@ -1,0 +1,423 @@
+{
+  "status": "success",
+  "manifest": {
+    "sourceType": "latex",
+    "articleKind": "external",
+    "targetSlug": "mamba-linear-time-sequence-modeling",
+    "officialIdentifier": "arXiv:2312.00752",
+    "officialUrl": "https://arxiv.org/abs/2312.00752",
+    "sourcePackagePath": "/tmp/jcore-arxiv-extracted/2312.00752",
+    "rootDocument": "main.tex",
+    "expectedChecksum": "31c1b9ce2f80d34074a56ddcda4860bb3e3046a66d6b3c65c069676d1c2243c6",
+    "retrievalDate": "2026-08-24",
+    "rights": {
+      "licenseId": "arxiv-nonexclusive-distrib",
+      "licenseUrl": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "copyrightHolder": "The Authors",
+      "statement": "Redistributed under the arXiv non-exclusive distribution license for scholarly use.",
+      "evidenceUrl": "https://arxiv.org/abs/2312.00752",
+      "permitsRedistribution": true
+    },
+    "importerVersion": "jcore-import@0.1.0"
+  },
+  "normalized": {
+    "metadata": {
+      "renderMode": "source-fallback",
+      "sourceFormat": "latex",
+      "sourceFiles": [
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/biblio.bib",
+          "label": "Original source package",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/algorithm.png",
+          "label": "fig/algorithm.png",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/architecture.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/copying.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/dna_length.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/dna_scaling.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/induction.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/mamba_inference.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_2k_ablations_h3.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_2k_ablations_mamba.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_2k.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_8k.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/selection.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/selection.png",
+          "label": "fig/selection.png",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/species.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/ssm_scan.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/youtubemix_ablations_center.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/youtubemix_ablations.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/fig/youtubemix.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/main.bbl",
+          "label": "main.bbl",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/main.run.xml",
+          "label": "main.run.xml",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/main.tex",
+          "label": "main.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/ablations.tex",
+          "label": "src/ablations.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/abstract.tex",
+          "label": "src/abstract.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/appendix.tex",
+          "label": "src/appendix.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/background.tex",
+          "label": "src/background.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/benchmarks.tex",
+          "label": "src/benchmarks.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/conclusion.tex",
+          "label": "src/conclusion.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/discussion.tex",
+          "label": "src/discussion.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/dna.tex",
+          "label": "src/dna.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/experiments.tex",
+          "label": "src/experiments.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/intro.tex",
+          "label": "src/intro.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/method.tex",
+          "label": "src/method.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/related.tex",
+          "label": "src/related.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/mamba-linear-time-sequence-modeling/src/synthetic.tex",
+          "label": "src/synthetic.tex",
+          "kind": "source"
+        }
+      ],
+      "conversion": {
+        "status": "fallback",
+        "importer": "jcore-import@0.1.0",
+        "outputChecksum": "190f9e311390638ccdd30a083f2695ddd915618d69c610aeaaa12751f6546acb",
+        "reportPath": "import-report.json"
+      },
+      "pdf": "/sources/mamba-linear-time-sequence-modeling/fig/architecture.pdf"
+    },
+    "body": "",
+    "assets": [],
+    "diagnostics": [
+      {
+        "code": "pandoc-conversion-failed",
+        "severity": "error",
+        "phase": "latex",
+        "sourcePath": "main.tex",
+        "message": "Command failed: pandoc main.tex --from=latex --to=markdown+tex_math_dollars --wrap=none --resource-path=/var/folders/x7/ng4t7k3931nc7sqx2jy1j7l80000gn/T/jcore-pandoc-PmQ5Pm --output=/var/folders/x7/ng4t7k3931nc7sqx2jy1j7l80000gn/T/jcore-pandoc-PmQ5Pm/normalized.md\nError at \"main.tex\" (line 139, column 17):\nunexpected ()\n\\begin{document}\n                ^\n",
+        "action": "Fix the LaTeX source and retry the conversion",
+        "node": "main.tex"
+      },
+      {
+        "code": "empty-conversion",
+        "severity": "error",
+        "phase": "latex",
+        "sourcePath": "main.tex",
+        "message": "LaTeX conversion produced no article body",
+        "action": "Inspect the source and converter output",
+        "node": "main.tex"
+      }
+    ],
+    "renderMode": "source-fallback",
+    "sourceFormat": "latex",
+    "sourceFiles": [
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/biblio.bib",
+        "label": "Original source package",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/algorithm.png",
+        "label": "fig/algorithm.png",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/architecture.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/copying.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/dna_length.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/dna_scaling.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/induction.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/mamba_inference.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_2k_ablations_h3.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_2k_ablations_mamba.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_2k.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/pile_8k.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/selection.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/selection.png",
+        "label": "fig/selection.png",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/species.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/ssm_scan.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/youtubemix_ablations_center.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/youtubemix_ablations.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/fig/youtubemix.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/main.bbl",
+        "label": "main.bbl",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/main.run.xml",
+        "label": "main.run.xml",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/main.tex",
+        "label": "main.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/ablations.tex",
+        "label": "src/ablations.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/abstract.tex",
+        "label": "src/abstract.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/appendix.tex",
+        "label": "src/appendix.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/background.tex",
+        "label": "src/background.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/benchmarks.tex",
+        "label": "src/benchmarks.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/conclusion.tex",
+        "label": "src/conclusion.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/discussion.tex",
+        "label": "src/discussion.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/dna.tex",
+        "label": "src/dna.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/experiments.tex",
+        "label": "src/experiments.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/intro.tex",
+        "label": "src/intro.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/method.tex",
+        "label": "src/method.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/related.tex",
+        "label": "src/related.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/mamba-linear-time-sequence-modeling/src/synthetic.tex",
+        "label": "src/synthetic.tex",
+        "kind": "source"
+      }
+    ],
+    "conversion": {
+      "status": "fallback",
+      "importer": "jcore-import@0.1.0",
+      "outputChecksum": "190f9e311390638ccdd30a083f2695ddd915618d69c610aeaaa12751f6546acb",
+      "reportPath": "import-report.json"
+    }
+  },
+  "outputChecksum": "190f9e311390638ccdd30a083f2695ddd915618d69c610aeaaa12751f6546acb",
+  "importerVersion": "jcore-import@0.1.0",
+  "generatedAt": "2026-08-24T12:29:47.677Z"
+}

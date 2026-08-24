@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: latent-diffusion-models
+officialIdentifier: arXiv:2112.10752
+officialUrl: https://arxiv.org/abs/2112.10752
+sourcePackagePath: sources/latex/2112.10752
+rootDocument: ms.tex
+expectedChecksum: 647bfb447342cb90105462bbded81cb258fdb0f7fccb70a034a3f118ae5cfce8
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2112.10752
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

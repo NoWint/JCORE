@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: deep-residual-learning-image-recognition
+officialIdentifier: arXiv:1512.03385
+officialUrl: https://arxiv.org/abs/1512.03385
+sourcePackagePath: sources/latex/1512.03385
+rootDocument: residual_v1_arxiv_release.tex
+expectedChecksum: ecd6268ca1ed6d3754092ac761267cd1edd8e2ff74f4ccd1c2a4455319cabeb7
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/1512.03385
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

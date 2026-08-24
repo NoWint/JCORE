@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: retrieval-augmented-generation
+officialIdentifier: arXiv:2005.11401
+officialUrl: https://arxiv.org/abs/2005.11401
+sourcePackagePath: sources/latex/2005.11401
+rootDocument: neurips_2020.tex
+expectedChecksum: 3c5a331ef882f097eca61d0359345a96df783cd0349d55f33b5b91f39625d895
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2005.11401
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

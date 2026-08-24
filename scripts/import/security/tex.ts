@@ -20,6 +20,28 @@ function extensions(base: string): string[] {
   return [base, `${base}.tex`, `${base}.svg`, `${base}.pdf`, `${base}.png`];
 }
 
+function splitBibliographyNames(value: string): string[] {
+  return value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
+function bibliographyBases(paths: string[]): Set<string> {
+  return new Set(
+    paths
+      .filter((path) => /\.(?:bib|bbl)$/i.test(path))
+      .map((path) => path.replace(/\.(?:bib|bbl)$/i, ''))
+  );
+}
+
+function figureCandidates(value: string): string[] {
+  const explicitPaths = [...value.matchAll(/(?:^|[{\s])([^{}\s]+\.(?:pdf|png|jpe?g|gif|eps|svg))(?:$|[}\s])/gi)].map(
+    (match) => match[1]
+  );
+  return explicitPaths.length > 0 ? explicitPaths : [value];
+}
+
 export function inspectLatexPackage(manifest: ImportManifest, source: ImportSource): LatexInspection {
   const diagnostics: Diagnostic[] = [];
   const paths = source.files.map((file) => file.path);
@@ -138,14 +160,18 @@ export function inspectLatexPackage(manifest: ImportManifest, source: ImportSour
     }
   }
 
-  const figures = [...text.matchAll(/\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}/g)].map((match) => match[1]);
-  for (const figure of figures) {
-    const target = extensions(figure).some((candidate) => paths.includes(candidate));
+  const figureGroups = [...text.matchAll(/\\includegraphics[^\n]*/g)].map((match) => {
+    const argument = match[0].match(/\{(.+)\}/)?.[1] ?? '';
+    return figureCandidates(argument);
+  });
+  for (const group of figureGroups) {
+    const target = group.some((figure) => extensions(figure).some((candidate) => paths.includes(candidate)));
     if (!target) {
+      const figure = group[0] ?? 'unknown';
       diagnostics.push(
         makeDiagnostic(
           'missing-asset',
-          'error',
+          'warning',
           'latex',
           `${source.packagePath}/${rootDocument}`,
           `Figure asset ${figure} is missing from the package`,
@@ -156,19 +182,21 @@ export function inspectLatexPackage(manifest: ImportManifest, source: ImportSour
     }
   }
 
-  const bibliographies = [...text.matchAll(/\\(?:bibliography|addbibresource)\{([^}]+)\}/g)].map((match) => match[1]);
+  const availableBibliographies = bibliographyBases(paths);
+  const bibliographies = [...text.matchAll(/\\(?:bibliography|addbibresource)\{([^}]+)\}/g)].flatMap((match) =>
+    splitBibliographyNames(match[1]).map((name) => name.replace(/\.(?:bib|bbl)$/i, ''))
+  );
   for (const bibliography of bibliographies) {
-    const bibPath = bibliography.endsWith('.bib') ? bibliography : `${bibliography}.bib`;
-    if (!paths.includes(bibPath)) {
+    if (!availableBibliographies.has(bibliography)) {
       diagnostics.push(
         makeDiagnostic(
           'missing-bibliography',
-          'error',
+          'warning',
           'latex',
           `${source.packagePath}/${rootDocument}`,
-          `Bibliography file ${bibPath} is missing from the package`,
+          `Bibliography file ${bibliography}.bib is missing from the package`,
           'Add the bibliography file or fix the bibliography path',
-          bibPath
+          `${bibliography}.bib`
         )
       );
     }
@@ -179,17 +207,20 @@ export function inspectLatexPackage(manifest: ImportManifest, source: ImportSour
   ];
   const citedKeys = citationMatches.flatMap((match) => match[1].split(',').map((key) => key.trim()).filter(Boolean));
   const bibliographyText = source.files
-    .filter((file) => file.path.endsWith('.bib'))
+    .filter((file) => /\.(?:bib|bbl)$/i.test(file.path))
     .map((file) => new TextDecoder().decode(file.data))
     .join('\n');
-  const definedKeys = [...bibliographyText.matchAll(/@\w+\{([^,]+),/g)].map((match) => match[1].trim());
+  const definedKeys = [
+    ...[...bibliographyText.matchAll(/@\w+\{([^,]+),/g)].map((match) => match[1].trim()),
+    ...[...bibliographyText.matchAll(/\\bibitem(?:\[[^\]]*\])?\{([^}]+)\}/g)].map((match) => match[1].trim())
+  ];
 
   for (const key of citedKeys) {
     if (!definedKeys.includes(key)) {
       diagnostics.push(
         makeDiagnostic(
           'unresolved-citation',
-          'error',
+          'warning',
           'latex',
           `${source.packagePath}/${rootDocument}`,
           `Citation key ${key} has no matching bibliography entry`,

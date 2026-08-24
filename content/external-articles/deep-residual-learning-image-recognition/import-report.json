@@ -1,0 +1,203 @@
+{
+  "status": "success",
+  "manifest": {
+    "sourceType": "latex",
+    "articleKind": "external",
+    "targetSlug": "deep-residual-learning-image-recognition",
+    "officialIdentifier": "arXiv:1512.03385",
+    "officialUrl": "https://arxiv.org/abs/1512.03385",
+    "sourcePackagePath": "/tmp/jcore-arxiv-extracted/1512.03385",
+    "rootDocument": "residual_v1_arxiv_release.tex",
+    "expectedChecksum": "ecd6268ca1ed6d3754092ac761267cd1edd8e2ff74f4ccd1c2a4455319cabeb7",
+    "retrievalDate": "2026-08-24",
+    "rights": {
+      "licenseId": "arxiv-nonexclusive-distrib",
+      "licenseUrl": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "copyrightHolder": "The Authors",
+      "statement": "Redistributed under the arXiv non-exclusive distribution license for scholarly use.",
+      "evidenceUrl": "https://arxiv.org/abs/1512.03385",
+      "permitsRedistribution": true
+    },
+    "importerVersion": "jcore-import@0.1.0"
+  },
+  "normalized": {
+    "metadata": {
+      "renderMode": "source-fallback",
+      "sourceFormat": "latex",
+      "sourceFiles": [
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/cvpr_eso.sty",
+          "label": "Original source package",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/cvpr.sty",
+          "label": "cvpr.sty",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eps/arch.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eps/block_deeper.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eps/block.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eps/cifar.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eps/imagenet.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eps/std.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eps/teaser.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/eso-pic.sty",
+          "label": "eso-pic.sty",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/ieee.bst",
+          "label": "ieee.bst",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/residual_v1_arxiv_release.bbl",
+          "label": "residual_v1_arxiv_release.bbl",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/deep-residual-learning-image-recognition/residual_v1_arxiv_release.tex",
+          "label": "residual_v1_arxiv_release.tex",
+          "kind": "source"
+        }
+      ],
+      "conversion": {
+        "status": "fallback",
+        "importer": "jcore-import@0.1.0",
+        "outputChecksum": "20660c197cb24af6db4770f9c710abe720af1386735d5c50f9bf26656b392e90",
+        "reportPath": "import-report.json"
+      },
+      "pdf": "/sources/deep-residual-learning-image-recognition/eps/arch.pdf"
+    },
+    "body": "",
+    "assets": [],
+    "diagnostics": [
+      {
+        "code": "pandoc-conversion-failed",
+        "severity": "error",
+        "phase": "latex",
+        "sourcePath": "residual_v1_arxiv_release.tex",
+        "message": "Command failed: pandoc residual_v1_arxiv_release.tex --from=latex --to=markdown+tex_math_dollars --wrap=none --resource-path=/var/folders/x7/ng4t7k3931nc7sqx2jy1j7l80000gn/T/jcore-pandoc-1k0ruS --output=/var/folders/x7/ng4t7k3931nc7sqx2jy1j7l80000gn/T/jcore-pandoc-1k0ruS/normalized.md\n[WARNING] Parsing include file cvpr failed at cvpr.sty line 42 column 1\nError at \"residual_v1_arxiv_release.tex\" (line 294, column 37):\nunexpected #1\n\\newcolumntype{x}[1]{>{\\centering}p{#1pt}}\n                                    ^\n",
+        "action": "Fix the LaTeX source and retry the conversion",
+        "node": "residual_v1_arxiv_release.tex"
+      },
+      {
+        "code": "empty-conversion",
+        "severity": "error",
+        "phase": "latex",
+        "sourcePath": "residual_v1_arxiv_release.tex",
+        "message": "LaTeX conversion produced no article body",
+        "action": "Inspect the source and converter output",
+        "node": "residual_v1_arxiv_release.tex"
+      }
+    ],
+    "renderMode": "source-fallback",
+    "sourceFormat": "latex",
+    "sourceFiles": [
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/cvpr_eso.sty",
+        "label": "Original source package",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/cvpr.sty",
+        "label": "cvpr.sty",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eps/arch.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eps/block_deeper.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eps/block.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eps/cifar.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eps/imagenet.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eps/std.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eps/teaser.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/eso-pic.sty",
+        "label": "eso-pic.sty",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/ieee.bst",
+        "label": "ieee.bst",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/residual_v1_arxiv_release.bbl",
+        "label": "residual_v1_arxiv_release.bbl",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/deep-residual-learning-image-recognition/residual_v1_arxiv_release.tex",
+        "label": "residual_v1_arxiv_release.tex",
+        "kind": "source"
+      }
+    ],
+    "conversion": {
+      "status": "fallback",
+      "importer": "jcore-import@0.1.0",
+      "outputChecksum": "20660c197cb24af6db4770f9c710abe720af1386735d5c50f9bf26656b392e90",
+      "reportPath": "import-report.json"
+    }
+  },
+  "outputChecksum": "20660c197cb24af6db4770f9c710abe720af1386735d5c50f9bf26656b392e90",
+  "importerVersion": "jcore-import@0.1.0",
+  "generatedAt": "2026-08-24T12:35:13.341Z"
+}

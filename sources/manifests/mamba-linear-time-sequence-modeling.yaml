@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: mamba-linear-time-sequence-modeling
+officialIdentifier: arXiv:2312.00752
+officialUrl: https://arxiv.org/abs/2312.00752
+sourcePackagePath: sources/latex/2312.00752
+rootDocument: main.tex
+expectedChecksum: 31c1b9ce2f80d34074a56ddcda4860bb3e3046a66d6b3c65c069676d1c2243c6
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2312.00752
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

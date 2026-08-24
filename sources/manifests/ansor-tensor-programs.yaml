@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: ansor-tensor-programs
+officialIdentifier: arXiv:2006.06762
+officialUrl: https://arxiv.org/abs/2006.06762
+sourcePackagePath: sources/latex/2006.06762
+rootDocument: paper.tex
+expectedChecksum: 2c1d1683235a3927e22f2b6a688697fff595df086faa4f5185f812435b4328e7
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2006.06762
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

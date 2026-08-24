@@ -1,0 +1,403 @@
+{
+  "status": "success",
+  "manifest": {
+    "sourceType": "latex",
+    "articleKind": "external",
+    "targetSlug": "tvm-optimizing-compiler",
+    "officialIdentifier": "arXiv:1802.04799",
+    "officialUrl": "https://arxiv.org/abs/1802.04799",
+    "sourcePackagePath": "/tmp/jcore-arxiv-extracted/1802.04799",
+    "rootDocument": "TVMTechReport.tex",
+    "expectedChecksum": "2394252b6dd952b17b90ff3f755cadaab79614ba0d297b248cc553c6c0c18989",
+    "retrievalDate": "2026-08-24",
+    "rights": {
+      "licenseId": "arxiv-nonexclusive-distrib",
+      "licenseUrl": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "copyrightHolder": "The Authors",
+      "statement": "Redistributed under the arXiv non-exclusive distribution license for scholarly use.",
+      "evidenceUrl": "https://arxiv.org/abs/1802.04799",
+      "permitsRedistribution": true
+    },
+    "importerVersion": "jcore-import@0.1.0"
+  },
+  "normalized": {
+    "metadata": {
+      "renderMode": "source-fallback",
+      "sourceFormat": "latex",
+      "sourceFiles": [
+        {
+          "path": "/sources/tvm-optimizing-compiler/auto_flow.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/codegen_flow_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/cuda_end2end_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/cuda_op_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/data_layout.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/dataflow_only.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/decoupled_access_execute.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/divergence.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/exp_fpga_e2e_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/fusion_cmp_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/gemm_cmp_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/gemm_code_flow.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/latency_hiding.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/mali_end2end_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/ml_cost_predict_flow.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/rasp_end2end_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/rasp_op_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/rasp_qnn_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/rpc.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/shared_mem_example.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/stack_osdi.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/sync_program_model.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/tensor_dsl_only.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/tensor_intrin.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/tree_rnn.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/tuners_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/TVMTechReport.bbl",
+          "label": "TVMTechReport.bbl",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/TVMTechReport.tex",
+          "label": "TVMTechReport.tex",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/usenix.sty",
+          "label": "usenix.sty",
+          "kind": "source"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/user_api_build_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/user_api_deploy_tvm.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/vdla_overview.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/tvm-optimizing-compiler/vta_roofline.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        }
+      ],
+      "conversion": {
+        "status": "fallback",
+        "importer": "jcore-import@0.1.0",
+        "outputChecksum": "377fea1b975e7c3fd3831ed0d25dd4c212612f166ca3b95d43439be2101d2da7",
+        "reportPath": "import-report.json"
+      },
+      "pdf": "/sources/tvm-optimizing-compiler/auto_flow.pdf"
+    },
+    "body": "",
+    "assets": [],
+    "diagnostics": [
+      {
+        "code": "pandoc-conversion-failed",
+        "severity": "error",
+        "phase": "latex",
+        "sourcePath": "TVMTechReport.tex",
+        "message": "Command failed: pandoc TVMTechReport.tex --from=latex --to=markdown+tex_math_dollars --wrap=none --resource-path=/var/folders/x7/ng4t7k3931nc7sqx2jy1j7l80000gn/T/jcore-pandoc-0vaHlJ --output=/var/folders/x7/ng4t7k3931nc7sqx2jy1j7l80000gn/T/jcore-pandoc-0vaHlJ/normalized.md\n[WARNING] Parsing include file usenix failed at usenix.sty line 17 column 19\nError at \"TVMTechReport.tex\" (line 296, column 10):\nunexpected ()\n\\caption{\\capsize{\\TensorOpt schedule lowering and code generation process. The table lists existing Halide and novel \\TensorOpt scheduling primitives being used to optimize schedules for CPUs, GPUs and accelerator back-ends.\n         ^\n",
+        "action": "Fix the LaTeX source and retry the conversion",
+        "node": "TVMTechReport.tex"
+      },
+      {
+        "code": "empty-conversion",
+        "severity": "error",
+        "phase": "latex",
+        "sourcePath": "TVMTechReport.tex",
+        "message": "LaTeX conversion produced no article body",
+        "action": "Inspect the source and converter output",
+        "node": "TVMTechReport.tex"
+      }
+    ],
+    "renderMode": "source-fallback",
+    "sourceFormat": "latex",
+    "sourceFiles": [
+      {
+        "path": "/sources/tvm-optimizing-compiler/auto_flow.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/codegen_flow_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/cuda_end2end_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/cuda_op_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/data_layout.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/dataflow_only.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/decoupled_access_execute.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/divergence.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/exp_fpga_e2e_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/fusion_cmp_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/gemm_cmp_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/gemm_code_flow.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/latency_hiding.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/mali_end2end_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/ml_cost_predict_flow.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/rasp_end2end_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/rasp_op_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/rasp_qnn_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/rpc.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/shared_mem_example.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/stack_osdi.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/sync_program_model.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/tensor_dsl_only.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/tensor_intrin.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/tree_rnn.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/tuners_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/TVMTechReport.bbl",
+        "label": "TVMTechReport.bbl",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/TVMTechReport.tex",
+        "label": "TVMTechReport.tex",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/usenix.sty",
+        "label": "usenix.sty",
+        "kind": "source"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/user_api_build_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/user_api_deploy_tvm.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/vdla_overview.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/tvm-optimizing-compiler/vta_roofline.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      }
+    ],
+    "conversion": {
+      "status": "fallback",
+      "importer": "jcore-import@0.1.0",
+      "outputChecksum": "377fea1b975e7c3fd3831ed0d25dd4c212612f166ca3b95d43439be2101d2da7",
+      "reportPath": "import-report.json"
+    }
+  },
+  "outputChecksum": "377fea1b975e7c3fd3831ed0d25dd4c212612f166ca3b95d43439be2101d2da7",
+  "importerVersion": "jcore-import@0.1.0",
+  "generatedAt": "2026-08-24T12:35:14.317Z"
+}

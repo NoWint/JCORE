@@ -6,7 +6,7 @@ import { loadContent } from '../../scripts/validate/content';
 const base = '/JCORE';
 
 describe('article render corpus', () => {
-  it('renders all eight papers without fatal article-quality diagnostics', async () => {
+  it('renders the full paper corpus without fatal article-quality diagnostics', async () => {
     const { index, diagnostics } = loadContent(process.cwd());
     expect(diagnostics.filter((diagnostic) => diagnostic.severity === 'error')).toEqual([]);
 

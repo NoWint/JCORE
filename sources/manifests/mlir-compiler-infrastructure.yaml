@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: mlir-compiler-infrastructure
+officialIdentifier: arXiv:2002.11054
+officialUrl: https://arxiv.org/abs/2002.11054
+sourcePackagePath: sources/latex/2002.11054
+rootDocument: arxiv_version.tex
+expectedChecksum: efc9017bb3a8e02efeb2e60ab67a90d828ba9100ebd8eac166eb65cc43686029
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2002.11054
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

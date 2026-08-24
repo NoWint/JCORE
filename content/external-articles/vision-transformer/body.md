@@ -1,0 +1,315 @@
+maketitle thanks aketitle
+
+# Introduction
+
+Self-attention-based architectures, in particular Transformers [@vaswani2017], have become the model of choice in natural language processing (NLP). The dominant approach is to pre-train on a large text corpus and then fine-tune on a smaller task-specific dataset [@devlin19-bert]. Thanks to Transformers' computational efficiency and scalability, it has become possible to train models of unprecedented size, with over 100B parameters [@brown2020-gpt3; @lepikhin2020gshard]. With the models and datasets growing, there is still no sign of saturating performance.
+
+In computer vision, however, convolutional architectures remain dominant [@LeCun1989BackpropagationAT; @KrizhevskyNIPS12; @he2016deep]. Inspired by NLP successes, multiple works try combining CNN-like architectures with self-attention [@wang2018-nonlocalnn; @carion20-detr], some replacing the convolutions entirely [@ramachandran19-sasa; @wang2020-axialdeeplab]. The latter models, while theoretically efficient, have not yet been scaled effectively on modern hardware accelerators due to the use of specialized attention patterns. Therefore, in large-scale image recognition, classic ResNet-like architectures are still state of the art [@mahajan2018; @xie2020-noisystudent; @kolesnikov2020-bit].
+
+Inspired by the Transformer scaling successes in NLP, we experiment with applying a standard Transformer directly to images, with the fewest possible modifications. To do so, we split an image into patches and provide the sequence of linear embeddings of these patches as an input to a Transformer. Image patches are treated the same way as tokens (words) in an NLP application. We train the model on image classification in supervised fashion.
+
+When trained on mid-sized datasets such as ImageNet without strong regularization, these models yield modest accuracies of a few percentage points below ResNets of comparable size. This seemingly discouraging outcome may be expected: Transformers lack some of the inductive biases inherent to CNNs, such as translation equivariance and locality, and therefore do not generalize well when trained on insufficient amounts of data.
+
+However, the picture changes if the models are trained on larger datasets (14M-300M images). We find that large scale training trumps inductive bias. Our Vision Transformer (ViT) attains excellent results when pre-trained at sufficient scale and transferred to tasks with fewer datapoints. When pre-trained on the public ImageNet-21k dataset or the in-house JFT-300M dataset, ViT approaches or beats state of the art on multiple image recognition benchmarks. In particular, the best model reaches the accuracy of $88.55\%$ on ImageNet, $90.72\%$ on ImageNet-ReaL, $94.55\%$ on CIFAR-100, and $77.63\%$ on the VTAB suite of 19 tasks.
+
+# Related Work
+
+Transformers were proposed by @vaswani2017 for machine translation, and have since become the state of the art method in many NLP tasks. Large Transformer-based models are often pre-trained on large corpora and then fine-tuned for the task at hand: BERT [@devlin19-bert] uses a denoising self-supervised pre-training task, while the GPT line of work uses language modeling as its pre-training task [@radford2018-gpt; @radford2019-gpt2; @brown2020-gpt3].
+
+Naive application of self-attention to images would require that each pixel attends to every other pixel. With quadratic cost in the number of pixels, this does not scale to realistic input sizes. Thus, to apply Transformers in the context of image processing, several approximations have been tried in the past. @parmar18-imagetransformer applied the self-attention only in local neighborhoods for each query pixel instead of globally. Such local multi-head dot-product self attention blocks can completely replace convolutions [@hu2019local; @ramachandran19-sasa; @zhao2020-san]. In a different line of work, Sparse Transformers [@child2019-sparsetransformers] employ scalable approximations to global self-attention in order to be applicable to images. An alternative way to scale attention is to apply it in blocks of varying sizes [@weissenborn2019-savm], in the extreme case only along individual axes [@ho2019-axialattention; @wang2020-axialdeeplab]. Many of these specialized attention architectures demonstrate promising results on computer vision tasks, but require complex engineering to be implemented efficiently on hardware accelerators.
+
+Most related to ours is the model of @cordonnier2020-sacnn, which extracts patches of size $2 \times 2$ from the input image and applies full self-attention on top. This model is very similar to ViT, but our work goes further to demonstrate that large scale pre-training makes vanilla transformers competitive with (or even better than) state-of-the-art CNNs. Moreover, @cordonnier2020-sacnn use a small patch size of $2 \times 2$ pixels, which makes the model applicable only to small-resolution images, while we handle medium-resolution images as well.
+
+There has also been a lot of interest in combining convolutional neural networks (CNNs) with forms of self-attention, e.g. by augmenting feature maps for image classification [@bello2019-attentionaugmentedcnn] or by further processing the output of a CNN using self-attention, e.g. for object detection [@hu2018-relationnetworks; @carion20-detr], video processing [@wang2018-nonlocalnn; @sun2019-videobert], image classification [@wu2020-visualtransformer], unsupervised object discovery [@locatello2020-slotattention], or unified text-vision tasks [@chenuniter; @vilbert; @visualbert].
+
+Another recent related model is image GPT (iGPT) [@chen20-igpt], which applies Transformers to image pixels after reducing image resolution and color space. The model is trained in an unsupervised fashion as a generative model, and the resulting representation can then be fine-tuned or probed linearly for classification performance, achieving a maximal accuracy of 72% on ImageNet.
+
+Our work adds to the increasing collection of papers that explore image recognition at larger scales than the standard ImageNet dataset. The use of additional data sources allows to achieve state-of-the-art results on standard benchmarks [@mahajan2018; @touvron2019; @xie2020-noisystudent]. Moreover, @sun2017-jft study how CNN performance scales with dataset size, and @kolesnikov2020-bit [@djolonga2020-robustness] perform an empirical exploration of CNN transfer learning from large scale datasets such as ImageNet-21k and JFT-300M. We focus on these two latter datasets as well, but train Transformers instead of ResNet-based models used in prior works.
+
+# Method
+
+In model design we follow the original Transformer [@vaswani2017] as closely as possible. An advantage of this intentionally simple setup is that scalable NLP Transformer architectures -- and their efficient implementations -- can be used almost out of the box.
+
+## Vision Transformer (ViT) {#sec:patch_transformer}
+
+An overview of the model is depicted in Figure [1](#fig:model){reference-type="ref" reference="fig:model"}. The standard Transformer receives as input a 1D sequence of token embeddings. To handle 2D images, we reshape the image $\mathbf{x} \in \mathbb{R}^{H \times W \times C}$ into a sequence of flattened 2D patches $\mathbf{x}_p \in \mathbb{R}^{N \times (P^2 \cdot C)}$, where $(H, W)$ is the resolution of the original image, $C$ is the number of channels, $(P,P)$ is the resolution of each image patch, and $N=HW/P^2$ is the resulting number of patches, which also serves as the effective input sequence length for the Transformer. The Transformer uses constant latent vector size $D$ through all of its layers, so we flatten the patches and map to $D$ dimensions with a trainable linear projection (Eq. [\[eq:embedding\]](#eq:embedding){reference-type="ref" reference="eq:embedding"}). We refer to the output of this projection as the patch embeddings.
+
+Similar to BERT's `[class]` token, we prepend a learnable embedding to the sequence of embedded patches ($\mathbf{z}_0^0=\mathbf{x}_\text{class}$), whose state at the output of the Transformer encoder ($\mathbf{z}^0_L$) serves as the image representation $\mathbf{y}$ (Eq. [\[eq:final_rep\]](#eq:final_rep){reference-type="ref" reference="eq:final_rep"}). Both during pre-training and fine-tuning, a classification head is attached to $\mathbf{z}^0_L$. The classification head is implemented by a MLP with one hidden layer at pre-training time and by a single linear layer at fine-tuning time.
+
+Position embeddings are added to the patch embeddings to retain positional information. We use standard learnable 1D position embeddings, since we have not observed significant performance gains from using more advanced 2D-aware position embeddings (Appendix [9.4](#app:pos_emb){reference-type="ref" reference="app:pos_emb"}). The resulting sequence of embedding vectors serves as input to the encoder.
+
+The Transformer encoder [@vaswani2017] consists of alternating layers of multiheaded self-attention (MSA, see Appendix [6](#sec:self_attention){reference-type="ref" reference="sec:self_attention"}) and MLP blocks (Eq. [\[eq:msa_apply\]](#eq:msa_apply){reference-type="ref" reference="eq:msa_apply"}, [\[eq:mlp_apply\]](#eq:mlp_apply){reference-type="ref" reference="eq:mlp_apply"}). Layernorm (LN) is applied before every block, and residual connections after every block [@wang2019-preLN; @Baevski2019Adaptive]. The MLP contains two layers with a GELU non-linearity. $$\begin{align}
+    \mathbf{z}_0 &= [ \mathbf{x}_\text{class}; \, \mathbf{x}^1_p \mathbf{E}; \, \mathbf{x}^2_p \mathbf{E}; \cdots; \, \mathbf{x}^{N}_p \mathbf{E} ] + \mathbf{E}_{pos},
+    && \mathbf{E} \in \mathbb{R}^{(P^2 \cdot C) \times D},\, \mathbf{E}_{pos}  \in \mathbb{R}^{(N + 1) \times D} \label{eq:embedding} \\
+    \mathbf{z^\prime}_\ell &= \operatorname{MSA}(\operatorname{LN}(\mathbf{z}_{\ell-1})) + \mathbf{z}_{\ell-1}, && \ell=1\ldots L \label{eq:msa_apply} \\
+    \mathbf{z}_\ell &= \operatorname{MLP}(\operatorname{LN}(\mathbf{z^\prime}_{\ell})) + \mathbf{z^\prime}_{\ell}, && \ell=1\ldots L  \label{eq:mlp_apply} \\
+    \mathbf{y} &= \operatorname{LN}(\mathbf{z}_L^0) \label{eq:final_rep}
+\end{align}$$
+
+#### Inductive bias.
+
+We note that Vision Transformer has much less image-specific inductive bias than CNNs. In CNNs, locality, two-dimensional neighborhood structure, and translation equivariance are baked into each layer throughout the whole model. In ViT, only MLP layers are local and translationally equivariant, while the self-attention layers are global. The two-dimensional neighborhood structure is used very sparingly: in the beginning of the model by cutting the image into patches and at fine-tuning time for adjusting the position embeddings for images of different resolution (as described below). Other than that, the position embeddings at initialization time carry no information about the 2D positions of the patches and all spatial relations between the patches have to be learned from scratch.
+
+#### Hybrid Architecture.
+
+As an alternative to raw image patches, the input sequence can be formed from feature maps of a CNN [@LeCun1989BackpropagationAT]. In this hybrid model, the patch embedding projection $\mathbf{E}$ (Eq. [\[eq:embedding\]](#eq:embedding){reference-type="ref" reference="eq:embedding"}) is applied to patches extracted from a CNN feature map. As a special case, the patches can have spatial size 1x1, which means that the input sequence is obtained by simply flattening the spatial dimensions of the feature map and projecting to the Transformer dimension. The classification input embedding and position embeddings are added as described above.
+
+## Fine-tuning and Higher Resolution
+
+Typically, we pre-train ViT on large datasets, and fine-tune to (smaller) downstream tasks. For this, we remove the pre-trained prediction head and attach a zero-initialized $D\times K$ feedforward layer, where $K$ is the number of downstream classes. It is often beneficial to fine-tune at higher resolution than pre-training [@touvron2019; @kolesnikov2020-bit]. When feeding images of higher resolution, we keep the patch size the same, which results in a larger effective sequence length. The Vision Transformer can handle arbitrary sequence lengths (up to memory constraints), however, the pre-trained position embeddings may no longer be meaningful. We therefore perform 2D interpolation of the pre-trained position embeddings, according to their location in the original image. Note that this resolution adjustment and patch extraction are the only points at which an inductive bias about the 2D structure of the images is manually injected into the Vision Transformer.
+
+# Experiments
+
+We evaluate the representation learning capabilities of ResNet, Vision Transformer (ViT), and the hybrid. To understand the data requirements of each model, we pre-train on datasets of varying size and evaluate many benchmark tasks. When considering the computational cost of pre-training the model, ViT performs very favourably, attaining state of the art on most recognition benchmarks at a lower pre-training cost. Lastly, we perform a small experiment using self-supervision, and show that self-supervised ViT holds promise for the future.
+
+## Setup
+
+**Datasets.** To explore model scalability, we use the ILSVRC-2012 ImageNet dataset with 1k classes and 1.3M images (we refer to it as ImageNet in what follows), its superset ImageNet-21k with 21k classes and 14M images [@deng2009-imagenet], and JFT [@sun2017-jft] with 18k classes and 303M high-resolution images. We de-duplicate the pre-training datasets w.r.t. the test sets of the downstream tasks following @kolesnikov2020-bit. We transfer the models trained on these dataset to several benchmark tasks: ImageNet on the original validation labels and the cleaned-up ReaL labels [@beyer2020-imagenet], CIFAR-10/100 [@Krizhevsky2009-cifar], Oxford-IIIT Pets [@parkhi2012-pets], and Oxford Flowers-102 [@Nilsback2008-flowers]. For these datasets, pre-processing follows @kolesnikov2020-bit.
+
+We also evaluate on the 19-task VTAB classification suite [@vtab]. VTAB evaluates low-data transfer to diverse tasks, using 1 000 training examples per task. The tasks are divided into three groups: *Natural* -- tasks like the above, Pets, CIFAR, etc. *Specialized* -- medical and satellite imagery, and *Structured* -- tasks that require geometric understanding like localization.
+
+**Model Variants.** We base ViT configurations on those used for BERT [@devlin19-bert], as summarized in Table [1](#tbl:models){reference-type="ref" reference="tbl:models"}. The "Base" and "Large" models are directly adopted from BERT and we add the larger "Huge" model. In what follows we use brief notation to indicate the model size and the input patch size: for instance, ViT-L/16 means the "Large" variant with $16\times 16$ input patch size. Note that the Transformer's sequence length is inversely proportional to the square of the patch size, thus models with smaller patch size are computationally more expensive.
+
+For the baseline CNNs, we use ResNet [@he2016deep], but replace the Batch Normalization layers [@ioffe2015batch] with Group Normalization [@wu2018group], and used standardized convolutions [@qiao2019ws]. These modifications improve transfer [@kolesnikov2020-bit], and we denote the modified model "ResNet (BiT)". For the hybrids, we feed the intermediate feature maps into ViT with patch size of one "pixel". To experiment with different sequence lengths, we either (i) take the output of stage 4 of a regular ResNet50 or (ii) remove stage 4, place the same number of layers in stage 3 (keeping the total number of layers), and take the output of this extended stage 3. Option (ii) results in a 4x longer sequence length, and a more expensive ViT model.
+
+  Model        Layers   Hidden size $D$   MLP size   Heads   Params
+  ----------- -------- ----------------- ---------- ------- --------
+  ViT-Base       12           768           3072      12      86M
+  ViT-Large      24          1024           4096      16      307M
+  ViT-Huge       32          1280           5120      16      632M
+
+  : Details of Vision Transformer model variants. {#tbl:models}
+
+**Training & Fine-tuning.** We train all models, including ResNets, using Adam [@kingma2015adam] with $\beta_1=0.9$, $\beta_2=0.999$, a batch size of 4096 and apply a high weight decay of $0.1$, which we found to be useful for transfer of all models (Appendix [9.1](#sec:sgd_vs_adam){reference-type="ref" reference="sec:sgd_vs_adam"} shows that, in contrast to common practices, Adam works slightly better than SGD for ResNets in our setting). We use a linear learning rate warmup and decay, see Appendix [7.1](#sec:training){reference-type="ref" reference="sec:training"} for details. For fine-tuning we use SGD with momentum, batch size 512, for all models, see Appendix [7.1.1](#sec:finetuning){reference-type="ref" reference="sec:finetuning"}. For ImageNet results in Table [\[tbl:best_results\]](#tbl:best_results){reference-type="ref" reference="tbl:best_results"}, we fine-tuned at higher resolution: $512$ for ViT-L/16 and $518$ for ViT-H/14, and also used @polyak averaging with a factor of $0.9999$ [@ramachandran19-sasa; @wang2020axial].
+
+**Metrics.** We report results on downstream datasets either through few-shot or fine-tuning accuracy. Fine-tuning accuracies capture the performance of each model after fine-tuning it on the respective dataset. Few-shot accuracies are obtained by solving a regularized least-squares regression problem that maps the (frozen) representation of a subset of training images to $\{-1,1\}^K$ target vectors. This formulation allows us to recover the exact solution in closed form. Though we mainly focus on fine-tuning performance, we sometimes use linear few-shot accuracies for fast on-the-fly evaluation where fine-tuning would be too costly.
+
+## Comparison to State of the Art
+
+We first compare our largest models -- ViT-H/14 and ViT-L/16  -- to state-of-the-art CNNs from the literature. The first comparison point is Big Transfer (BiT) [@kolesnikov2020-bit], which performs supervised transfer learning with large ResNets. The second is Noisy Student [@xie2020-noisystudent], which is a large EfficientNet trained using semi-supervised learning on ImageNet and JFT-300M with the labels removed. Currently, Noisy Student is the state of the art on ImageNet and BiT-L on the other datasets reported here. All models were trained on TPUv3 hardware, and we report the number of TPUv3-core-days taken to pre-train each of them, that is, the number of TPU v3 cores (2 per chip) used for training multiplied by the training time in days.
+
+Table [\[tbl:best_results\]](#tbl:best_results){reference-type="ref" reference="tbl:best_results"} shows the results. The smaller ViT-L/16 model pre-trained on JFT-300M outperforms BiT-L (which is pre-trained on the same dataset) on all tasks, while requiring substantially less computational resources to train. The larger model, ViT-H/14, further improves the performance, especially on the more challenging datasets -- ImageNet, CIFAR-100, and the VTAB suite. Interestingly, this model still took substantially less compute to pre-train than prior state of the art. However, we note that pre-training efficiency may be affected not only by the architecture choice, but also other parameters, such as training schedule, optimizer, weight decay, etc. We provide a controlled study of performance vs. compute for different architectures in Section [4.4](#sec:scaling_architectures){reference-type="ref" reference="sec:scaling_architectures"}. Finally, the ViT-L/16 model pre-trained on the public ImageNet-21k dataset performs well on most datasets too, while taking fewer resources to pre-train: it could be trained using a standard cloud TPUv3 with 8 cores in approximately 30 days.
+
+Figure [2](#fig:vtab){reference-type="ref" reference="fig:vtab"} decomposes the VTAB tasks into their respective groups, and compares to previous SOTA methods on this benchmark: BiT, VIVI -- a ResNet co-trained on ImageNet and Youtube [@vivi], and S4L -- supervised plus semi-supervised learning on ImageNet [@zhai2019s4l]. ViT-H/14 outperforms BiT-R152x4, and other methods, on the *Natural* and *Structured* tasks. On the *Specialized* the performance of the top two models is similar.
+
+## Pre-training Data Requirements {#sec:data_efficiency}
+
+The Vision Transformer performs well when pre-trained on a large JFT-300M dataset. With fewer inductive biases for vision than ResNets, how crucial is the dataset size? We perform two series of experiments.
+
+First, we pre-train ViT models on datasets of increasing size: ImageNet, ImageNet-21k, and JFT-300M. To boost the performance on the smaller datasets, we optimize three basic regularization parameters -- weight decay, dropout, and label smoothing. Figure [\[fig:imagenet_imagenet21k_jft\]](#fig:imagenet_imagenet21k_jft){reference-type="ref" reference="fig:imagenet_imagenet21k_jft"} shows the results after fine-tuning to ImageNet(results on other datasets are shown in Table [\[tbl:imagenet_imagenet21k_jft\]](#tbl:imagenet_imagenet21k_jft){reference-type="ref" reference="tbl:imagenet_imagenet21k_jft"})[^2]. When pre-trained on the smallest dataset, ImageNet, ViT-Large models underperform compared to ViT-Base models, despite (moderate) regularization. With ImageNet-21k pre-training, their performances are similar. Only with JFT-300M, do we see the full benefit of larger models. Figure [\[fig:imagenet_imagenet21k_jft\]](#fig:imagenet_imagenet21k_jft){reference-type="ref" reference="fig:imagenet_imagenet21k_jft"} also shows the performance region spanned by BiT models of different sizes. The BiT CNNs outperform ViT on ImageNet, but with the larger datasets, ViT overtakes.
+
+Second, we train our models on random subsets of 9M, 30M, and 90M as well as the full JFT-300M dataset. We do not perform additional regularization on the smaller subsets and use the same hyper-parameters for all settings. This way, we assess the intrinsic model properties, and not the effect of regularization. We do, however, use early-stopping, and report the best validation accuracy achieved during training. To save compute, we report few-shot linear accuracy instead of full fine-tuning accuracy. Figure [3](#fig:jft_amount_of_data){reference-type="ref" reference="fig:jft_amount_of_data"} contains the results. Vision Transformers overfit more than ResNets with comparable computational cost on smaller datasets. For example, ViT-B/32 is slightly faster than ResNet50; it performs much worse on the 9M subset, but better on 90M+ subsets. The same is true for ResNet152x2 and ViT-L/16. This result reinforces the intuition that the convolutional inductive bias is useful for smaller datasets, but for larger ones, learning the relevant patterns directly from data is sufficient, even beneficial.
+
+Overall, the few-shot results on ImageNet (Figure [3](#fig:jft_amount_of_data){reference-type="ref" reference="fig:jft_amount_of_data"}), as well as the low-data results on VTAB (Table [\[tbl:best_results\]](#tbl:best_results){reference-type="ref" reference="tbl:best_results"}) seem promising for very low-data transfer. Further analysis of few-shot properties of ViT is an exciting direction of future work.
+
+## Scaling Study {#sec:scaling_architectures}
+
+We perform a controlled scaling study of different models by evaluating transfer performance from JFT-300M. In this setting data size does not bottleneck the models' performances, and we assess performance versus pre-training cost of each model. The model set includes: 7 ResNets, R50x1, R50x2 R101x1, R152x1, R152x2, pre-trained for 7 epochs, plus R152x2 and R200x3 pre-trained for 14 epochs; 6 Vision Transformers, ViT-B/32, B/16, L/32, L/16, pre-trained for 7 epochs, plus L/16 and H/14 pre-trained for 14 epochs; and 5 hybrids, R50+ViT-B/32, B/16, L/32, L/16 pre-trained for 7 epochs, plus R50+ViT-L/16 pre-trained for 14 epochs (for hybrids, the number at the end of the model name stands not for the patch size, but for the total dowsampling ratio in the ResNet backbone).
+
+Figure [4](#fig:scaling_architectures){reference-type="ref" reference="fig:scaling_architectures"} contains the transfer performance versus total pre-training compute (see Appendix [9.5](#sec:empirical_computation){reference-type="ref" reference="sec:empirical_computation"} for details on computational costs). Detailed results per model are provided in Table [\[tbl:scaling_architectures\]](#tbl:scaling_architectures){reference-type="ref" reference="tbl:scaling_architectures"} in the Appendix. A few patterns can be observed. First, Vision Transformers dominate ResNets on the performance/compute trade-off. ViT uses approximately $2-4\times$ less compute to attain the same performance (average over 5 datasets). Second, hybrids slightly outperform ViT at small computational budgets, but the difference vanishes for larger models. This result is somewhat surprising, since one might expect convolutional local feature processing to assist ViT at any size. Third, Vision Transformers appear not to saturate within the range tried, motivating future scaling efforts.
+
+## Inspecting Vision Transformer
+
+::: wrapfigure
+r0.3 > Figure: image
+:::
+
+To begin to understand how the Vision Transformer processes image data, we analyze its internal representations. The first layer of the Vision Transformer linearly projects the flattened patches into a lower-dimensional space (Eq. [\[eq:embedding\]](#eq:embedding){reference-type="ref" reference="eq:embedding"}). Figure [5](#fig:transformer_visualization){reference-type="ref" reference="fig:transformer_visualization"} (left) shows the top principal components of the the learned embedding filters. The components resemble plausible basis functions for a low-dimensional representation of the fine structure within each patch.
+
+After the projection, a learned position embedding is added to the patch representations. Figure [5](#fig:transformer_visualization){reference-type="ref" reference="fig:transformer_visualization"} (center) shows that the model learns to encode distance within the image in the similarity of position embeddings, i.e. closer patches tend to have more similar position embeddings. Further, the row-column structure appears; patches in the same row/column have similar embeddings. Finally, a sinusoidal structure is sometimes apparent for larger grids (Appendix [9](#sec:additional_analyses){reference-type="ref" reference="sec:additional_analyses"}). That the position embeddings learn to represent 2D image topology explains why hand-crafted 2D-aware embedding variants do not yield improvements (Appendix [9.4](#app:pos_emb){reference-type="ref" reference="app:pos_emb"}).
+
+Self-attention allows ViT to integrate information across the entire image even in the lowest layers. We investigate to what degree the network makes use of this capability. Specifically, we compute the average distance in image space across which information is integrated, based on the attention weights (Figure [5](#fig:transformer_visualization){reference-type="ref" reference="fig:transformer_visualization"}, right). This "attention distance" is analogous to receptive field size in CNNs. We find that some heads attend to most of the image already in the lowest layers, showing that the ability to integrate information globally is indeed used by the model. Other attention heads have consistently small attention distances in the low layers. This highly localized attention is less pronounced in hybrid models that apply a ResNet before the Transformer (Figure [5](#fig:transformer_visualization){reference-type="ref" reference="fig:transformer_visualization"}, right), suggesting that it may serve a similar function as early convolutional layers in CNNs. Further, the attention distance increases with network depth. Globally, we find that the model attends to image regions that are semantically relevant for classification (Figure [\[fig:selected_attention_examples\]](#fig:selected_attention_examples){reference-type="ref" reference="fig:selected_attention_examples"}).
+
+## Self-supervision
+
+Transformers show impressive performance on NLP tasks. However, much of their success stems not only from their excellent scalability but also from large scale self-supervised pre-training [@devlin19-bert; @radford2018-gpt]. We also perform a preliminary exploration on *masked patch prediction* for self-supervision, mimicking the masked language modeling task used in BERT. With self-supervised pre-training, our smaller ViT-B/16 model achieves 79.9% accuracy on ImageNet, a significant improvement of 2% to training from scratch, but still 4% behind supervised pre-training. Appendix [7.1.2](#sec:self_supervision){reference-type="ref" reference="sec:self_supervision"} contains further details. We leave exploration of contrastive pre-training [@Chen2020simclr; @he2020moco; @bachman2019amdim; @henaff2020cpc] to future work.
+
+# Conclusion
+
+We have explored the direct application of Transformers to image recognition. Unlike prior works using self-attention in computer vision, we do not introduce image-specific inductive biases into the architecture apart from the initial patch extraction step. Instead, we interpret an image as a sequence of patches and process it by a standard Transformer encoder as used in NLP. This simple, yet scalable, strategy works surprisingly well when coupled with pre-training on large datasets. Thus, Vision Transformer matches or exceeds the state of the art on many image classification datasets, whilst being relatively cheap to pre-train.
+
+While these initial results are encouraging, many challenges remain. One is to apply ViT to other computer vision tasks, such as detection and segmentation. Our results, coupled with those in @carion20-detr, indicate the promise of this approach. Another challenge is to continue exploring self-supervised pre-training methods. Our initial experiments show improvement from self-supervised pre-training, but there is still large gap between self-supervised and large-scale supervised pre-training. Finally, further scaling of ViT would likely lead to improved performance.
+
+# Acknowledgements {#acknowledgements .unnumbered}
+
+The work was performed in Berlin, Zürich, and Amsterdam. We thank many colleagues at Google for their help, in particular Andreas Steiner for crucial help with the infrastructure and the open-source release of the code; Joan Puigcerver and Maxim Neumann for help with the large-scale training infrastructure; Dmitry Lepikhin, Aravindh Mahendran, Daniel Keysers, Mario Lučić, Noam Shazeer, Ashish Vaswani, and Colin Raffel for useful discussions.
+
+# Appendix {#appendix .unnumbered}
+
+# Multihead Self-attention {#sec:self_attention}
+
+Standard $\mathbf{qkv}$ self-attention (SA, @vaswani2017) is a popular building block for neural architectures. For each element in an input sequence $\mathbf{z} \in \mathbb{R}^{N \times D}$, we compute a weighted sum over all values $\mathbf{v}$ in the sequence. The attention weights $A_{ij}$ are based on the pairwise similarity between two elements of the sequence and their respective query $\mathbf{q}^i$ and key $\mathbf{k}^j$ representations. $$\begin{align}
+    [\mathbf{q}, \mathbf{k}, \mathbf{v}] &= \mathbf{z} \mathbf{U}_{qkv}
+    & \mathbf{U}_{qkv} &\in \mathbb{R}^{D \times 3 D_h} , \label{eq:qkv} \\
+    A &= \operatorname{softmax}\left(\mathbf{q}\mathbf{k}^\top / \sqrt{D_h}\right)
+    & A &\in \mathbb{R}^{N \times N} , \label{eq:attn_matrix}\\
+    \operatorname{SA}(\mathbf{z}) &= A\mathbf{v}\,. \label{eq:selfattn}
+\end{align}$$
+
+Multihead self-attention (MSA) is an extension of SA in which we run $k$ self-attention operations, called "heads", in parallel, and project their concatenated outputs. To keep compute and number of parameters constant when changing $k$, $D_h$ (Eq. [\[eq:qkv\]](#eq:qkv){reference-type="ref" reference="eq:qkv"}) is typically set to $D/k$. $$\begin{align}
+    \operatorname{MSA}(\mathbf{z}) &= [\operatorname{SA}_1(z); \operatorname{SA}_2(z); \cdots ; \operatorname{SA}_k(z)] \, \mathbf{U}_{msa} & \mathbf{U}_{msa} \in \mathbb{R}^{k \cdot D_h \times D} \label{eq:msa}
+\end{align}$$
+
+# Experiment details
+
+## Training {#sec:training}
+
+  Models              Dataset         Epochs        Base LR        LR decay   Weight decay   Dropout
+  ------------------- -------------- -------- ------------------- ---------- -------------- --------- -- --
+  ViT-B/{16,32}       JFT-300M          7      $8 \cdot 10^{-4}$    linear        0.1          0.0
+  ViT-L/32            JFT-300M          7      $6 \cdot 10^{-4}$    linear        0.1          0.0
+  ViT-L/16            JFT-300M         7/14    $4 \cdot 10^{-4}$    linear        0.1          0.0
+  ViT-H/14            JFT-300M          14     $3 \cdot 10^{-4}$    linear        0.1          0.0
+  R50x{1,2}           JFT-300M          7          $10^{-3}$        linear        0.1          0.0
+  R101x1              JFT-300M          7      $8 \cdot 10^{-4}$    linear        0.1          0.0
+  R152x{1,2}          JFT-300M          7      $6 \cdot 10^{-4}$    linear        0.1          0.0
+  R50+ViT-B/{16,32}   JFT-300M          7      $8 \cdot 10^{-4}$    linear        0.1          0.0
+  R50+ViT-L/32        JFT-300M          7      $2 \cdot 10^{-4}$    linear        0.1          0.0
+  R50+ViT-L/16        JFT-300M         7/14    $4 \cdot 10^{-4}$    linear        0.1          0.0
+  ViT-B/{16,32}       ImageNet-21k      90         $10^{-3}$        linear        0.03         0.1
+  ViT-L/{16,32}       ImageNet-21k    30/90        $10^{-3}$        linear        0.03         0.1
+  ViT-$\ast$          ImageNet         300     $3 \cdot 10^{-3}$    cosine        0.3          0.1
+
+  : Hyperparameters for training. All models are trained with a batch size of 4096 and learning rate warmup of 10k steps. For ImageNet we found it beneficial to additionally apply gradient clipping at global norm 1. Training resolution is 224. {#tbl:hparams-training}
+
+Table [2](#tbl:hparams-training){reference-type="ref" reference="tbl:hparams-training"} summarizes our training setups for our different models. We found strong regularization to be key when training models from scratch on ImageNet. Dropout, when used, is applied after every dense layer except for the the qkv-projections and directly after adding positional- to patch embeddings. Hybrid models are trained with the exact setup as their ViT counterparts. Finally, all training is done on resolution 224.
+
+### Fine-tuning {#sec:finetuning}
+
+  Dataset               Steps             Base LR
+  -------------------- -------- ----------------------------
+  ImageNet              20 000   {0.003, 0.01, 0.03, 0.06}
+  CIFAR100              10 000   {0.001, 0.003, 0.01, 0.03}
+  CIFAR10               10 000   {0.001, 0.003, 0.01, 0.03}
+  Oxford-IIIT Pets       500     {0.001, 0.003, 0.01, 0.03}
+  Oxford Flowers-102     500     {0.001, 0.003, 0.01, 0.03}
+  VTAB (19 tasks)       2 500               0.01
+
+  : Hyperparameters for fine-tuning. All models are fine-tuned with cosine learning rate decay, a batch size of 512, no weight decay, and grad clipping at global norm 1. If not mentioned otherwise, fine-tuning resolution is 384. {#tbl:hparams-finetuning}
+
+We fine-tune all ViT models using SGD with a momentum of 0.9. We run a small grid search over learning rates, see learning rate ranges in Table [3](#tbl:hparams-finetuning){reference-type="ref" reference="tbl:hparams-finetuning"}. To do so, we use small sub-splits from the training set (10% for Pets and Flowers, 2% for CIFAR, 1% ImageNet) as development set and train on the remaining data. For final results we train on the entire training set and evaluate on the respective test data. For fine-tuning ResNets and hybrid models we use the exact same setup, with the only exception of ImageNet where we add another value $0.06$ to the learning rate sweep. Additionally, for ResNets we also run the setup of @kolesnikov2020-bit and select the best results across this run and our sweep. Finally, if not mentioned otherwise, all fine-tuning experiments run at 384 resolution (running fine-tuning at different resolution than training is common practice [@kolesnikov2020-bit]).
+
+When transferring ViT models to another dataset, we remove the whole head (two linear layers) and replace it by a single, zero-initialized linear layer outputting the number of classes required by the target dataset. We found this to be a little more robust than simply re-initializing the very last layer.
+
+For VTAB we follow the protocol in @kolesnikov2020-bit, and use the same hyperparameter setting for all tasks. We use a learning rate of $0.01$ and train for $2500$ steps (Tab. [3](#tbl:hparams-finetuning){reference-type="ref" reference="tbl:hparams-finetuning"}). We chose this setting by running a small sweep over two learning rates and two schedules, and selecting the setting with the highest VTAB score on the 200-example validation sets. We follow the pre-processing used in [@kolesnikov2020-bit], except that we do not use task-specific input resolutions. Instead we find that Vision Transformer benefits most from a high resolution ($384\times 384$) for all tasks.
+
+### Self-supervision {#sec:self_supervision}
+
+We employ the *masked patch prediction* objective for preliminary self-supervision experiments. To do so we corrupt 50% of patch embeddings by either replacing their embeddings with a learnable `[mask]` embedding (80%), a random other patch embedding (10%) or just keeping them as is (10%). This setup is very similar to the one used for language by @devlin19-bert. Finally, we predict the 3-bit, mean color (i.e., 512 colors in total) of every corrupted patch using their respective patch representations.
+
+We trained our self-supervised model for 1M steps (ca. 14 epochs) with batch size 4096 on JFT. We use Adam, with a base learning rate of $2 \cdot 10^{-4}$, warmup of 10k steps and cosine learning rate decay. As prediction targets for pretraining we tried the following settings: 1) predicting only the mean, 3bit color (i.e., 1 prediction of 512 colors), 2) predicting a $4 \times 4$ downsized version of the $16 \times 16$ patch with 3bit colors in parallel (i.e., 16 predictions of 512 colors), 3) regression on the full patch using L2 (i.e., 256 regressions on the 3 RGB channels). Surprisingly, we found that all worked quite well, though L2 was slightly worse. We report final results only for option 1) because it has shown best few-shot performance. We also experimented with 15% corruption rate as used by @devlin19-bert but results were also slightly worse on our few-shot metrics.
+
+Lastly, we would like to remark that our instantiation of masked patch prediction doesn't require such an enormous amount of pretraining nor a large dataset such as JFT in order to lead to similar performance gains on ImageNet classification. That is, we observed diminishing returns on downstream performance after 100k pretraining steps, and see similar gains when pretraining on ImageNet.
+
+# Additional Results
+
+We report detailed results corresponding to the figures presented in the paper. Table [\[tbl:imagenet_imagenet21k_jft\]](#tbl:imagenet_imagenet21k_jft){reference-type="ref" reference="tbl:imagenet_imagenet21k_jft"} corresponds to Figure [\[fig:imagenet_imagenet21k_jft\]](#fig:imagenet_imagenet21k_jft){reference-type="ref" reference="fig:imagenet_imagenet21k_jft"} from the paper and shows transfer performance of different ViT models pre-trained on datasets of increasing size: ImageNet, ImageNet-21k, and JFT-300M. Table [\[tbl:scaling_architectures\]](#tbl:scaling_architectures){reference-type="ref" reference="tbl:scaling_architectures"} corresponds to Figure [4](#fig:scaling_architectures){reference-type="ref" reference="fig:scaling_architectures"} from the paper and shows the transfer performance of ViT, ResNet, and hybrid models of varying size, as well as the estimated computational cost of their pre-training.
+
+# Additional Analyses {#sec:additional_analyses}
+
+## SGD vs. Adam for ResNets {#sec:sgd_vs_adam}
+
+ResNets are typically trained with SGD and our use of Adam as optimizer is quite unconventional. Here we show the experiments that motivated this choice. Namely, we compare the fine-tuning performance of two ResNets -- 50x1 and 152x2 -- pre-trained on JFT with SGD and Adam. For SGD, we use the hyperparameters recommended by @kolesnikov2020-bit. Results are presented in Table [4](#tbl:resnet_adam_vs_sgd){reference-type="ref" reference="tbl:resnet_adam_vs_sgd"}. Adam pre-training outperforms SGD pre-training on most datasets and on average. This justifies the choice of Adam as the optimizer used to pre-train ResNets on JFT. Note that the absolute numbers are lower than those reported by @kolesnikov2020-bit, since we pre-train only for $7$ epochs, not $30$.
+
++:-------------------+:-------:+:-------:+:-------:+:-------:+
+|                    | ResNet50          | ResNet152x2       |
++--------------------+---------+---------+---------+---------+
+| Dataset            | Adam    | SGD     | Adam    | SGD     |
++--------------------+---------+---------+---------+---------+
+| ImageNet           | $77.54$ | $78.24$ | $84.97$ | $84.37$ |
++--------------------+---------+---------+---------+---------+
+| CIFAR10            | $97.67$ | $97.46$ | $99.06$ | $99.07$ |
++--------------------+---------+---------+---------+---------+
+| CIFAR100           | $86.07$ | $85.17$ | $92.05$ | $91.06$ |
++--------------------+---------+---------+---------+---------+
+| Oxford-IIIT Pets   | $91.11$ | $91.00$ | $95.37$ | $94.79$ |
++--------------------+---------+---------+---------+---------+
+| Oxford Flowers-102 | $94.26$ | $92.06$ | $98.62$ | $99.32$ |
++--------------------+---------+---------+---------+---------+
+| Average            | $89.33$ | $88.79$ | $94.01$ | $93.72$ |
++--------------------+---------+---------+---------+---------+
+
+: Fine-tuning ResNet models pre-trained with Adam and SGD. {#tbl:resnet_adam_vs_sgd}
+
+## Transformer shape
+
+We ran ablations on scaling different dimensions of the Transformer architecture to find out which are best suited for scaling to very large models. Figure [6](#fig:scaling_transformers){reference-type="ref" reference="fig:scaling_transformers"} shows 5-shot performance on ImageNet for different configurations. All configurations are based on a ViT model with $8$ layers, $D=1024$, $D_{MLP}=2048$ and a patch size of $32$, the intersection of all lines. We can see that scaling the depth results in the biggest improvements which are clearly visible up until 64 layers. However, diminishing returns are already visible after 16 layers. Interestingly, scaling the width of the network seems to result in the smallest changes. Decreasing the patch size and thus increasing the effective sequence length shows surprisingly robust improvements without introducing parameters. These findings suggest that compute might be a better predictor of performance than the number of parameters, and that scaling should emphasize depth over width if any. Overall, we find that scaling all dimensions proportionally results in robust improvements.
+
+## Head Type and `class` token {#app:head_types}
+
+In order to stay as close as possible to the original Transformer model, we made use of an additional `[class]` token, which is taken as image representation. The output of this token is then transformed into a class prediction via a small multi-layer perceptron (MLP) with $\tanh$ as non-linearity in the single hidden layer.
+
+This design is inherited from the Transformer model for text, and we use it throughout the main paper. An initial attempt at using only image-patch embeddings, globally average-pooling (GAP) them, followed by a linear classifier---just like ResNet's final feature map---performed very poorly. However, we found that this is neither due to the extra token, nor to the GAP operation. Instead, the difference in performance is fully explained by the requirement for a different learning-rate, see Figure [7](#fig:head_tokens){reference-type="ref" reference="fig:head_tokens"}.
+
+## Positional Embedding {#app:pos_emb}
+
+We ran ablations on different ways of encoding spatial information using positional embedding. We tried the following cases:
+
+- Providing no positional information: Considering the inputs as a *bag of patches*.
+
+- 1-dimensional positional embedding: Considering the inputs as a sequence of patches in the raster order (default across all other experiments in this paper).
+
+- 2-dimensional positional embedding: Considering the inputs as a grid of patches in two dimensions. In this case, two sets of embeddings are learned, each for one of the axes, $X$-embedding, and $Y$-embedding, each with size $D/2$. Then, based on the coordinate on the path in the input, we concatenate the $X$ and $Y$ embedding to get the final positional embedding for that patch.
+
+- Relative positional embeddings: Considering the relative distance between patches to encode the spatial information as instead of their absolute position. To do so, we use 1-dimensional Relative Attention, in which we define the relative distance all possible pairs of patches. Thus, for every given pair (one as query, and the other as key/value in the attention mechanism), we have an offset $p_{q}-p_{k}$, where each offset is associated with an embedding. Then, we simply run extra attention, where we use the original query (the content of query), but use relative positional embeddings as keys. We then use the logits from the relative attention as a bias term and add it to the logits of the main attention (content-based attention) before applying the softmax.
+
+  Pos. Emb.         Default/Stem   Every Layer   Every Layer-Shared
+  ---------------- -------------- ------------- --------------------
+  No Pos. Emb.        0.61382          N/A              N/A
+  1-D Pos. Emb.       0.64206        0.63964          0.64292
+  2-D Pos. Emb.       0.64001        0.64046          0.64022
+  Rel. Pos. Emb.      0.64032          N/A              N/A
+
+  : Results of the ablation study on positional embeddings with ViT-B/16 model evaluated on ImageNet 5-shot linear. {#tbl:pos_emb_abblation}
+
+In addition to different ways of encoding spatial information, we also tried different ways of incorporating this information in our model. For the 1-dimensional and 2-dimensional positional embeddings, we tried three different cases: (1) add positional embeddings to the inputs right after the stem of them model and before feeding the inputs to the Transformer encoder (default across all other experiments in this paper); (2) learn and add positional embeddings to the inputs at the beginning of each layer; (3) add a learned positional embeddings to the inputs at the beginning of each layer (shared between layers).
+
+Table [5](#tbl:pos_emb_abblation){reference-type="ref" reference="tbl:pos_emb_abblation"} summarizes the results from this ablation study on a ViT-B/16 model. As we can see, while there is a large gap between the performances of the model with no positional embedding and models with positional embedding, there is little to no difference between different ways of encoding positional information. We speculate that since our Transformer encoder operates on patch-level inputs, as opposed to pixel-level, the differences in how to encode spatial information is less important. More precisely, in patch-level inputs, the spatial dimensions are much smaller than the original pixel-level inputs, e.g., $14\times14$ as opposed to $224\times224$, and learning to represent the spatial relations in this resolution is equally easy for these different positional encoding strategies. Even so, the specific pattern of position embedding similarity learned by the network depends on the training hyperparameters (Figure [8](#fig:position_embedding_comparison){reference-type="ref" reference="fig:position_embedding_comparison"}).
+
+## Empirical Computational Costs {#sec:empirical_computation}
+
+We are also interested in real-world speed of the architectures on our hardware, which is not always well predicted by theoretical FLOPs due to details like lane widths and cache sizes. For this purpose, we perform timing of inference speed for the main models of interest, on a TPUv3 accelerator; the difference between inference and backprop speed is a constant model-independent factor.
+
+Figure [10](#fig:real_time){reference-type="ref" reference="fig:real_time"} (left) shows how many images one core can handle per second, across various input sizes. Every single point refers to the peak performance measured across a wide range of batch-sizes. As can be seen, the theoretical bi-quadratic scaling of ViT with image size only barely starts happening for the largest models at the largest resolutions.
+
+Another quantity of interest is the largest batch-size each model can fit onto a core, larger being better for scaling to large datasets. Figure [10](#fig:real_time){reference-type="ref" reference="fig:real_time"} (right) shows this quantity for the same set of models. This shows that large ViT models have a clear advantage in terms of memory-efficiency over ResNet models.
+
+## Axial Attention
+
+Axial Attention [@huang2020ccnet; @ho2019-axialattention] is a simple, yet effective technique to run self-attention on large inputs that are organized as multidimensional tensors. The general idea of axial attention is to perform multiple attention operations, each along a single axis of the input tensor, instead of applying 1-dimensional attention to the flattened version of the input. In axial attention, each attention mixes information along a particular axis, while keeping information along the other axes independent. Along this line, @wang2020axial proposed the AxialResNet model in which all the convolutions with kernel size $3\times3$ in a ResNet50 are replaced by axial self-attention, i.e. a row and column attention, augmented by relative positional encoding. We have implemented AxialResNet as a baseline model.[^3].
+
+Moreover, we have modified ViT to process inputs in the 2-dimensional shape, instead of a 1-dimensional sequence of patches, and incorporate Axial Transformer blocks, in which instead of a self-attention followed by an MLP, we have a a row-self-attention plus an MLP followed by a column-self-attention plus an MLP.
+
+Figure [11](#fig:axial_compute_performance){reference-type="ref" reference="fig:axial_compute_performance"}, present the performance of Axial ResNet, Axial-ViT-B/32 and Axial-ViT-B/16 on ImageNet 5shot linear, when pretrained on JFT dataset, verses the pretraining compute, both in terms of number of FLOPs and inference time (example per seconds). As we can see, both Axial-ViT-B/32 and Axial-ViT-B/16 do better than their ViT-B counterpart in terms of performance, but it comes at the cost of more compute. This is because in Axial-ViT models, each Transformer block with global self-attention is replaced by two Axial Transformer blocks, one with row and one with column self-attention and although the sequence length that self-attention operates on is smaller in axial case, there is a extra MLP per Axial-ViT block. For the AxialResNet, although it looks reasonable in terms of accuracy/compute trade-off (Figure [11](#fig:axial_compute_performance){reference-type="ref" reference="fig:axial_compute_performance"}, left), the naive implementation is extremely slow on TPUs (Figure [11](#fig:axial_compute_performance){reference-type="ref" reference="fig:axial_compute_performance"}, right).
+
+## Attention Distance {#sec:appendix_attention_distance}
+
+To understand how ViT uses self-attention to integrate information across the image, we analyzed the average distance spanned by attention weights at different layers (Figure [9](#fig:attention_distance){reference-type="ref" reference="fig:attention_distance"}). This "attention distance" is analogous to receptive field size in CNNs. Average attention distance is highly variable across heads in lower layers, with some heads attending to much of the image, while others attend to small regions at or near the query location. As depth increases, attention distance increases for all heads. In the second half of the network, most heads attend widely across tokens.
+
+## Attention Maps
+
+To compute maps of the attention from the output token to the input space (Figures [\[fig:selected_attention_examples\]](#fig:selected_attention_examples){reference-type="ref" reference="fig:selected_attention_examples"} and [12](#fig:batch_attention_examples){reference-type="ref" reference="fig:batch_attention_examples"}), we used Attention Rollout [@abnar2020quantifying]. Briefly, we averaged attention weights of ViT-L/16 across all heads and then recursively multiplied the weight matrices of all layers. This accounts for the mixing of attention across tokens through all layers.
+
+## ObjectNet Results
+
+We also evaluate our flagship ViT-H/14 model on the ObjectNet benchmark following the evaluation setup in [@kolesnikov2020-bit], resulting in 82.1% top-5 accuracy and 61.7% top-1 accuracy.
+
+## VTAB Breakdown
+
+Table [\[tab:vtab_tasks\]](#tab:vtab_tasks){reference-type="ref" reference="tab:vtab_tasks"} shows the scores attained on each of the VTAB-1k tasks.
+
+::: tabularx
+p10ptp1.6cm! CCCCCCC!CCCC!CCCCCCCC!C & & & & & & & & & & & & & & & & & & & & &\
+
+& ViT-H/14 (JFT) & 95.3 & 85.5 & 75.2 & 99.7 & 97.2 & 65.0 & 88.9 & 83.3 & 96.7 & 91.4 & 76.6 & 91.7 & 63.8 & 53.1 & 79.4 & 63.3 & 84.5 & 33.2 & 51.2 & 77.6\
+& ViT-L/16 (JFT) & 95.4 & 81.9 & 74.3 & 99.7 & 96.7 & 63.5 & 87.4 & 83.6 & 96.5 & 89.7 & 77.1 & 86.4 & 63.1 & 49.7 & 74.5 & 60.5 & 82.2 & 36.2 & 51.1 & 76.3\
+& ViT-L/16 (I21k) & 90.8 & 84.1 & 74.1 & 99.3 & 92.7 & 61.0 & 80.9 & 82.5 & 95.6 & 85.2 & 75.3 & 70.3 & 56.1 & 41.9 & 74.7 & 64.9 & 79.9 & 30.5 & 41.7 & 72.7\
+:::
+
+[]{#tab:vtab_tasks label="tab:vtab_tasks"}
+
+[^1]: Fine-tuning code and pre-trained models are available at <https://github.com/google-research/vision_transformer>
+
+[^2]: Note that the ImageNet pre-trained models are also fine-tuned, but again on ImageNet. This is because the resolution increase during fine-tuning improves the performance.
+
+[^3]: Our implementation is based on the open-sourced PyTorch implementation in <https://github.com/csrhddlam/axial-deeplab>. In our experiments, we reproduced the scores reported in [@wang2020axial] in terms of accuracy, however, our implementation, similar to the open-source implementation, is very slow on TPUs. Therefore, we were not able to use it for extensive large-scale experiments. These may be unlocked by a carefully optimized implementation.

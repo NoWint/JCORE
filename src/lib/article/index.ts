@@ -1,15 +1,20 @@
-import { makeDiagnostic, type Diagnostic } from '../../../scripts/validate/diagnostics';
-import { cleanHeadingText, normalizeSourceId } from './normalize';
-import type { ArticleReference, ArticleStructure, Heading } from './types';
+import {
+  makeDiagnostic,
+  type Diagnostic,
+} from "../../../scripts/validate/diagnostics";
+import { cleanHeadingText, normalizeSourceId } from "./normalize";
+import type { ArticleReference, ArticleStructure, Heading } from "./types";
 
 function slugify(value: string): string {
-  return normalizeSourceId(value)
-    .replace(/[^a-z0-9\u4e00-\u9fff_-]+/g, '-')
-    .replace(/^-+|-+$/g, '') || 'section';
+  return (
+    normalizeSourceId(value)
+      .replace(/[^a-z0-9\u4e00-\u9fff_-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "section"
+  );
 }
 
 function uniqueId(candidate: string, used: Set<string>): string {
-  const base = candidate || 'section';
+  const base = candidate || "section";
   let id = base;
   let suffix = 2;
   while (used.has(id)) {
@@ -22,8 +27,10 @@ function uniqueId(candidate: string, used: Set<string>): string {
 
 function parseReferenceTargets(markdown: string): ArticleReference[] {
   const references: ArticleReference[] = [];
-  for (const match of markdown.matchAll(/\]\(#([^)]+)\)|href=["']#([^"']+)["']/g)) {
-    const target = normalizeSourceId(match[1] ?? match[2] ?? '');
+  for (const match of markdown.matchAll(
+    /\]\(#([^)]+)\)|href=["']#([^"']+)["']/g,
+  )) {
+    const target = normalizeSourceId(match[1] ?? match[2] ?? "");
     if (target) {
       references.push({ target, source: match[0] });
     }
@@ -31,13 +38,35 @@ function parseReferenceTargets(markdown: string): ArticleReference[] {
   return references;
 }
 
-export function indexArticleBody(markdown: string): ArticleStructure & { diagnostics: Diagnostic[] } {
+export function indexArticleBody(
+  markdown: string,
+): ArticleStructure & { diagnostics: Diagnostic[] } {
   const headings: Heading[] = [];
   const ids = new Set<string>();
   const diagnostics: Diagnostic[] = [];
   let pendingHeadingId: string | undefined;
+  let fencedCode: { marker: "`" | "~"; length: number } | undefined;
 
-  for (const line of markdown.split('\n')) {
+  for (const line of markdown.split("\n")) {
+    const fence = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fencedCode) {
+      if (
+        fence &&
+        fence[1][0] === fencedCode.marker &&
+        fence[1].length >= fencedCode.length
+      ) {
+        fencedCode = undefined;
+      }
+      continue;
+    }
+    if (fence) {
+      fencedCode = {
+        marker: fence[1][0] as "`" | "~",
+        length: fence[1].length,
+      };
+      continue;
+    }
+
     for (const rawId of line.matchAll(/(?:^|\s)id=["']([^"']+)["']/g)) {
       ids.add(normalizeSourceId(rawId[1]));
     }
@@ -52,17 +81,19 @@ export function indexArticleBody(markdown: string): ArticleStructure & { diagnos
       /<!--\s*jcore-target-id:([^\s]+)\s*-->|data-jcore-target-id=["']([^"']+)["']/,
     );
     if (targetMarker) {
-      const requestedId = normalizeSourceId(targetMarker[1] ?? targetMarker[2] ?? '');
+      const requestedId = normalizeSourceId(
+        targetMarker[1] ?? targetMarker[2] ?? "",
+      );
       const id = uniqueId(requestedId, ids);
       if (id !== requestedId) {
         diagnostics.push(
           makeDiagnostic(
-            'duplicate-id',
-            'warning',
-            'article-render',
-            'body.md',
+            "duplicate-id",
+            "warning",
+            "article-render",
+            "body.md",
             `Duplicate explicit id ${requestedId} was renamed to ${id}`,
-            'Review references to the duplicated source label',
+            "Review references to the duplicated source label",
             requestedId,
           ),
         );
@@ -81,12 +112,12 @@ export function indexArticleBody(markdown: string): ArticleStructure & { diagnos
     if (pendingHeadingId && id !== pendingHeadingId) {
       diagnostics.push(
         makeDiagnostic(
-          'duplicate-id',
-          'warning',
-          'article-render',
-          'body.md',
+          "duplicate-id",
+          "warning",
+          "article-render",
+          "body.md",
           `Duplicate explicit id ${pendingHeadingId} was renamed to ${id}`,
-          'Review references to the duplicated source label',
+          "Review references to the duplicated source label",
           pendingHeadingId,
         ),
       );

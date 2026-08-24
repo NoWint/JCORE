@@ -1,0 +1,16 @@
+sourceType: latex
+articleKind: external
+targetSlug: adam-method-stochastic-optimization
+officialIdentifier: arXiv:1412.6980
+officialUrl: https://arxiv.org/abs/1412.6980
+sourcePackagePath: sources/latex/1412.6980
+expectedChecksum: 3499c4f2ac6a422bef260b8ae51b0418a775ff5b0462550c9373231fe83867e9
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/1412.6980
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

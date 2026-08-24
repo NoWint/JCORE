@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: clip-visual-language-supervision
+officialIdentifier: arXiv:2103.00020
+officialUrl: https://arxiv.org/abs/2103.00020
+sourcePackagePath: sources/latex/2103.00020
+rootDocument: clip_paper.tex
+expectedChecksum: 91ad3d791c9dfab41ee155cd6b4546725ffa873729d3903c8aa4b2e5567ee623
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2103.00020
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

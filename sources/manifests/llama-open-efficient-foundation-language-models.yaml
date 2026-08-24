@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: llama-open-efficient-foundation-language-models
+officialIdentifier: arXiv:2302.13971
+officialUrl: https://arxiv.org/abs/2302.13971
+sourcePackagePath: sources/latex/2302.13971
+rootDocument: acl2023.tex
+expectedChecksum: d37e39540877a4804ac72b0054a66ee83ee5803af96c65044520f926a97002a9
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2302.13971
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

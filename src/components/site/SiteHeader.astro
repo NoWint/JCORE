@@ -1,6 +1,7 @@
 ---
 import { getSiteConfig } from "../../lib/site-config";
 import { getIssues } from "../../lib/content/queries";
+import { localize } from "../../lib/i18n";
 import { makeRoute } from "../../lib/routes";
 import type { Locale } from "../../lib/i18n";
 import LanguageSwitcher from "./LanguageSwitcher.astro";
@@ -15,18 +16,39 @@ const languagePath = Astro.url.pathname
   .replace(/^\/+/, "");
 
 const navigation = [
-  { label: "Articles", href: route("articles") },
-  { label: "Issues", href: route("issues") },
-  { label: "Authors", href: route("authors") },
-  { label: "Submit", href: route("submit") },
-  { label: "About", href: route("about") },
-  { label: "Policies", href: route("policies") },
+  { label: { en: "Articles", zh: "文章" }, href: route("articles") },
+  { label: { en: "Issues", zh: "期刊" }, href: route("issues") },
+  { label: { en: "Authors", zh: "作者" }, href: route("authors") },
+  { label: { en: "Submit", zh: "投稿" }, href: route("submit") },
+  { label: { en: "About", zh: "关于" }, href: route("about") },
+  { label: { en: "Policies", zh: "政策" }, href: route("policies") },
 ];
 
 const currentIssue = getIssues()[0];
 const issueHref = currentIssue
   ? route(`issues/${currentIssue.id}`)
   : route("articles");
+const isCurrent = (href: string) => path === href;
+const drawerCopy =
+  locale === "zh"
+    ? {
+        open: "打开导航",
+        close: "关闭导航",
+        navigation: "导航",
+        explore: "浏览 JCORE",
+        latestIssue: "最新一期",
+        issueMeta: "第",
+        issueDescription: "浏览本期收录的研究文章。",
+      }
+    : {
+        open: "Open navigation",
+        close: "Close navigation",
+        navigation: "Navigation",
+        explore: "Explore JCORE",
+        latestIssue: "Latest issue",
+        issueMeta: "Vol.",
+        issueDescription: "Read the research collected in this issue.",
+      };
 ---
 
 <header class="site-header">
@@ -34,9 +56,11 @@ const issueHref = currentIssue
     <button
       class="masthead-toggle"
       type="button"
-      aria-label="Open navigation"
+      aria-label={drawerCopy.open}
       aria-expanded="false"
       aria-controls="jcore-site-nav"
+      data-label-open={drawerCopy.open}
+      data-label-close={drawerCopy.close}
     >
       <svg
         width="20"
@@ -107,9 +131,9 @@ const issueHref = currentIssue
           navigation.map((item) => (
             <a
               href={item.href}
-              aria-current={path === item.href ? "page" : undefined}
+              aria-current={isCurrent(item.href) ? "page" : undefined}
             >
-              {item.label}
+              {localize(item.label, locale)}
             </a>
           ))
         }
@@ -128,12 +152,15 @@ const issueHref = currentIssue
     hidden
   >
     <div class="nav-drawer-header">
-      <span>Menu</span>
+      <div class="nav-drawer-identity">
+        <span class="nav-drawer-kicker">JCORE</span>
+        <span class="nav-drawer-heading">{drawerCopy.navigation}</span>
+      </div>
       <button
         class="nav-drawer-close"
         type="button"
         data-nav-close
-        aria-label="Close navigation"
+        aria-label={drawerCopy.close}
       >
         <svg
           width="20"
@@ -141,7 +168,7 @@ const issueHref = currentIssue
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="1.8"
           aria-hidden="true"
         >
           <line x1="5" y1="5" x2="19" y2="19"></line>
@@ -149,18 +176,40 @@ const issueHref = currentIssue
         </svg>
       </button>
     </div>
-    <nav class="nav-drawer-links" aria-label="Drawer">
+    <nav class="nav-drawer-links" aria-label={drawerCopy.navigation}>
+      <p class="nav-drawer-section-label">{drawerCopy.explore}</p>
       {
-        navigation.map((item) => (
+        navigation.map((item, index) => (
           <a
             href={item.href}
-            aria-current={path === item.href ? "page" : undefined}
+            aria-current={isCurrent(item.href) ? "page" : undefined}
           >
-            {item.label}
+            <span class="nav-drawer-index">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span class="nav-drawer-label">{localize(item.label, locale)}</span>
           </a>
         ))
       }
     </nav>
+    <div class="nav-drawer-footer">
+      <p class="nav-drawer-section-label">{drawerCopy.latestIssue}</p>
+      {
+        currentIssue && (
+          <a class="nav-drawer-issue" href={issueHref}>
+            <span class="nav-drawer-issue-meta">
+              {locale === "zh"
+                ? `第 ${currentIssue.volume} 卷 · 第 ${currentIssue.issue} 期 · ${currentIssue.year}`
+                : `${drawerCopy.issueMeta} ${currentIssue.volume} · Issue ${currentIssue.issue} · ${currentIssue.year}`}
+            </span>
+            <strong>{localize(currentIssue.title, locale)}</strong>
+            <span class="nav-drawer-issue-description">
+              {drawerCopy.issueDescription}
+            </span>
+          </a>
+        )
+      }
+    </div>
   </aside>
 </header>
 
@@ -182,7 +231,9 @@ const issueHref = currentIssue
     drawerToggle.setAttribute("aria-expanded", String(open));
     drawerToggle.setAttribute(
       "aria-label",
-      open ? "Close navigation" : "Open navigation",
+      open
+        ? (drawerToggle.dataset.labelClose ?? "Close navigation")
+        : (drawerToggle.dataset.labelOpen ?? "Open navigation"),
     );
     if (open) {
       drawerClose?.focus();

@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: lora-low-rank-adaptation
+officialIdentifier: arXiv:2106.09685
+officialUrl: https://arxiv.org/abs/2106.09685
+sourcePackagePath: sources/latex/2106.09685
+rootDocument: iclr2022_conference.tex
+expectedChecksum: 933a57bbdd31610115b0ce8e83b56a158e7369588a4030aca4bc71bdb6effc42
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2106.09685
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

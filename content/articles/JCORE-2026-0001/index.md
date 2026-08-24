@@ -5,8 +5,8 @@ title:
   en: "ChatMail Deploy for ANY Linux: A Docker-Based Deployment Architecture for Non-Debian Systems"
   zh: "ChatMail ANY Linux 部署：面向非 Debian 系统的 Docker 部署架构"
 abstract:
-  en: "This technical note documents a practical deployment architecture for ChatMail Relay on non-Debian Linux distributions. The approach keeps Debian-dependent mail services inside a Debian 12 container while running Python services, static binaries, DNS, and certificate automation on the host, joining both sides through bind-mounted volumes and Unix sockets."
-  zh: "本文档记录一种在非 Debian Linux 发行版上部署 ChatMail Relay 的实践架构：将依赖 Debian 的邮件服务运行在 Debian 12 容器中，同时让 Python 服务、静态二进制程序、DNS 与证书自动化运行在宿主机，并通过绑定挂载目录与 Unix socket 连接两侧。"
+  en: "ChatMail Relay is designed for Debian/Ubuntu and relies heavily on Debian-specific mechanisms (apt, dpkg, policy-rc.d, and the www-data user). This project provides a Docker-based grafting solution for RHEL-family distributions, Arch, and other Linux systems without modifying ChatMail's core code."
+  zh: "ChatMail Relay 为 Debian/Ubuntu 设计，深度依赖 Debian 特有机制（apt、dpkg、policy-rc.d、www-data 用户等）。本项目提供一套 Docker 容器化“嫁接”方案，让你能在 RHEL 系、Arch 或其他 Linux 发行版上运行它，而无需修改 ChatMail 核心代码。"
 keywords:
   - en: ChatMail Relay
     zh: ChatMail Relay
@@ -25,13 +25,16 @@ sourceFiles:
   - path: https://github.com/TiantianYZJ/ChatMail-ANY-Linux-Deploy/blob/main/README.md
     label: Original project README
     kind: source
+  - path: https://github.com/TiantianYZJ/ChatMail-ANY-Linux-Deploy/blob/main/README.zh-CN.md
+    label: Original Chinese project README
+    kind: source
   - path: https://github.com/TiantianYZJ/ChatMail-ANY-Linux-Deploy
     label: Source repository
     kind: supplementary
 conversion:
   status: converted
   importer: jcore@0.1.0
-  outputChecksum: "0f7f3839faa346f5fc3d0d7ce8b496ba973b8c48b7822b1a801a072554ec400d"
+  outputChecksum: "7041145acf35cafb08cebc7691998388c1da00e7ab32d021b5f31bd14d33fc90"
   reportPath: import-report.json
 authors:
   - authorId: tiantianyzj
@@ -59,7 +62,7 @@ license:
   id: mit
   url: https://opensource.org/license/mit/
   holder: TiantianYZJ; chatmail and delta chat teams
-  statement: Adapted from the MIT-licensed ChatMail-ANY-Linux-Deploy project with source attribution preserved.
+  statement: Original README content from the MIT-licensed ChatMail-ANY-Linux-Deploy project, with source attribution preserved.
 code: https://github.com/TiantianYZJ/ChatMail-ANY-Linux-Deploy
 demo: false
 ---

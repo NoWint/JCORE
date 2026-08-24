@@ -28,6 +28,31 @@ describe("article rendering", () => {
     expect(report.html).toContain('href="#sec-results"');
   });
 
+  it("ignores hash-prefixed lines inside fenced code blocks", async () => {
+    const report = await renderArticle(
+      [
+        "## Maintenance",
+        "",
+        "```bash",
+        "# after pulling new code to the server",
+        "```",
+        "",
+        "### Update the relay code",
+      ].join("\n"),
+    );
+
+    expect(report.headings.map((heading) => heading.id)).toEqual([
+      "maintenance",
+      "update-the-relay-code",
+    ]);
+    expect(report.html).toContain(
+      '<h3 id="update-the-relay-code">Update the relay code</h3>',
+    );
+    expect(report.html).not.toContain(
+      'id="after-pulling-new-code-to-the-server"',
+    );
+  });
+
   it("does not emit Pandoc fences, KaTeX error markup, or broken internal hrefs", async () => {
     const report = await renderArticle(
       "::: algorithmic\n\n## Algorithm {#alg:one}\n\n$$\n\\begin{equation*}x=1\\end{equation*}\n$$\n\nSee [Algorithm](#alg:missing).\n\n:::",
@@ -87,9 +112,7 @@ describe("article rendering", () => {
 
     expect(report.html).not.toContain("katex-error");
     expect(report.html).toContain("where the balance factor is small.");
-    expect(report.html).toContain(
-      '<h2 id="next-section">Next Section</h2>',
-    );
+    expect(report.html).toContain('<h2 id="next-section">Next Section</h2>');
   });
 
   it("converts simple whitespace tables and records media references", async () => {
@@ -150,10 +173,8 @@ describe("article rendering", () => {
     );
 
     expect(report.html).toContain('<table id="tab-simple-results">');
-    expect(report.html).toContain(
-      "<em>Results from the simple table.</em>",
-    );
-    expect(report.html).not.toContain("<p id=\"tab-simple-results\">");
+    expect(report.html).toContain("<em>Results from the simple table.</em>");
+    expect(report.html).not.toContain('<p id="tab-simple-results">');
     expect(report.html).not.toContain(": Results from the simple table.");
   });
 
@@ -169,9 +190,9 @@ describe("article rendering", () => {
     expect(report.html).not.toMatch(/^\+[-=:+]+/m);
     expect(report.html).toContain("<th>Training Cost (FLOPs)</th>");
     expect(report.html).toContain("<td>ByteNet</td>");
-    expect(report.html).toContain("class=\"katex\"");
+    expect(report.html).toContain('class="katex"');
     expect(report.html).not.toContain("$1.0\\cdot10^{20}$");
-    expect(report.html).toContain("<th><span class=\"katex\">");
+    expect(report.html).toContain('<th><span class="katex">');
     expect(report.html).toContain("<td>Transformer (big)</td>");
     expect(report.html).not.toMatch(/[+][-=:+]+[+]/);
     expect(report.html).toContain('<table id="tab-wmt-results">');

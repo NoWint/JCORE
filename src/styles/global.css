@@ -197,12 +197,15 @@ embed {
   z-index: 60;
   top: 0;
   left: 0;
-  width: min(22rem, calc(100vw - 1rem));
+  width: min(24rem, calc(100vw - 1rem));
   height: 100dvh;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-6) var(--space-4);
   border-right: 1px solid var(--border-strong);
   background: var(--surface);
-  box-shadow: 1rem 0 3rem rgb(15 23 42 / 0.16);
+  box-shadow: 1.25rem 0 3rem rgb(15 23 42 / 0.14);
   animation: nav-drawer-in 180ms ease-out both;
 }
 
@@ -218,47 +221,175 @@ embed {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-5) var(--space-5) var(--space-4);
+  padding: 0 0 var(--space-6);
   border-bottom: 1px solid var(--border);
+}
+
+.nav-drawer-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.nav-drawer-kicker,
+.nav-drawer-section-label,
+.nav-drawer-issue-meta {
   font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
   text-transform: uppercase;
+}
+
+.nav-drawer-kicker {
+  color: var(--accent);
+}
+
+.nav-drawer-heading {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
 }
 
 .nav-drawer-close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: 0;
   border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--ink);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.nav-drawer-close:hover {
+  border-color: var(--accent);
+  background: var(--accent-panel);
+  color: var(--accent);
 }
 
 .nav-drawer-links {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  padding: var(--space-4) var(--space-5);
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
+  gap: 0.15rem;
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.nav-drawer-section-label {
+  margin: 0 0 var(--space-3);
+  color: var(--text-secondary);
 }
 
 .nav-drawer-links a {
-  display: block;
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--border);
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: 0.72rem 0;
   color: var(--ink-soft);
-  font-weight: 600;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.nav-drawer-links a::before {
+  position: absolute;
+  top: 0.55rem;
+  bottom: 0.55rem;
+  left: -0.75rem;
+  width: 0;
+  background: var(--accent);
+  content: "";
+  transition: width 180ms ease;
+}
+
+.nav-drawer-links a:hover {
+  color: var(--accent);
+  transform: translateX(0.2rem);
+}
+
+.nav-drawer-links a:hover::before,
+.nav-drawer-links a[aria-current="page"]::before {
+  width: 0.2rem;
+}
+
+.nav-drawer-index {
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.nav-drawer-label {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
 .nav-drawer-links a[aria-current="page"] {
   color: var(--accent);
+}
+
+.nav-drawer-links a[aria-current="page"] .nav-drawer-index {
+  color: var(--accent);
+}
+
+.nav-drawer-footer {
+  margin-top: auto;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.nav-drawer-issue {
+  display: block;
+  padding: var(--space-4);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-panel);
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.nav-drawer-issue:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent-panel) 78%, var(--accent) 22%);
+  transform: translateX(0.2rem);
+}
+
+.nav-drawer-issue-meta {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.nav-drawer-issue strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.nav-drawer-issue-description {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 body.nav-drawer-open {

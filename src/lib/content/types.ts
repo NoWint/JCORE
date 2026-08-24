@@ -5,15 +5,20 @@ import type {
   IssueMetadata,
   Selection
 } from './contracts';
+import type { Locale } from '../i18n';
 import type { Diagnostic } from '../../../scripts/validate/diagnostics';
+
+export type LocalizedBody = Partial<Record<Locale, string>>;
 
 export type ArticleRecord = ArticleMetadata & {
   body: string;
+  bodyByLocale?: LocalizedBody;
   conversionDiagnostics?: Diagnostic[];
 };
 
 export type ExternalArticleRecord = ExternalArticleMetadata & {
   body: string;
+  bodyByLocale?: LocalizedBody;
   conversionDiagnostics?: Diagnostic[];
 };
 

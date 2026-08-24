@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: tvm-optimizing-compiler
+officialIdentifier: arXiv:1802.04799
+officialUrl: https://arxiv.org/abs/1802.04799
+sourcePackagePath: sources/latex/1802.04799
+rootDocument: TVMTechReport.tex
+expectedChecksum: 2394252b6dd952b17b90ff3f755cadaab79614ba0d297b248cc553c6c0c18989
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/1802.04799
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: deepseek-r1-reasoning
+officialIdentifier: arXiv:2501.12948
+officialUrl: https://arxiv.org/abs/2501.12948
+sourcePackagePath: sources/latex/2501.12948
+rootDocument: sn-article.tex
+expectedChecksum: 33532a4340e92be5d799ca08b03009415422cc08767a789f85b91ba55662782a
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: DeepSeek-AI and the Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2501.12948
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0

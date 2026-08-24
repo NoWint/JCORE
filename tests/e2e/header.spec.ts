@@ -27,6 +27,38 @@ test("mobile drawer closes after navigation", async ({ page }) => {
   await expect(page.locator(".nav-drawer")).toBeHidden();
 });
 
+test("localized drawer presents the current page and latest issue", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/JCORE/zh/authors/");
+  await page.locator(".masthead-toggle").click();
+
+  const drawer = page.locator("#jcore-site-nav");
+  await expect(drawer.locator(".nav-drawer-kicker")).toHaveText("JCORE");
+  await expect(drawer.locator(".nav-drawer-heading")).toHaveText("导航");
+  await expect(drawer.locator(".nav-drawer-label")).toHaveText([
+    "文章",
+    "期刊",
+    "作者",
+    "投稿",
+    "关于",
+    "政策",
+  ]);
+  await expect(drawer.locator(".nav-drawer-links a").nth(2)).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expect(drawer.locator(".nav-drawer-footer")).toContainText("最新一期");
+  await expect(drawer.locator(".nav-drawer-issue")).toContainText(
+    "第一卷第一期",
+  );
+  await expect(drawer.locator(".nav-drawer-issue")).toHaveAttribute(
+    "href",
+    "/JCORE/zh/issues/volume-1-issue-1/",
+  );
+});
+
 test("desktop keeps the masthead centered and opens a fixed side panel", async ({
   page,
 }) => {
@@ -67,9 +99,7 @@ test("desktop keeps the masthead centered and opens a fixed side panel", async (
     "column",
   );
   await expect(drawer).toHaveCSS("position", "fixed");
-  await expect
-    .poll(async () => (await drawer.boundingBox())?.x ?? -1)
-    .toBe(0);
+  await expect.poll(async () => (await drawer.boundingBox())?.x ?? -1).toBe(0);
   expect(
     await drawer.evaluate((element) => element.getBoundingClientRect().width),
   ).toBeLessThanOrEqual(390);
@@ -96,7 +126,7 @@ test("drawer traps keyboard focus and keeps the toggle above the backdrop", asyn
 
   await expect(close).toBeFocused();
   await page.keyboard.press("Shift+Tab");
-  await expect(page.locator(".nav-drawer-links a").last()).toBeFocused();
+  await expect(page.locator(".nav-drawer-issue")).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(close).toBeFocused();
 

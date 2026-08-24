@@ -1,0 +1,83 @@
+{
+  "status": "success",
+  "manifest": {
+    "sourceType": "latex",
+    "articleKind": "external",
+    "targetSlug": "adam-method-stochastic-optimization",
+    "officialIdentifier": "arXiv:1412.6980",
+    "officialUrl": "https://arxiv.org/abs/1412.6980",
+    "sourcePackagePath": "/tmp/jcore-arxiv-extracted/1412.6980",
+    "expectedChecksum": "3499c4f2ac6a422bef260b8ae51b0418a775ff5b0462550c9373231fe83867e9",
+    "retrievalDate": "2026-08-24",
+    "rights": {
+      "licenseId": "arxiv-nonexclusive-distrib",
+      "licenseUrl": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "copyrightHolder": "The Authors",
+      "statement": "Redistributed under the arXiv non-exclusive distribution license for scholarly use.",
+      "evidenceUrl": "https://arxiv.org/abs/1412.6980",
+      "permitsRedistribution": true
+    },
+    "importerVersion": "jcore-import@0.1.0"
+  },
+  "normalized": {
+    "metadata": {
+      "renderMode": "source-fallback",
+      "sourceFormat": "latex",
+      "sourceFiles": [
+        {
+          "path": "/sources/adam-method-stochastic-optimization/0_adam_main.pdf",
+          "label": "Original PDF",
+          "kind": "pdf"
+        },
+        {
+          "path": "/sources/adam-method-stochastic-optimization/arxiv.tex",
+          "label": "arxiv.tex",
+          "kind": "source"
+        }
+      ],
+      "conversion": {
+        "status": "fallback",
+        "importer": "jcore-import@0.1.0",
+        "outputChecksum": "b0ef7253257804653dd1b3d5c42d01303b39f597f9c768ef35f7b9d2d7a30c4e",
+        "reportPath": "import-report.json"
+      },
+      "pdf": "/sources/adam-method-stochastic-optimization/0_adam_main.pdf"
+    },
+    "body": "",
+    "assets": [],
+    "diagnostics": [
+      {
+        "code": "empty-conversion",
+        "severity": "error",
+        "phase": "latex",
+        "sourcePath": "arxiv.tex",
+        "message": "LaTeX conversion produced no article body",
+        "action": "Inspect the source and converter output",
+        "node": "arxiv.tex"
+      }
+    ],
+    "renderMode": "source-fallback",
+    "sourceFormat": "latex",
+    "sourceFiles": [
+      {
+        "path": "/sources/adam-method-stochastic-optimization/0_adam_main.pdf",
+        "label": "Original PDF",
+        "kind": "pdf"
+      },
+      {
+        "path": "/sources/adam-method-stochastic-optimization/arxiv.tex",
+        "label": "arxiv.tex",
+        "kind": "source"
+      }
+    ],
+    "conversion": {
+      "status": "fallback",
+      "importer": "jcore-import@0.1.0",
+      "outputChecksum": "b0ef7253257804653dd1b3d5c42d01303b39f597f9c768ef35f7b9d2d7a30c4e",
+      "reportPath": "import-report.json"
+    }
+  },
+  "outputChecksum": "b0ef7253257804653dd1b3d5c42d01303b39f597f9c768ef35f7b9d2d7a30c4e",
+  "importerVersion": "jcore-import@0.1.0",
+  "generatedAt": "2026-08-24T12:29:47.647Z"
+}

@@ -1,0 +1,17 @@
+sourceType: latex
+articleKind: external
+targetSlug: direct-preference-optimization
+officialIdentifier: arXiv:2305.18290
+officialUrl: https://arxiv.org/abs/2305.18290
+sourcePackagePath: sources/latex/2305.18290
+rootDocument: main.tex
+expectedChecksum: ba993bff346aa741e5b33b3f3ad438ea15e54cd2d44ca5d00dbbf94375519ed7
+retrievalDate: 2026-08-24
+rights:
+  licenseId: arxiv-nonexclusive-distrib
+  licenseUrl: https://arxiv.org/licenses/nonexclusive-distrib/1.0/
+  copyrightHolder: The Authors
+  statement: Redistributed under the arXiv non-exclusive distribution license for scholarly use.
+  evidenceUrl: https://arxiv.org/abs/2305.18290
+  permitsRedistribution: true
+importerVersion: jcore-import@0.1.0
