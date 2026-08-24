@@ -97,7 +97,7 @@ function normalizeLabelMarkers(lines: string[]): string[] {
       continue;
     }
 
-    const labelled = line.match(/^(.*?)\s*\{#([^}]+)\}\s*$/);
+    const labelled = line.match(/^(.*?)\s*\{#([^\s}]+)(?:\s+[^}]*)?\}\s*$/);
     if (labelled) {
       const id = normalizeSourceId(labelled[2]);
       output.push(`<span data-jcore-target-id="${id}" aria-hidden="true"></span>`);
@@ -112,30 +112,7 @@ function normalizeLabelMarkers(lines: string[]): string[] {
 }
 
 function stripPandocDivFences(lines: string[]): string[] {
-  const output: string[] = [];
-  let i = 0;
-
-  while (i < lines.length) {
-    const open = lines[i].match(/^(:{3,})(?:\s+([^\s{}][^\s]*))?\s*$/);
-    if (!open) {
-      output.push(lines[i]);
-      i += 1;
-      continue;
-    }
-
-    const className = open[2]?.trim();
-    let end = i + 1;
-    while (end < lines.length && !/^:{3,}\s*$/.test(lines[end])) {
-      end += 1;
-    }
-    if (className && !['algorithmic', 'tabular', 'CJK', 'spacing'].includes(className)) {
-      output.push(`<!-- jcore-pandoc-block:${className} -->`);
-    }
-    output.push(...lines.slice(i + 1, end));
-    i = end < lines.length ? end + 1 : end;
-  }
-
-  return output;
+  return lines.filter((line) => !/^\s*:{3,}(?:\s+.*)?\s*$/.test(line));
 }
 
 function isolateDisplayMath(markdown: string): string {
@@ -160,7 +137,7 @@ export function normalizeArticleBody(markdown: string): NormalizedArticleBody {
   const diagnostics: Diagnostic[] = [];
   const withLabels = normalizeLabelMarkers(markdown.replace(/\r\n/g, '\n').split('\n'));
   const withoutDivs = stripPandocDivFences(withLabels);
-  let body = withoutDivs.join('\n');
+  let body = withoutDivs.join('\n').replaceAll('\u00a0', ' ');
 
   body = body.replace(/^\s*UTF8gbsn\s*$/gm, '');
   body = body.replace(/^\s*maketitle[^\n]*$/gm, '');

@@ -101,6 +101,52 @@ export function validateBuiltSite(distRoot: string, base: string): Diagnostic[] 
   for (const file of htmlFiles(distRoot)) {
     const html = readFileSync(file, 'utf8');
     const $ = load(html);
+    const ids = new Set<string>();
+    $('[id]').each((_, element) => {
+      const id = $(element).attr('id');
+      if (id) {
+        if (ids.has(id)) {
+          diagnostics.push(
+            makeDiagnostic(
+              'duplicate-rendered-id',
+              'error',
+              'built-site',
+              file,
+              `Rendered HTML contains duplicate id ${id}`,
+              'Fix duplicate source labels or generated heading ids',
+              id
+            )
+          );
+        }
+        ids.add(id);
+      }
+    });
+    if ($('.katex-error').length > 0 || /class=["'][^"']*katex-error/.test(html)) {
+      diagnostics.push(
+        makeDiagnostic(
+          'katex-error',
+          'error',
+          'built-site',
+          file,
+          'Built HTML contains visible KaTeX error markup',
+          'Fix or escape unsupported math before publishing',
+          'math'
+        )
+      );
+    }
+    if (/:::\s|reference-type=|data-reference-type=|data-reference=/.test(html)) {
+      diagnostics.push(
+        makeDiagnostic(
+          'source-artifact',
+          'error',
+          'built-site',
+          file,
+          'Built HTML contains source conversion artifacts',
+          'Normalize source artifacts before publishing',
+          'html'
+        )
+      );
+    }
     const references: string[] = [];
     $('[href]').each((_, element) => {
       const value = $(element).attr('href');
@@ -115,6 +161,23 @@ export function validateBuiltSite(distRoot: string, base: string): Diagnostic[] 
       }
     });
     for (const reference of references) {
+      if (reference.startsWith('#')) {
+        const target = reference.slice(1);
+        if (target && !ids.has(target)) {
+          diagnostics.push(
+            makeDiagnostic(
+              'broken-internal-anchor',
+              'error',
+              'built-site',
+              file,
+              `Internal reference ${reference} points to missing id`,
+              'Fix the reference or provide the target element',
+              target
+            )
+          );
+        }
+        continue;
+      }
       const target = resolveTarget(distRoot, base, reference);
       if (target && !existsSync(target)) {
         diagnostics.push(

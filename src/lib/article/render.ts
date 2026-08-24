@@ -104,7 +104,7 @@ function rewriteRenderedHtml(
       }
     }
     for (const attribute of Object.keys(element.attribs ?? {})) {
-      if (/^on/i.test(attribute)) {
+      if (/^on/i.test(attribute) || /^data-(?:reference|label|latex)/i.test(attribute)) {
         $(element).removeAttr(attribute);
       }
     }
@@ -131,6 +131,27 @@ function rewriteRenderedHtml(
     }
     $(marker).remove();
   });
+
+  const usedIds = new Set<string>();
+  $('[id]').each((_, element) => {
+    const current = $(element).attr('id');
+    if (!current) {
+      return;
+    }
+    const normalized = normalizeSourceId(current) || 'target';
+    let next = normalized;
+    let suffix = 2;
+    while (usedIds.has(next)) {
+      next = `${normalized}-${suffix}`;
+      suffix += 1;
+    }
+    usedIds.add(next);
+    $(element).attr('id', next);
+  });
+  ids.clear();
+  for (const id of usedIds) {
+    ids.add(id);
+  }
 
   $('.katex-error').each((_, element) => {
     const source = $(element).attr('title') || $(element).text() || 'Unsupported equation';

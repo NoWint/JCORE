@@ -38,6 +38,10 @@ export function indexArticleBody(markdown: string): ArticleStructure & { diagnos
   let pendingHeadingId: string | undefined;
 
   for (const line of markdown.split('\n')) {
+    for (const rawId of line.matchAll(/\bid=["']([^"']+)["']/g)) {
+      ids.add(normalizeSourceId(rawId[1]));
+    }
+
     const headingMarker = line.match(/<!--\s*jcore-heading-id:([^\s]+)\s*-->/);
     if (headingMarker) {
       pendingHeadingId = normalizeSourceId(headingMarker[1]);

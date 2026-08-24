@@ -12,6 +12,7 @@ import {
   selectionSchema
 } from '../../src/lib/content/contracts';
 import type { CollectionIndex } from '../../src/lib/content/types';
+import { validateArticleCorpus } from '../../src/lib/article/quality';
 import { makeDiagnostic, formatDiagnostic, type Diagnostic } from './diagnostics';
 import { validatePublication } from './publication';
 
@@ -130,10 +131,11 @@ export function loadContent(root: string): { index: CollectionIndex; diagnostics
   };
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const root = process.cwd();
   const { index, diagnostics } = loadContent(root);
   diagnostics.push(...validatePublication(index));
+  diagnostics.push(...(await validateArticleCorpus(index, '/JCORE')));
 
   for (const diagnostic of diagnostics) {
     console.error(formatDiagnostic(diagnostic));
@@ -147,5 +149,5 @@ function main(): void {
 const entryPath = process.argv[1] ? realpathSync(process.argv[1]) : '';
 const selfPath = realpathSync(fileURLToPath(import.meta.url));
 if (entryPath === selfPath) {
-  main();
+  void main();
 }
