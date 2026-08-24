@@ -7,4 +7,4 @@ description:
 ---
 JCORE is an open research journal for young scholars and emerging contributors in computing and artificial intelligence. The journal is committed to reproducible research, transparent editorial practice, and a rigorous scholarly presentation of both original and externally published work.
 
-The JCORE MVP operates as a demonstration publication. Articles marked as demonstration content are fictional and do not claim real peer review. External open-access articles are clearly labeled with their original source, rights, and official links.
+The first issue includes two technical research notes: one on deploying ChatMail Relay across Linux distributions and one on the local-first architecture of PEYT Chat. External open-access articles are clearly labeled with their original source, rights, and official links.

@@ -1,22 +1,25 @@
-import { load, type CheerioAPI } from 'cheerio';
-import rehypeKatex from 'rehype-katex';
-import rehypeRaw from 'rehype-raw';
-import rehypeStringify from 'rehype-stringify';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import { unified } from 'unified';
-import { makeDiagnostic, type Diagnostic } from '../../../scripts/validate/diagnostics';
-import { indexArticleBody } from './index';
-import { normalizeArticleBody, normalizeSourceId } from './normalize';
+import { load, type CheerioAPI } from "cheerio";
+import rehypeKatex from "rehype-katex";
+import rehypeRaw from "rehype-raw";
+import rehypeStringify from "rehype-stringify";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import { unified } from "unified";
+import {
+  makeDiagnostic,
+  type Diagnostic,
+} from "../../../scripts/validate/diagnostics";
+import { indexArticleBody } from "./index";
+import { normalizeArticleBody, normalizeSourceId } from "./normalize";
 import type {
   ArticleRenderOptions,
   ArticleRenderReport,
   Heading,
   MediaKind,
   MediaReference,
-} from './types';
+} from "./types";
 
 export type {
   ArticleReference,
@@ -26,10 +29,10 @@ export type {
   Heading,
   MediaKind,
   MediaReference,
-} from './types';
+} from "./types";
 
 function prefixLocalPath(value: string, base: string): string {
-  if (!value.startsWith('/') || !base || value.startsWith(`${base}/`)) {
+  if (!value.startsWith("/") || !base || value.startsWith(`${base}/`)) {
     return value;
   }
   return `${base}${value}`;
@@ -37,11 +40,11 @@ function prefixLocalPath(value: string, base: string): string {
 
 function escapeHtml(value: string): string {
   return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function isUnsafeUrl(value: string): boolean {
@@ -50,13 +53,18 @@ function isUnsafeUrl(value: string): boolean {
 
 function collectMedia($: CheerioAPI): MediaReference[] {
   const media: MediaReference[] = [];
-  $('img[src], embed[src], video[src], source[src]').each((_, element) => {
-    const src = $(element).attr('src');
+  $("img[src], embed[src], video[src], source[src]").each((_, element) => {
+    const src = $(element).attr("src");
     if (!src) {
       return;
     }
     const tagName = element.tagName.toLowerCase();
-    const kind: MediaKind = tagName === 'img' ? 'image' : tagName === 'video' || tagName === 'source' ? 'video' : 'embed';
+    const kind: MediaKind =
+      tagName === "img"
+        ? "image"
+        : tagName === "video" || tagName === "source"
+          ? "video"
+          : "embed";
     if (!media.some((item) => item.src === src && item.kind === kind)) {
       media.push({ src, kind });
     }
@@ -65,7 +73,7 @@ function collectMedia($: CheerioAPI): MediaReference[] {
 }
 
 function removeSourceComments(html: string): string {
-  return html.replace(/<!--\s*jcore-[\s\S]*?-->/g, '');
+  return html.replace(/<!--\s*jcore-[\s\S]*?-->/g, "");
 }
 
 function rewriteRenderedHtml(
@@ -77,9 +85,9 @@ function rewriteRenderedHtml(
   const diagnostics: Diagnostic[] = [];
   const $ = load(html, null, false);
 
-  $('script, style, iframe, object, form').remove();
-  $('[href], [src], [poster]').each((_, element) => {
-    for (const attribute of ['href', 'src', 'poster']) {
+  $("script, style, iframe, object, form").remove();
+  $("[href], [src], [poster]").each((_, element) => {
+    for (const attribute of ["href", "src", "poster"]) {
       const value = $(element).attr(attribute);
       if (!value) {
         continue;
@@ -88,57 +96,123 @@ function rewriteRenderedHtml(
         $(element).removeAttr(attribute);
         diagnostics.push(
           makeDiagnostic(
-            'unsafe-url',
-            'error',
-            'article-render',
-            'body.md',
+            "unsafe-url",
+            "error",
+            "article-render",
+            "body.md",
             `Removed unsafe ${attribute} URL`,
-            'Use a relative or HTTPS URL for article content',
+            "Use a relative or HTTPS URL for article content",
             value,
           ),
         );
         continue;
       }
-      if (value.startsWith('/figures/')) {
+      if (value.startsWith("/figures/")) {
         $(element).attr(attribute, prefixLocalPath(value, base));
       }
     }
     for (const attribute of Object.keys(element.attribs ?? {})) {
-      if (/^on/i.test(attribute) || /^data-(?:reference|label|latex)/i.test(attribute)) {
+      if (
+        /^on/i.test(attribute) ||
+        /^data-(?:reference|label|latex)/i.test(attribute)
+      ) {
         $(element).removeAttr(attribute);
       }
     }
   });
 
-  $('h1, h2, h3, h4, h5, h6').each((index, element) => {
+  $("h1, h2, h3, h4, h5, h6").each((index, element) => {
     const heading = headings[index];
     if (heading) {
-      $(element).attr('id', heading.id);
+      $(element).attr("id", heading.id);
     }
   });
 
-  $('[data-jcore-target-id]').each((_, marker) => {
-    const id = $(marker).attr('data-jcore-target-id');
+  $("[data-jcore-target-id]").each((_, marker) => {
+    const id = $(marker).attr("data-jcore-target-id");
     if (!id) {
       $(marker).remove();
       return;
     }
-    const target = $(marker).nextAll('figure, table, p, pre, blockquote, div').first();
+    const markerParent = $(marker).parent();
+    const markerContainer =
+      markerParent.is("p") &&
+      markerParent.children().length === 1 &&
+      markerParent.text().trim() === ""
+        ? markerParent
+        : $(marker);
+    const target = markerContainer
+      .nextAll("figure, table, p, pre, blockquote, div")
+      .first();
     if (target.length > 0) {
-      target.attr('id', id);
+      target.attr("id", id);
+    } else if (
+      markerParent.is("p") &&
+      markerParent.find("img, embed, video, figure, table").length > 0
+    ) {
+      markerParent.attr("id", id);
     } else {
-      $(marker).parent().attr('id', id);
+      markerContainer.attr("id", id);
     }
     $(marker).remove();
+    if (
+      markerContainer.is("p") &&
+      markerContainer.children().length === 0 &&
+      markerContainer.text().trim() === ""
+    ) {
+      markerContainer.remove();
+    }
+  });
+
+  $("embed[src]").each((_, element) => {
+    const src = $(element).attr("src");
+    if (!src) {
+      return;
+    }
+    $(element).attr({
+      type: "application/pdf",
+      title: $(element).attr("title") ?? "PDF figure",
+    });
+  });
+
+  $("figure").each((_, figure) => {
+    const embeds = $(figure).find("embed[src]");
+    if (embeds.length === 0) {
+      return;
+    }
+
+    $(figure).addClass("article-pdf-figure");
+    const links = embeds
+      .toArray()
+      .map((element, index) => {
+        const src = $(element).attr("src");
+        if (!src) {
+          return "";
+        }
+        const suffix = embeds.length > 1 ? ` ${index + 1}` : "";
+        return `<a href="${escapeHtml(src)}" target="_blank" rel="noreferrer">Open PDF figure${suffix}</a>`;
+      })
+      .filter(Boolean);
+    if (links.length > 0) {
+      $(figure).append(
+        `<p class="article-media-fallback">${links.join(' <span aria-hidden="true">·</span> ')}</p>`,
+      );
+    }
+  });
+
+  $("table").each((_, table) => {
+    $(table).wrap(
+      '<div class="article-table-scroll" tabindex="0" role="region" aria-label="Scrollable table"></div>',
+    );
   });
 
   const usedIds = new Set<string>();
-  $('[id]').each((_, element) => {
-    const current = $(element).attr('id');
+  $("[id]").each((_, element) => {
+    const current = $(element).attr("id");
     if (!current) {
       return;
     }
-    const normalized = normalizeSourceId(current) || 'target';
+    const normalized = normalizeSourceId(current) || "target";
     let next = normalized;
     let suffix = 2;
     while (usedIds.has(next)) {
@@ -146,54 +220,57 @@ function rewriteRenderedHtml(
       suffix += 1;
     }
     usedIds.add(next);
-    $(element).attr('id', next);
+    $(element).attr("id", next);
   });
   ids.clear();
   for (const id of usedIds) {
     ids.add(id);
   }
 
-  $('.katex-error').each((_, element) => {
-    const source = $(element).attr('title') || $(element).text() || 'Unsupported equation';
-    $(element).replaceWith(`<code class="math-fallback">${escapeHtml(source)}</code>`);
+  $(".katex-error").each((_, element) => {
+    const source =
+      $(element).attr("title") || $(element).text() || "Unsupported equation";
+    $(element).replaceWith(
+      `<code class="math-fallback">${escapeHtml(source)}</code>`,
+    );
     diagnostics.push(
       makeDiagnostic(
-        'unsupported-math',
-        'warning',
-        'article-render',
-        'body.md',
-        'An unsupported equation was rendered as escaped source text',
-        'Review the equation syntax if a typeset formula is required',
-        'math',
+        "unsupported-math",
+        "warning",
+        "article-render",
+        "body.md",
+        "An unsupported equation was rendered as escaped source text",
+        "Review the equation syntax if a typeset formula is required",
+        "math",
       ),
     );
   });
 
   $('a[href^="#"]').each((_, element) => {
-    const href = $(element).attr('href');
+    const href = $(element).attr("href");
     if (!href) {
       return;
     }
     const target = normalizeSourceId(href.slice(1));
     if (ids.has(target)) {
-      $(element).attr('href', `#${target}`);
+      $(element).attr("href", `#${target}`);
     } else {
-      $(element).removeAttr('href');
+      $(element).removeAttr("href");
       diagnostics.push(
         makeDiagnostic(
-          'unresolved-reference',
-          'warning',
-          'article-render',
-          'body.md',
+          "unresolved-reference",
+          "warning",
+          "article-render",
+          "body.md",
           `Internal reference ${href} has no matching target`,
-          'Fix the source label or leave the reference as readable text',
+          "Fix the source label or leave the reference as readable text",
           target,
         ),
       );
     }
   });
 
-  const rendered = removeSourceComments($.root().html() ?? '');
+  const rendered = removeSourceComments($.root().html() ?? "");
   return {
     html: rendered,
     media: collectMedia(load(rendered, null, false)),
@@ -208,10 +285,10 @@ export async function renderArticle(
   const normalized = normalizeArticleBody(markdown);
   const structure = indexArticleBody(normalized.markdown);
   const prefixed = normalized.markdown
-    .replace(/\]\((\/figures\/)/g, `](${options.base ?? ''}$1`)
-    .replace(/(src|href)="(\/figures\/)/g, `$1="${options.base ?? ''}$2`);
+    .replace(/\]\((\/figures\/)/g, `](${options.base ?? ""}$1`)
+    .replace(/(src|href)="(\/figures\/)/g, `$1="${options.base ?? ""}$2`);
 
-  let rendered = '';
+  let rendered = "";
   const diagnostics = [...normalized.diagnostics, ...structure.diagnostics];
   try {
     const file = await unified()
@@ -227,18 +304,23 @@ export async function renderArticle(
   } catch (error) {
     diagnostics.push(
       makeDiagnostic(
-        'render-failed',
-        'error',
-        'article-render',
-        'body.md',
+        "render-failed",
+        "error",
+        "article-render",
+        "body.md",
         error instanceof Error ? error.message : String(error),
-        'Inspect the normalized body and supported Markdown/math syntax',
-        'render',
+        "Inspect the normalized body and supported Markdown/math syntax",
+        "render",
       ),
     );
   }
 
-  const postProcessed = rewriteRenderedHtml(rendered, structure.headings, structure.ids, options.base ?? '');
+  const postProcessed = rewriteRenderedHtml(
+    rendered,
+    structure.headings,
+    structure.ids,
+    options.base ?? "",
+  );
   diagnostics.push(...postProcessed.diagnostics);
 
   return {
@@ -254,7 +336,10 @@ export function extractHeadings(markdown: string): Heading[] {
   return indexArticleBody(normalized.markdown).headings;
 }
 
-export async function renderArticleBody(markdown: string, base = ''): Promise<string> {
+export async function renderArticleBody(
+  markdown: string,
+  base = "",
+): Promise<string> {
   const report = await renderArticle(markdown, { base });
   return report.html;
 }

@@ -7,7 +7,7 @@ description:
 ---
 ## Peer Review
 
-All JCORE-published research articles are expected to pass editorial screening and independent peer review. Demonstration records do not claim this process.
+Research articles submitted to JCORE are expected to pass editorial screening and independent peer review before publication. Technical notes and other article types are labeled according to their editorial status.
 
 ## Publication Ethics
 

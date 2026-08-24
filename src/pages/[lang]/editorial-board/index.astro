@@ -25,7 +25,9 @@ const config = getSiteConfig(import.meta.env as Record<string, string | undefine
 const title = localize(page.data.title ?? {}, locale);
 const canonical = new URL(makeRoute(locale, 'editorial-board', config.base), config.site.origin);
 const notice =
-  locale === 'zh' ? '演示状态 · 页面不列出真实人员。' : 'Demonstration state · No real individuals are listed.';
+  locale === 'zh'
+    ? '编辑结构 · 待任命确认后列出具体成员。'
+    : 'Editorial structure · Members will be listed once appointments are confirmed.';
 ---
 <PageLayout locale={locale} title={`${title} · JCORE`} description={localize(page.data.description ?? page.data.title ?? {}, locale)} canonical={canonical}>
   <article class="prose">

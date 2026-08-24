@@ -1,0 +1,24 @@
+kind: author
+id: nowint
+name:
+  en: NoWint
+  zh: NoWint
+affiliations:
+  - id: independent-software-researcher
+    name:
+      en: Independent Software Researcher
+      zh: 独立软件研究者
+bio:
+  en: Independent software developer and maintainer of PEYT Chat.
+  zh: PEYT Chat 的独立软件开发者与维护者。
+links:
+  github: https://github.com/NoWint
+  website: https://peyt.yzjtiantian.cn
+researchInterests:
+  - en: Privacy-preserving communication
+    zh: 隐私保护通信
+  - en: Local-first software
+    zh: 本地优先软件
+  - en: Human-computer collaboration
+    zh: 人机协作
+demo: false

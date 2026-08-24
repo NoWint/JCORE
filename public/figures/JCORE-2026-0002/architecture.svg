@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">PEYT Chat architecture</title>
+  <desc id="desc">A WebView frontend communicates with a Rust and Tauri application process. The process connects to Delta Chat Core, SQLite, local files, optional LLM services, and plugins.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f8fa; }
+      .panel { fill: #ffffff; stroke: #c8ced8; stroke-width: 2; }
+      .core { fill: #e9f1ff; stroke: #4b78b8; stroke-width: 2; }
+      .store { fill: #eef7ee; stroke: #5a8f5a; stroke-width: 2; }
+      .optional { fill: #fff4df; stroke: #b27b20; stroke-width: 2; stroke-dasharray: 8 6; }
+      .label { fill: #1d2633; font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: 700; }
+      .small { fill: #485467; font-family: Arial, Helvetica, sans-serif; font-size: 17px; }
+      .edge { stroke: #657286; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .edge-dashed { stroke: #a77b2c; stroke-width: 3; stroke-dasharray: 10 8; fill: none; marker-end: url(#arrow-gold); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#657286"/>
+    </marker>
+    <marker id="arrow-gold" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#a77b2c"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1200" height="720"/>
+  <text class="label" x="50" y="52">PEYT Chat: local-first desktop architecture</text>
+  <text class="small" x="50" y="82">Commands flow downward; realtime events flow upward through the same Tauri boundary.</text>
+
+  <rect class="panel" x="50" y="125" width="310" height="190" rx="8"/>
+  <text class="label" x="80" y="165">WebView frontend</text>
+  <text class="small" x="80" y="198">TypeScript + Vite</text>
+  <text class="small" x="80" y="226">chat, workspaces, cards</text>
+  <text class="small" x="80" y="254">settings, plugins, search</text>
+  <text class="small" x="80" y="282">single dc-event bridge</text>
+
+  <rect class="panel" x="445" y="105" width="365" height="250" rx="8"/>
+  <text class="label" x="475" y="145">Rust / Tauri process</text>
+  <text class="small" x="475" y="178">AppState and account selection</text>
+  <text class="small" x="475" y="206">Tauri commands and DTOs</text>
+  <text class="small" x="475" y="234">event forwarder and notifications</text>
+  <text class="small" x="475" y="262">bots, tools, GitHub, intelligence</text>
+  <text class="small" x="475" y="290">filesystem and backup adapters</text>
+
+  <rect class="core" x="50" y="455" width="310" height="165" rx="8"/>
+  <text class="label" x="80" y="495">Delta Chat Core</text>
+  <text class="small" x="80" y="528">accounts, contacts, chats</text>
+  <text class="small" x="80" y="556">messages, blobs, encryption</text>
+  <text class="small" x="80" y="584">SecureJoin and mail transport</text>
+
+  <rect class="store" x="445" y="455" width="365" height="165" rx="8"/>
+  <text class="label" x="475" y="495">PEYT SQLite + local files</text>
+  <text class="small" x="475" y="528">workspaces, channels, cards</text>
+  <text class="small" x="475" y="556">inbox, activities, knowledge</text>
+  <text class="small" x="475" y="584">preferences, models, backups</text>
+
+  <rect class="optional" x="895" y="120" width="250" height="145" rx="8"/>
+  <text class="label" x="925" y="160">Optional egress</text>
+  <text class="small" x="925" y="193">remote LLM APIs</text>
+  <text class="small" x="925" y="221">GitHub and plugin registry</text>
+  <text class="small" x="925" y="249">native OS notifications</text>
+
+  <rect class="optional" x="895" y="455" width="250" height="165" rx="8"/>
+  <text class="label" x="925" y="495">Optional local services</text>
+  <text class="small" x="925" y="528">llama-server</text>
+  <text class="small" x="925" y="556">installed JavaScript plugins</text>
+  <text class="small" x="925" y="584">asset protocol and files</text>
+
+  <path class="edge" d="M360 220 L445 220"/>
+  <text class="small" x="370" y="205">invoke / listen</text>
+  <path class="edge" d="M570 355 L250 455"/>
+  <text class="small" x="325" y="408">Core API calls</text>
+  <path class="edge" d="M685 355 L630 455"/>
+  <text class="small" x="700" y="408">SQL projection</text>
+  <path class="edge" d="M250 455 L570 355"/>
+  <text class="small" x="295" y="486">Core events</text>
+  <path class="edge-dashed" d="M810 220 L895 195"/>
+  <text class="small" x="820" y="185">explicit integrations</text>
+  <path class="edge-dashed" d="M810 505 L895 505"/>
+  <text class="small" x="820" y="488">local extensions</text>
+</svg>

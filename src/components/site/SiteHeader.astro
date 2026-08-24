@@ -118,7 +118,37 @@ const issueHref = currentIssue
     </div>
   </div>
 
-  <div class="nav-drawer" id="jcore-site-nav" data-nav-drawer hidden>
+  <div class="nav-drawer-backdrop" data-nav-backdrop hidden></div>
+  <aside
+    class="nav-drawer"
+    id="jcore-site-nav"
+    data-nav-drawer
+    aria-label="Site navigation"
+    aria-modal="true"
+    hidden
+  >
+    <div class="nav-drawer-header">
+      <span>Menu</span>
+      <button
+        class="nav-drawer-close"
+        type="button"
+        data-nav-close
+        aria-label="Close navigation"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
     <nav class="nav-drawer-links" aria-label="Drawer">
       {
         navigation.map((item) => (
@@ -131,29 +161,44 @@ const issueHref = currentIssue
         ))
       }
     </nav>
-  </div>
+  </aside>
 </header>
 
 <script is:inline>
   const root = document.documentElement;
-  const header = document.querySelector(".site-header");
+  const body = document.body;
   const drawerToggle = document.querySelector(".masthead-toggle");
   const drawer = document.getElementById("jcore-site-nav");
+  const drawerBackdrop = document.querySelector("[data-nav-backdrop]");
+  const drawerClose = document.querySelector("[data-nav-close]");
   const themeToggle = document.querySelector("[data-theme-toggle]");
+  const mobileViewport = window.matchMedia("(max-width: 720px)");
 
   const setDrawerState = (open, restoreFocus = false) => {
     if (!drawerToggle || !drawer) return;
     drawer.hidden = !open;
+    if (drawerBackdrop) drawerBackdrop.hidden = !open;
+    body?.classList.toggle("nav-drawer-open", open);
     drawerToggle.setAttribute("aria-expanded", String(open));
-    drawerToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-    if (restoreFocus) drawerToggle.focus();
+    drawerToggle.setAttribute(
+      "aria-label",
+      open ? "Close navigation" : "Open navigation",
+    );
+    if (open) {
+      drawerClose?.focus();
+    } else if (restoreFocus) {
+      drawerToggle.focus();
+    }
   };
 
   const syncThemeState = () => {
     if (!themeToggle) return;
     const dark = root.dataset.theme === "dark";
     themeToggle.setAttribute("aria-pressed", String(dark));
-    themeToggle.setAttribute("aria-label", dark ? "Use light theme" : "Use dark theme");
+    themeToggle.setAttribute(
+      "aria-label",
+      dark ? "Use light theme" : "Use dark theme",
+    );
   };
 
   setDrawerState(false);
@@ -163,18 +208,59 @@ const issueHref = currentIssue
     setDrawerState(Boolean(drawer?.hidden));
   });
 
+  drawerClose?.addEventListener("click", () => setDrawerState(false, true));
+  drawerBackdrop?.addEventListener("click", () => setDrawerState(false, true));
+
   drawer?.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => setDrawerState(false));
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && drawer && !drawer.hidden) {
+    if (!drawer || drawer.hidden) return;
+
+    if (event.key === "Escape") {
       setDrawerState(false, true);
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(
+      drawer.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    if (focusable.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
   });
 
+  const closeDrawerOnDesktop = () => {
+    if (!mobileViewport.matches && drawer && !drawer.hidden) {
+      setDrawerState(false);
+    }
+  };
+  window.addEventListener("resize", closeDrawerOnDesktop);
+  mobileViewport.addEventListener?.("change", closeDrawerOnDesktop);
+
   document.addEventListener("pointerdown", (event) => {
-    if (drawer && !drawer.hidden && header && !header.contains(event.target)) {
+    if (
+      drawer &&
+      !drawer.hidden &&
+      event.target instanceof Node &&
+      !drawer.contains(event.target) &&
+      event.target !== drawerToggle
+    ) {
       setDrawerState(false, true);
     }
   });

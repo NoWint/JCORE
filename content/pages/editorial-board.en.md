@@ -3,9 +3,9 @@ kind: page
 title:
   en: Editorial Board
 description:
-  en: Demonstration editorial roles for the JCORE MVP
+  en: Editorial roles for the JCORE publication
 ---
-The editorial board is in a demonstration state for the MVP. Positions are shown to establish the journal's structure; no real individuals are listed.
+The editorial board is being assembled for active operation. This page defines the roles and responsibilities; individual members will be listed once appointments are confirmed.
 
 - Editor-in-Chief
 - Managing Editor

@@ -13,9 +13,9 @@ test('home and discovery surfaces show JCORE and external ownership', async ({ p
   await page.goto('/JCORE/en/issues/volume-1-issue-1/');
   await expect(page.locator('.article-card')).toHaveCount(2);
 
-  await page.goto('/JCORE/zh/authors/demo-author-002/');
-  await expect(page.locator('main h1')).toContainText('张米娜');
-  await expect(page.locator('.article-card')).toHaveCount(2);
+  await page.goto('/JCORE/zh/authors/tiantianyzj/');
+  await expect(page.locator('main h1')).toContainText('TiantianYZJ');
+  await expect(page.locator('.article-card')).toHaveCount(1);
 });
 
 test('discovery pages have no horizontal overflow on mobile', async ({ page }) => {

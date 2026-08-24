@@ -13,12 +13,12 @@ describe('citation outputs', () => {
     expect(formatRIS(record)).toContain('ER  - ');
   });
 
-  it('formats JCORE citations with journal and demonstration note', () => {
-    const record = makeValidIndex().articles[0];
+  it('formats JCORE citations with journal metadata', () => {
+    const record = { ...makeValidIndex().articles[0], demo: false };
     expect(formatPlainCitation(record, 'en')).toContain('JCORE');
     expect(formatBibTeX(record)).toContain('@article{JCORE-2026-0001');
     expect(formatBibTeX(record)).toContain('journal = {JCORE}');
-    expect(formatBibTeX(record)).toContain('Demonstration article');
+    expect(formatBibTeX(record)).not.toContain('note = {Demonstration article.}');
     expect(formatRIS(record)).toContain('JO  - JCORE');
   });
 });

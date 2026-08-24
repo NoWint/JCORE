@@ -2,7 +2,7 @@
 
 Journal of Computing and Open Research for Exploration
 
-JCORE is a bilingual, fully static scholarly journal built with Astro, TypeScript, and a strict repository-driven publication pipeline. It publishes clearly marked demonstration JCORE records and rights-tracked external open-access articles in a unified reading layout.
+JCORE is a bilingual, fully static scholarly journal built with Astro, TypeScript, and a strict repository-driven publication pipeline. It publishes JCORE records and rights-tracked external open-access articles in a unified reading layout.
 
 ## Commands
 
@@ -20,7 +20,7 @@ npm run jcore -- --help
 
 ## Content Model
 
-- `content/articles/` contains JCORE-published demonstration articles.
+- `content/articles/` contains JCORE-published articles.
 - `content/external-articles/` contains external open-access articles with provenance and rights evidence.
 - `content/authors/`, `content/issues/`, `content/selections/`, and `content/pages/` hold the remaining journal data.
 - `sources/manifests/` records import provenance for external full text.

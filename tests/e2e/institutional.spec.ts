@@ -15,7 +15,7 @@ test('bilingual institutional pages render', async ({ page }) => {
   await expect(page.locator('.notice')).toContainText('投稿尚未开放');
 
   await page.goto('/JCORE/en/editorial-board/');
-  await expect(page.locator('.notice')).toContainText('Demonstration');
+  await expect(page.locator('.notice')).toContainText('Editorial structure');
 
   await page.goto('/JCORE/zh/policies/');
   await expect(page.locator('main h1')).toContainText('政策');

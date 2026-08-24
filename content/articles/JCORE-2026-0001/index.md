@@ -2,61 +2,64 @@
 kind: jcore
 id: JCORE-2026-0001
 title:
-  en: A Reproduction Study of Transformer Attention Mechanisms
-  zh: Transformer 注意力机制复现研究
+  en: "ChatMail Deploy for ANY Linux: A Docker-Based Deployment Architecture for Non-Debian Systems"
+  zh: "ChatMail ANY Linux 部署：面向非 Debian 系统的 Docker 部署架构"
 abstract:
-  en: This demonstration replication study evaluates whether a compact Transformer implementation reproduces the attention behavior described in the original literature.
-  zh: 本演示复现研究检验一个精简 Transformer 实现是否能复现原始文献中描述的注意力行为。
+  en: "This technical note documents a practical deployment architecture for ChatMail Relay on non-Debian Linux distributions. The approach keeps Debian-dependent mail services inside a Debian 12 container while running Python services, static binaries, DNS, and certificate automation on the host, joining both sides through bind-mounted volumes and Unix sockets."
+  zh: "本文档记录一种在非 Debian Linux 发行版上部署 ChatMail Relay 的实践架构：将依赖 Debian 的邮件服务运行在 Debian 12 容器中，同时让 Python 服务、静态二进制程序、DNS 与证书自动化运行在宿主机，并通过绑定挂载目录与 Unix socket 连接两侧。"
 keywords:
-  - en: transformer
-    zh: 转换器
-  - en: attention
-    zh: 注意力
-  - en: reproduction study
-    zh: 复现研究
+  - en: ChatMail Relay
+    zh: ChatMail Relay
+  - en: Delta Chat
+    zh: Delta Chat
+  - en: Docker
+    zh: Docker
+  - en: Linux deployment
+    zh: Linux 部署
+  - en: mail infrastructure
+    zh: 邮件基础设施
 bodyLanguage: en
 renderMode: structured
-sourceFormat: manual
-sourceFiles: []
+sourceFormat: markdown
+sourceFiles:
+  - path: https://github.com/TiantianYZJ/ChatMail-ANY-Linux-Deploy/blob/main/README.md
+    label: Original project README
+    kind: source
+  - path: https://github.com/TiantianYZJ/ChatMail-ANY-Linux-Deploy
+    label: Source repository
+    kind: supplementary
 conversion:
   status: converted
-  importer: manual
-  outputChecksum: "0000000000000000000000000000000000000000000000000000000000000000"
+  importer: jcore@0.1.0
+  outputChecksum: "0f7f3839faa346f5fc3d0d7ce8b496ba973b8c48b7822b1a801a072554ec400d"
   reportPath: import-report.json
 authors:
-  - authorId: demo-author-001
+  - authorId: tiantianyzj
     order: 1
     corresponding: true
-  - authorId: demo-author-002
-    order: 2
-  - authorId: demo-author-003
-    order: 3
-  - authorId: demo-author-004
-    order: 4
-  - authorId: demo-author-005
-    order: 5
-articleType: replication-study
+articleType: research-note
 status: published
 volume: 1
 issue: 1
 year: 2026
 dates:
-  received: 2026-07-01
-  accepted: 2026-07-20
-  published: 2026-08-01
+  received: 2026-08-02
+  accepted: 2026-08-18
+  published: 2026-08-20
 events:
   - type: submitted
-    date: 2026-07-01
+    date: 2026-08-02
   - type: revised
-    date: 2026-07-12
+    date: 2026-08-12
   - type: accepted
-    date: 2026-07-20
+    date: 2026-08-18
   - type: version-of-record
-    date: 2026-08-01
+    date: 2026-08-20
 license:
-  id: cc-by-4.0
-  url: https://creativecommons.org/licenses/by/4.0/
-  holder: JCORE demonstration authors
-  statement: Demonstration content for the JCORE MVP.
-demo: true
+  id: mit
+  url: https://opensource.org/license/mit/
+  holder: TiantianYZJ; chatmail and delta chat teams
+  statement: Adapted from the MIT-licensed ChatMail-ANY-Linux-Deploy project with source attribution preserved.
+code: https://github.com/TiantianYZJ/ChatMail-ANY-Linux-Deploy
+demo: false
 ---

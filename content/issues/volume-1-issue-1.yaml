@@ -7,7 +7,7 @@ title:
   en: Volume 1, Issue 1
   zh: 第一卷第一期
 editorial:
-  en: Demonstration issue for the JCORE publishing MVP.
-  zh: JCORE 出版演示版的第一期。
+  en: The first JCORE issue presents practical and reproducible computing work.
+  zh: JCORE 第一期呈现注重实践与可复现性的计算研究工作。
 published: 2026-08-20
-demo: true
+demo: false

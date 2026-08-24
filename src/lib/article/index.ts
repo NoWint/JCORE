@@ -38,7 +38,7 @@ export function indexArticleBody(markdown: string): ArticleStructure & { diagnos
   let pendingHeadingId: string | undefined;
 
   for (const line of markdown.split('\n')) {
-    for (const rawId of line.matchAll(/\bid=["']([^"']+)["']/g)) {
+    for (const rawId of line.matchAll(/(?:^|\s)id=["']([^"']+)["']/g)) {
       ids.add(normalizeSourceId(rawId[1]));
     }
 

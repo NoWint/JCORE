@@ -1,0 +1,19 @@
+kind: author
+id: tiantianyzj
+name:
+  en: TiantianYZJ
+  zh: TiantianYZJ
+affiliations:
+  - id: independent-open-source
+    name:
+      en: Independent Open-Source Contributor
+      zh: 独立开源贡献者
+    city: Shenzhen
+    country: China
+bio:
+  en: Maintainer of ChatMail-ANY-Linux-Deploy, an open-source deployment project for running ChatMail Relay on non-Debian Linux systems.
+  zh: ChatMail-ANY-Linux-Deploy 维护者，致力于在非 Debian Linux 系统上部署 ChatMail Relay。
+links:
+  github: https://github.com/TiantianYZJ
+  website: https://yzjtiantian.cn
+demo: false

@@ -77,6 +77,18 @@
   margin: var(--space-8) 0;
 }
 
+.article-prose figure.article-pdf-figure > p:first-of-type {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.article-prose figure.article-pdf-figure > p:first-of-type > span {
+  display: block;
+  min-width: 0;
+}
+
 .article-prose figcaption {
   font-family: var(--font-sans);
   font-size: 0.82rem;
@@ -84,12 +96,21 @@
   margin-top: var(--space-2);
 }
 
+.article-table-scroll {
+  max-width: 100%;
+  margin: var(--space-6) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 .article-prose table {
   border-collapse: collapse;
+  table-layout: auto;
   margin: var(--space-6) 0;
-  width: 100%;
-  display: block;
-  overflow-x: auto;
+  width: max-content;
+  min-width: 100%;
+  white-space: normal;
 }
 
 .article-prose th,
@@ -98,6 +119,8 @@
   padding: var(--space-2) var(--space-3);
   text-align: left;
   vertical-align: top;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .article-prose blockquote {
@@ -113,6 +136,24 @@
 .article-prose canvas {
   max-width: 100% !important;
   height: auto;
+}
+
+.article-prose embed {
+  display: block;
+  width: 100% !important;
+  min-height: 18rem;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.article-prose .article-media-fallback {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
 }
 
 .article-prose pre,
