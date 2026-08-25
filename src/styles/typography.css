@@ -56,21 +56,37 @@
 }
 
 .article-prose {
-  font-size: 1.05rem;
+  font-size: var(--reader-font-size, 1.05rem);
+  line-height: var(--reader-line-height, 1.72);
+  letter-spacing: var(--reader-letter-spacing, 0);
+  font-weight: var(--reader-font-weight, 400);
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
+.article-prose p {
+  margin-bottom: var(--reader-paragraph-spacing, var(--space-4));
+}
+
 .article-prose h1 {
   font-size: 2rem;
+  font-weight: 700;
 }
 
 .article-prose h2 {
   font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .article-prose h3 {
   font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.article-prose h4,
+.article-prose strong,
+.article-prose th {
+  font-weight: 600;
 }
 
 .article-prose figure {

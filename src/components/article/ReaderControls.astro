@@ -1,0 +1,527 @@
+---
+import type { Locale } from "../../lib/i18n";
+
+const { locale } = Astro.props as { locale: Locale };
+const copy =
+  locale === "zh"
+    ? {
+        button: "阅读设置",
+        panel: "阅读器设置",
+        fontSize: "字号",
+        letterSpacing: "字距",
+        lineHeight: "行距",
+        weight: "字重",
+        contentWidth: "正文宽度",
+        paragraphSpacing: "段落间距",
+        focus: "专注模式",
+        focusHint: "隐藏目录和侧栏，扩大正文空间",
+        reset: "恢复默认",
+        close: "收起阅读设置",
+        open: "展开阅读设置",
+        small: "小",
+        standard: "标准",
+        large: "大",
+        tight: "紧凑",
+        wide: "宽松",
+        compact: "紧凑",
+        loose: "宽松",
+        regular: "常规",
+        medium: "中等",
+        strong: "稍粗",
+        narrow: "紧凑",
+        wideScreen: "宽屏",
+      }
+    : {
+        button: "Reading settings",
+        panel: "Reader settings",
+        fontSize: "Font size",
+        letterSpacing: "Letter spacing",
+        lineHeight: "Line height",
+        weight: "Font weight",
+        contentWidth: "Text width",
+        paragraphSpacing: "Paragraph spacing",
+        focus: "Focus mode",
+        focusHint: "Hide contents and side rails",
+        reset: "Reset",
+        close: "Collapse reading settings",
+        open: "Open reading settings",
+        small: "Small",
+        standard: "Standard",
+        large: "Large",
+        tight: "Tight",
+        wide: "Wide",
+        compact: "Compact",
+        loose: "Loose",
+        regular: "Regular",
+        medium: "Medium",
+        strong: "Semibold",
+        narrow: "Narrow",
+        wideScreen: "Wide",
+      };
+
+const fontSizeOptions = [
+  { value: "small", label: copy.small },
+  { value: "standard", label: copy.standard },
+  { value: "large", label: copy.large },
+];
+const letterSpacingOptions = [
+  { value: "tight", label: copy.tight },
+  { value: "standard", label: copy.standard },
+  { value: "wide", label: copy.wide },
+];
+const lineHeightOptions = [
+  { value: "compact", label: copy.compact },
+  { value: "standard", label: copy.standard },
+  { value: "loose", label: copy.loose },
+];
+const weightOptions = [
+  { value: "regular", label: copy.regular },
+  { value: "medium", label: copy.medium },
+  { value: "strong", label: copy.strong },
+];
+const contentWidthOptions = [
+  { value: "compact", label: copy.narrow },
+  { value: "standard", label: copy.standard },
+  { value: "wide", label: copy.wideScreen },
+];
+const paragraphSpacingOptions = [
+  { value: "compact", label: copy.compact },
+  { value: "standard", label: copy.standard },
+  { value: "loose", label: copy.loose },
+];
+---
+
+<section class="reader-controls" data-reader-controls aria-label={copy.panel}>
+  <div class="reader-toolbar">
+    <div class="reader-toolbar-copy">
+      <span class="reader-kicker">JCORE Reader</span>
+      <span class="reader-toolbar-title">{copy.button}</span>
+    </div>
+    <button
+      class="reader-toggle"
+      type="button"
+      data-reader-toggle
+      aria-expanded="false"
+      aria-controls="jcore-reader-panel"
+      aria-label={copy.open}
+      data-label-open={copy.open}
+      data-label-close={copy.close}
+    >
+      <svg
+        width="17"
+        height="17"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        aria-hidden="true"
+      >
+        <line x1="4" y1="6" x2="20" y2="6"></line>
+        <circle cx="9" cy="6" r="2"></circle>
+        <line x1="4" y1="12" x2="20" y2="12"></line>
+        <circle cx="15" cy="12" r="2"></circle>
+        <line x1="4" y1="18" x2="20" y2="18"></line>
+        <circle cx="11" cy="18" r="2"></circle>
+      </svg>
+      <span>{copy.button}</span>
+    </button>
+  </div>
+
+  <div class="reader-panel" id="jcore-reader-panel" data-reader-panel hidden>
+    <div class="reader-panel-heading">
+      <div>
+        <span class="reader-kicker">JCORE Reader</span>
+        <h2>{copy.panel}</h2>
+      </div>
+      <button
+        class="reader-close"
+        type="button"
+        data-reader-close
+        aria-label={copy.close}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          aria-hidden="true"
+        >
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="reader-options">
+      <fieldset class="reader-option">
+        <legend>{copy.fontSize}</legend>
+        <div class="reader-segmented-control">
+          {
+            fontSizeOptions.map((option) => (
+              <button
+                type="button"
+                data-reader-font-size={option.value}
+                aria-pressed="false"
+              >
+                {option.label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="reader-option">
+        <legend>{copy.letterSpacing}</legend>
+        <div class="reader-segmented-control">
+          {
+            letterSpacingOptions.map((option) => (
+              <button
+                type="button"
+                data-reader-letter-spacing={option.value}
+                aria-pressed="false"
+              >
+                {option.label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="reader-option">
+        <legend>{copy.lineHeight}</legend>
+        <div class="reader-segmented-control">
+          {
+            lineHeightOptions.map((option) => (
+              <button
+                type="button"
+                data-reader-line-height={option.value}
+                aria-pressed="false"
+              >
+                {option.label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="reader-option">
+        <legend>{copy.weight}</legend>
+        <div class="reader-segmented-control">
+          {
+            weightOptions.map((option) => (
+              <button
+                type="button"
+                data-reader-weight={option.value}
+                aria-pressed="false"
+              >
+                {option.label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="reader-option">
+        <legend>{copy.contentWidth}</legend>
+        <div class="reader-segmented-control">
+          {
+            contentWidthOptions.map((option) => (
+              <button
+                type="button"
+                data-reader-content-width={option.value}
+                aria-pressed="false"
+              >
+                {option.label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="reader-option">
+        <legend>{copy.paragraphSpacing}</legend>
+        <div class="reader-segmented-control">
+          {
+            paragraphSpacingOptions.map((option) => (
+              <button
+                type="button"
+                data-reader-paragraph-spacing={option.value}
+                aria-pressed="false"
+              >
+                {option.label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="reader-panel-footer">
+      <label class="reader-focus-toggle">
+        <input type="checkbox" data-reader-focus-toggle />
+        <span>
+          <strong>{copy.focus}</strong>
+          <small>{copy.focusHint}</small>
+        </span>
+      </label>
+      <button class="reader-reset" type="button" data-reader-reset>
+        {copy.reset}
+      </button>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const controls = document.querySelector("[data-reader-controls]");
+    const article = document.querySelector(".article-page");
+    const pageMain = document.querySelector(".page-main");
+    if (!controls || !article) return;
+
+    const panel = controls.querySelector("[data-reader-panel]");
+    const toggle = controls.querySelector("[data-reader-toggle]");
+    const close = controls.querySelector("[data-reader-close]");
+    const focusToggle = controls.querySelector("[data-reader-focus-toggle]");
+    const storageKey = "jcore-reader-settings";
+    const defaults = {
+      fontSize: "standard",
+      letterSpacing: "standard",
+      lineHeight: "standard",
+      weight: "regular",
+      contentWidth: "standard",
+      paragraphSpacing: "standard",
+      focus: false,
+    };
+    const values = {
+      fontSize: {
+        small: "0.95rem",
+        standard: "1.05rem",
+        large: "1.18rem",
+      },
+      letterSpacing: {
+        tight: "-0.01em",
+        standard: "0em",
+        wide: "0.04em",
+      },
+      lineHeight: {
+        compact: "1.55",
+        standard: "1.72",
+        loose: "1.95",
+      },
+      weight: {
+        regular: "400",
+        medium: "500",
+        strong: "600",
+      },
+      contentWidth: {
+        compact: "46rem",
+        standard: "64rem",
+        wide: "82rem",
+      },
+      paragraphSpacing: {
+        compact: "0.75rem",
+        standard: "1rem",
+        loose: "2rem",
+      },
+    };
+
+    const isOption = (group, value) =>
+      Object.prototype.hasOwnProperty.call(values[group], value);
+
+    const readSettings = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+        if (!stored || typeof stored !== "object") return { ...defaults };
+        return {
+          fontSize: isOption("fontSize", stored.fontSize)
+            ? stored.fontSize
+            : defaults.fontSize,
+          letterSpacing: isOption("letterSpacing", stored.letterSpacing)
+            ? stored.letterSpacing
+            : defaults.letterSpacing,
+          lineHeight: isOption("lineHeight", stored.lineHeight)
+            ? stored.lineHeight
+            : defaults.lineHeight,
+          weight: isOption("weight", stored.weight)
+            ? stored.weight
+            : defaults.weight,
+          contentWidth: isOption("contentWidth", stored.contentWidth)
+            ? stored.contentWidth
+            : defaults.contentWidth,
+          paragraphSpacing: isOption(
+            "paragraphSpacing",
+            stored.paragraphSpacing,
+          )
+            ? stored.paragraphSpacing
+            : defaults.paragraphSpacing,
+          focus: stored.focus === true,
+        };
+      } catch {
+        return { ...defaults };
+      }
+    };
+
+    let settings = readSettings();
+
+    const saveSettings = () => {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(settings));
+      } catch {
+        // Storage can be unavailable in privacy-restricted browsers.
+      }
+    };
+
+    const setPanelState = (open, restoreFocus = false) => {
+      if (!panel || !toggle) return;
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute(
+        "aria-label",
+        open
+          ? (toggle.dataset.labelClose ?? "Collapse reading settings")
+          : (toggle.dataset.labelOpen ?? "Open reading settings"),
+      );
+      if (open) {
+        controls.classList.add("is-open");
+        controls.querySelector("[aria-pressed='true']")?.focus();
+      } else {
+        controls.classList.remove("is-open");
+        if (restoreFocus) toggle.focus();
+      }
+    };
+
+    const applySettings = () => {
+      article.style.setProperty(
+        "--reader-font-size",
+        values.fontSize[settings.fontSize],
+      );
+      article.style.setProperty(
+        "--reader-letter-spacing",
+        values.letterSpacing[settings.letterSpacing],
+      );
+      article.style.setProperty(
+        "--reader-line-height",
+        values.lineHeight[settings.lineHeight],
+      );
+      article.style.setProperty(
+        "--reader-font-weight",
+        values.weight[settings.weight],
+      );
+      article.style.setProperty(
+        "--reader-content-width",
+        values.contentWidth[settings.contentWidth],
+      );
+      article.style.setProperty(
+        "--reader-paragraph-spacing",
+        values.paragraphSpacing[settings.paragraphSpacing],
+      );
+      article.classList.toggle("reader-focus", settings.focus);
+      pageMain?.classList.toggle("reader-focus", settings.focus);
+      if (focusToggle) focusToggle.checked = settings.focus;
+
+      controls.querySelectorAll("[data-reader-font-size]").forEach((option) => {
+        const active = option.dataset.readerFontSize === settings.fontSize;
+        option.setAttribute("aria-pressed", String(active));
+      });
+      controls
+        .querySelectorAll("[data-reader-letter-spacing]")
+        .forEach((option) => {
+          const active =
+            option.dataset.readerLetterSpacing === settings.letterSpacing;
+          option.setAttribute("aria-pressed", String(active));
+        });
+      controls
+        .querySelectorAll("[data-reader-line-height]")
+        .forEach((option) => {
+          const active =
+            option.dataset.readerLineHeight === settings.lineHeight;
+          option.setAttribute("aria-pressed", String(active));
+        });
+      controls.querySelectorAll("[data-reader-weight]").forEach((option) => {
+        const active = option.dataset.readerWeight === settings.weight;
+        option.setAttribute("aria-pressed", String(active));
+      });
+      controls
+        .querySelectorAll("[data-reader-content-width]")
+        .forEach((option) => {
+          const active =
+            option.dataset.readerContentWidth === settings.contentWidth;
+          option.setAttribute("aria-pressed", String(active));
+        });
+      controls
+        .querySelectorAll("[data-reader-paragraph-spacing]")
+        .forEach((option) => {
+          const active =
+            option.dataset.readerParagraphSpacing === settings.paragraphSpacing;
+          option.setAttribute("aria-pressed", String(active));
+        });
+    };
+
+    const update = (key, value) => {
+      settings = { ...settings, [key]: value };
+      applySettings();
+      saveSettings();
+    };
+
+    toggle?.addEventListener("click", () => {
+      setPanelState(Boolean(panel?.hidden));
+    });
+    close?.addEventListener("click", () => setPanelState(false, true));
+    focusToggle?.addEventListener("change", () => {
+      update("focus", focusToggle.checked);
+    });
+    controls.querySelectorAll("[data-reader-font-size]").forEach((option) => {
+      option.addEventListener("click", () =>
+        update("fontSize", option.dataset.readerFontSize),
+      );
+    });
+    controls
+      .querySelectorAll("[data-reader-letter-spacing]")
+      .forEach((option) => {
+        option.addEventListener("click", () =>
+          update("letterSpacing", option.dataset.readerLetterSpacing),
+        );
+      });
+    controls.querySelectorAll("[data-reader-line-height]").forEach((option) => {
+      option.addEventListener("click", () =>
+        update("lineHeight", option.dataset.readerLineHeight),
+      );
+    });
+    controls.querySelectorAll("[data-reader-weight]").forEach((option) => {
+      option.addEventListener("click", () =>
+        update("weight", option.dataset.readerWeight),
+      );
+    });
+    controls
+      .querySelectorAll("[data-reader-content-width]")
+      .forEach((option) => {
+        option.addEventListener("click", () =>
+          update("contentWidth", option.dataset.readerContentWidth),
+        );
+      });
+    controls
+      .querySelectorAll("[data-reader-paragraph-spacing]")
+      .forEach((option) => {
+        option.addEventListener("click", () =>
+          update("paragraphSpacing", option.dataset.readerParagraphSpacing),
+        );
+      });
+    controls
+      .querySelector("[data-reader-reset]")
+      ?.addEventListener("click", () => {
+        settings = { ...defaults };
+        applySettings();
+        saveSettings();
+      });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && panel && !panel.hidden) {
+        setPanelState(false, true);
+      }
+    });
+
+    applySettings();
+    setPanelState(false);
+  })();
+</script>

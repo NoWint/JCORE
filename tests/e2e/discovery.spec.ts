@@ -11,6 +11,10 @@ test('home and discovery surfaces show JCORE and external ownership', async ({ p
   await expect(page.locator('.ownership-badge:not(.is-external)').first()).toBeVisible();
 
   await page.goto('/JCORE/en/issues/volume-1-issue-1/');
+  await expect(page.locator('.article-card')).toHaveCount(4);
+
+  await page.goto('/JCORE/en/authors/anonymous/');
+  await expect(page.locator('main h1')).toContainText('Anonymous');
   await expect(page.locator('.article-card')).toHaveCount(2);
 
   await page.goto('/JCORE/zh/authors/tiantianyzj/');

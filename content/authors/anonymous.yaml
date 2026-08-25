@@ -1,0 +1,14 @@
+kind: author
+id: anonymous
+name:
+  en: Anonymous
+  zh: 匿名作者
+affiliations:
+  - id: anonymous-researcher
+    name:
+      en: Anonymous Researcher
+      zh: 匿名研究者
+bio:
+  en: The author requested anonymous publication for this contribution.
+  zh: 作者要求以匿名形式发表本文。
+demo: false

@@ -1,5 +1,6 @@
 ---
 import SiteLayout from "./SiteLayout.astro";
+import ReaderControls from "../components/article/ReaderControls.astro";
 import OwnershipBadge from "../components/site/OwnershipBadge.astro";
 import { getAuthorById } from "../lib/content/queries";
 import type {
@@ -36,6 +37,7 @@ const config = getSiteConfig(
 const isExternal = record.kind === "external";
 const isFallback = record.renderMode === "source-fallback";
 const renderedHtml = renderReport?.html ?? html;
+const hasReadableBody = !isFallback && renderedHtml.trim().length > 0;
 const indexedHeadings = renderReport?.headings ?? headings;
 const tocHeadings = indexedHeadings.filter((heading) => heading.level <= 3);
 const renderDiagnostics =
@@ -79,14 +81,22 @@ const metaParts = isExternal
     ];
 ---
 
-<SiteLayout locale={locale} title={`${title} · JCORE`} description={abstract}>
+<SiteLayout
+  locale={locale}
+  title={`${title} · JCORE`}
+  description={abstract}
+  isArticle
+>
   <article class="article-page">
     <header class="article-header">
-      <div class="article-kicker">
-        <OwnershipBadge
-          kind={record.kind}
-          demo={"demo" in record ? record.demo : false}
-        />
+      <div class="article-header-tools">
+        <div class="article-kicker">
+          <OwnershipBadge
+            kind={record.kind}
+            demo={"demo" in record ? record.demo : false}
+          />
+        </div>
+        {hasReadableBody && <ReaderControls locale={locale} />}
       </div>
       <h1 class="article-title">{title}</h1>
       <p class="article-authors">{authorNames.join(", ")}</p>
@@ -238,6 +248,28 @@ const metaParts = isExternal
                 </a>
               </p>
               <p>{record.rights.statement}</p>
+            </section>
+          )
+        }
+
+        {
+          !isFallback && sourceFiles.length > 0 && (
+            <section class="source-files-panel">
+              <h2 class="sidebar-heading">Source Files</h2>
+              <ul class="source-files">
+                {sourceFiles.map((file) => (
+                  <li>
+                    <a
+                      href={file.href}
+                      download
+                      target={file.kind === "pdf" ? "_blank" : undefined}
+                      rel="noreferrer"
+                    >
+                      {file.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </section>
           )
         }
